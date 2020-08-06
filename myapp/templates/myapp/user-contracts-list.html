@@ -1,0 +1,62 @@
+{% extends "myapp/user_logged_in_nav.html" %}
+{% load rest_framework %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% load bootstrap4 %}
+{% load static %}
+{% load myapp_extras %}
+
+{% block hero %}{% endblock %}
+
+{% block content %}
+    <div class="block-content">
+        <h4>لیست قرارداد ها</h4>
+        <form method="post" id="login-form" class="myform user-contracts_list-form" action="">
+            {% csrf_token %}
+
+            <div class="table-responsive">
+                <table style="margin: auto" class="center table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">شناسه</th>
+                        <th scope="col">حساب مبداء</th>
+                        <th scope="col">حساب مقصد</th>
+                        <th scope="col">مبلغ به ریال</th>
+                        <th scope="col">ارز حواله</th>
+                        <th scope="col">مبلغ حواله</th>
+                        <th scope="col">نوع تسویه</th>
+                        <th scope="col">شناسه ملی داور</th>
+                        <th scope="col">رای داور</th>
+                        <th scope="col">تاریخ اعتبار</th>
+                        <th scope="col">وضعیت</th>
+                        <th scope="col">توضیحات</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for contract in contracts %}
+                        <tr>
+                            <th scope="row">{{ contract.id }}</th>
+                            <td>{{ contract.src_owner }}</td>
+                            <td>{{ contract.dst_owner }}</td>
+                            <td>{{ contract.value_in_rial }}</td>
+                            <td>{{ contract.remittance_currency }}</td>
+                            <td>{{ contract.remittance_value }}</td>
+                            <td>{{ contract.settlement_type_verbose }}</td>
+                            <td>{{ contract.judge }}</td>
+                            <td>{{ contract.judge_vote_verbose }}</td>
+                            <td>{{ contract.expire_date }}</td>
+                            <td>{{ contract.status }}</td>
+                            <td>{{ contract.description }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <script>
+        </script>
+    </div>
+{% endblock %}
+

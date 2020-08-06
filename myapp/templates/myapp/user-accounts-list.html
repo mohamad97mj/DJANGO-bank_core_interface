@@ -1,0 +1,45 @@
+{% extends "myapp/user_logged_in_nav.html" %}
+{% load rest_framework %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% load bootstrap4 %}
+{% load static %}
+{% load myapp_extras %}
+
+
+
+
+{% block hero %}{% endblock %}
+
+{% block content %}
+    <div class="block-content">
+        <h4>لیست حساب ها</h4>
+        <form method="post" id="" class="myform user-accounts-list-form" action="">
+            {% csrf_token %}
+
+            <div class="table-responsive">
+                <table style="margin: auto" class="center table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">شماره حساب</th>
+                        <th scope="col">نوع حساب</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for account in accounts %}
+                        <tr>
+                            <th scope="row">{{ account.bank_account_id }}</th>
+                            <td>{{ account.owner_type_verbose }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        <script>
+        </script>
+    </div>
+{% endblock %}
+

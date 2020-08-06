@@ -1,0 +1,49 @@
+{% extends "myapp/nav.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% load bootstrap4 %}
+{% load static %}
+
+
+{% block content %}
+    <div class="block-content">
+        <form method="post" id="login-form" class="myform login-form" action="{% url 'myapp:login' %}">
+            {% csrf_token %}
+
+            {% for hidden in login_form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% for field in login_form.visible_fields %}
+                <div class="form-group">
+
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:'form-control' }}
+                    <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
+                    {% for error in field.errors %}
+                        <span class="help- error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn mybutton">
+                    ورود به سامانه
+                </button>
+            </div>
+        </form>
+
+        <script>
+            $("#id_role").on('change', function () {
+                if (this.value === "judge") {
+                    $("#id_username_help_text").text('به صورت پیش فرض همان شناسه ملی شماست');
+
+                } else {
+                    $("#id_username_help_text").text('به صورت پیش فرض همان کد ملی شماست');
+                }
+            })
+        </script>
+    </div>
+{% endblock %}
+

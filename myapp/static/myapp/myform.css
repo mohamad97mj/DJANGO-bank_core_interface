@@ -1,0 +1,75 @@
+
+.myform {
+    text-align: right;
+    margin: auto;
+}
+
+#bootstrap-overwrite .error-message {
+    margin-top: 3px;
+
+    color: #e31e30;
+    display: block;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+#bootstrap-overwrite .form-control {
+    font-size: 12px;
+}
+
+
+.login-form {
+    width: 250px;
+}
+
+.user-profile-form {
+    width: 250px;
+}
+
+
+.user-accounts-list-form {
+    width: 250px;
+}
+
+
+.user-contracts_list-form {
+    width: 90%;
+}
+
+.user-transaction-list-form {
+    width: 90%;
+}
+
+
+
+.block-content {
+    margin: 25px auto 150px auto;
+    text-align: center;
+}
+
+.mybutton {
+    background-color: #e31e30;
+    color: white;
+}
+
+table.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/*@media (min-width: 400px) and (max-width: 575.98px) {*/
+
+/*}*/
+
+/*@media (min-width: 576px) and (max-width: 767.98px) {*/
+
+/*}*/
+
+/*@media (min-width: 768px) and (max-width: 991.98px) {*/
+
+/*}*/
+
+/*@media (min-width: 992px) and (max-width: 1199.98px) {*/
+
+/*}*/

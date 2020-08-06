@@ -1,0 +1,46 @@
+{% extends "myapp/user_logged_in_nav.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% load bootstrap4 %}
+{% load static %}
+{% load myapp_extras %}
+
+
+{% block profile-url %}{{ user_profile_form.instance.national_code }}{% endblock %}
+{% block account-url %}{{ user_profile_form.instance.national_code|add:"/accounts" }}{% endblock %}
+{% block contract-url %}{{ user_profile_form.instance.national_code|add:"/contracts" }}{% endblock %}
+{% block transaction-url %}{{ user_profile_form.instance.national_code|add:"/transactions" }}{% endblock %}
+{% block logout-url %}{{ user_profile_form.instance.national_code|add:"/logout" }}/logout{% endblock %}
+
+
+{% block hero %}{% endblock %}
+
+{% block content %}
+    <div class="block-content">
+        <h4>اطلاعات کاربر</h4>
+        <form method="post" id="login-form" class="myform user-profile-form" action="">
+            {% csrf_token %}
+
+            {% for hidden in user_profile_form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% for field in user_profile_form.visible_fields %}
+                <div class="form-group">
+
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:'form-control' }}
+                    <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
+                    {% for error in field.errors %}
+                        <span class="help- error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </form>
+
+        <script>
+        </script>
+    </div>
+{% endblock %}
+

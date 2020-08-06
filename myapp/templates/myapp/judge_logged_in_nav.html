@@ -1,0 +1,66 @@
+{% extends "myapp/nav.html" %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block navbar %}
+        <header class="sis-portal-header">
+        <div class="sis-portal-bottomHeader">
+            <div class="row" id="fixed">
+                <div class="container">
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-5 sis-portal-header-logo">
+                        <a href="https://enbank.ir/fa/index.php">
+                            <img src="{% static 'myapp/data/headerLogo.png' %}" alt="بانک اقتصادنوین"
+                                 title="بانک اقتصادنوین"/>
+                        </a>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-5 sis-portal-header-logo logoSticky">
+                        <a href="https://enbank.ir/fa/index.php">
+                            <img src="{% static 'myapp/data/headerLogoSticky.png' %}" alt="بانک اقتصادنوین"
+                                 title="بانک اقتصادنوین"/>
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-5 col-sm-6 sis-portal-header-menu">
+                        <div class="row">
+                            <div class="col-xs-12 sis-dropdown-menu-responsive sis-menu sis-dropdown-menu-click "
+                                 id="sisMenu15945563821640359885">
+                                <div class="wsmenucontainer">
+                                    <div class="overlapblackbg"></div>
+                                    <div class="wsmobileheader clearfix">
+                                        <a id="wsnavtoggle15945563821640359885" class="animated-arrow">
+                                            <span></span>
+                                        </a>
+                                    </div>
+                                    <div class="header">
+                                        <div class="wsmenu clearfix">
+                                            <ul class="mobile-sub wsmenu-list">
+                                                <li><a title="سامانه صرافی نوین">سامانه صرافی نوین</a><span
+                                                        class="arrow"></span></li>
+                                                <li><a title=" ورود به سامانه">ورود به سامانه</a><span
+                                                        class="arrow"></span>
+                                                </li>
+                                                <li class="contact"><a title="ارتباط با ما">ارتباط با ما</a><span
+                                                        class="arrow"></span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 col-md-4 col-sm-3 col-xs-6 sis-portal-top-icon">
+                        <div class="netBank">
+                            <a href="https://www.enbank.ir/s/mfandf" target="_blank" title="اینترنت بانک">اینترنت
+                                بانک<span></span></a>
+                        </div>
+                        <div class="sis-portal-lang"><a href="https://www.enbank.ir/fa/page/-.html"
+                                                        target="_blank">EN</a>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endblock %}
+{% block content %}{% endblock %}
