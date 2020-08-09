@@ -1,0 +1,133 @@
+{% extends "myapp/judge-logged-in-nav.html" %}
+{% load rest_framework %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% load bootstrap4 %}
+{% load static %}
+{% load myapp_extras %}
+
+
+{% block hero %}{% endblock %}
+
+{% block content %}
+    <div class="block-content">
+        <h4>لیست قرارداد های داوری نشده</h4>
+        <div class="table-responsive">
+            <table style="margin: auto" class="center table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">شناسه</th>
+                    {% if owner_type == '1' %}
+                        <th scope="col">نوع حساب طرف دیگر قرارداد</th>
+                        <th scope="col">شماره حساب طرف دیگر قرارداد</th>
+                    {% else %}
+                        <th scope="col">شماره حساب صراف</th>
+                    {% endif %}
+                    <th scope="col">مبلغ به ریال</th>
+                    <th scope="col">ارز حواله</th>
+                    <th scope="col">مبلغ حواله</th>
+                    <th scope="col">نوع تسویه</th>
+                    <th scope="col">شناسه ملی داور</th>
+                    <th scope="col">رای داور</th>
+                    <th scope="col">تاریخ اعتبار</th>
+                    <th scope="col">توضیحات</th>
+                    <th scope="col">وضعیت</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for contract in not_judged_contracts %}
+                    <tr>
+                        <th scope="row"><a
+                            {#                                href="{% url 'myapp:contract_detail' pk pk2 contract.id %}"><u>{{ contract.id }}</u></a>#}
+                        </th>
+                        {% if owner == contract.src_owner %}
+                            {% if owner_type == '1' %}
+                                <td>صادر کننده</td>
+                            {% endif %}
+                            <td>{{ contract.dst_owner }}</td>
+                        {% else %}
+                            {% if owner_type == '1' %}
+                                <td>وارد کننده</td>
+                            {% endif %}
+                            <td>{{ contract.src_owner }}</td>
+                        {% endif %}
+                        <td>{{ contract.value_in_rial }}</td>
+                        <td>{{ contract.remittance_currency }}</td>
+                        <td>{{ contract.remittance_value }}</td>
+                        <td>{{ contract.settlement_type_verbose }}</td>
+                        <td>{{ contract.judge }}</td>
+                        <td>{{ contract.judge_vote_verbose }}</td>
+                        <td>{{ contract.expire_date }}</td>
+                        <td>{{ contract.description }}</td>
+                        <td>{{ contract.status }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+
+        <h4>لیست قرار داد های قبلی</h4>
+        <div class="table-responsive">
+            <table style="margin: auto" class="center table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">شناسه</th>
+                    {% if owner_type == '1' %}
+                        <th scope="col">نوع حساب طرف دیگر قرارداد</th>
+                        <th scope="col">شماره حساب طرف دیگر قرارداد</th>
+                    {% else %}
+                        <th scope="col">شماره حساب صراف</th>
+                    {% endif %}
+                    <th scope="col">مبلغ به ریال</th>
+                    <th scope="col">ارز حواله</th>
+                    <th scope="col">مبلغ حواله</th>
+                    <th scope="col">نوع تسویه</th>
+                    <th scope="col">شناسه ملی داور</th>
+                    <th scope="col">رای داور</th>
+                    <th scope="col">تاریخ اعتبار</th>
+                    <th scope="col">توضیحات</th>
+                    <th scope="col">وضعیت</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for contract in judged_contracts %}
+                    <tr>
+                        <th scope="row"><a
+                            {#                                href="{% url 'myapp:contract_detail' pk pk2 contract.id %}"><u>{{ contract.id }}</u></a>#}
+                        </th>
+                        {% if owner == contract.src_owner %}
+                            {% if owner_type == '1' %}
+                                <td>صادر کننده</td>
+                            {% endif %}
+                            <td>{{ contract.dst_owner }}</td>
+                        {% else %}
+                            {% if owner_type == '1' %}
+                                <td>وارد کننده</td>
+                            {% endif %}
+                            <td>{{ contract.src_owner }}</td>
+                        {% endif %}
+                        <td>{{ contract.value_in_rial }}</td>
+                        <td>{{ contract.remittance_currency }}</td>
+                        <td>{{ contract.remittance_value }}</td>
+                        <td>{{ contract.settlement_type_verbose }}</td>
+                        <td>{{ contract.judge }}</td>
+                        <td>{{ contract.judge_vote_verbose }}</td>
+                        <td>{{ contract.expire_date }}</td>
+                        <td>{{ contract.description }}</td>
+                        <td>{{ contract.status }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <script>
+        </script>
+    </div>
+{% endblock %}
+

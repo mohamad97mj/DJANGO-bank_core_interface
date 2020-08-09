@@ -29,6 +29,12 @@ OWNER_TYPE = (
     ('3', 'صادر کننده'),
 )
 
+CONTRACT_STATUS = (
+    ('1', 'در انتظار تایید طرف دیگر قرارداد'),
+    ('2', 'در انتظار داوری'),
+    ('3', 'داوری شده است'),
+)
+
 
 # Create your models here.
 
@@ -84,7 +90,7 @@ class AuthProfile(AbstractBaseUser, PermissionsMixin):
 
 
 class Owner(models.Model):
-    bank_account_id = models.CharField(max_length=50, primary_key=True)
+    bank_account_id = models.IntegerField(primary_key=True)
     owner_type = models.CharField(max_length=50, choices=OWNER_TYPE, default='1')
 
     def owner_type_verbose(self):
@@ -111,17 +117,17 @@ class JudgeProfile(models.Model):
 
 class Contract(models.Model):
     id = models.IntegerField(primary_key=True)
-    expire_date = models.DateField()
-    settlement_type = models.CharField(max_length=50, choices=SETTLEMENT_TYPE, default='1')
+    src_owner = models.IntegerField()
+    dst_owner = models.IntegerField()
     value_in_rial = models.IntegerField()
     remittance_currency = models.CharField(max_length=40)
     remittance_value = models.IntegerField()
+    settlement_type = models.CharField(max_length=50, choices=SETTLEMENT_TYPE, default='1')
     judge = models.ForeignKey(JudgeProfile, on_delete=models.SET_NULL, null=True)
-    src_owner = models.CharField(max_length=50)
-    dst_owner = models.CharField(max_length=50)
-    status = models.CharField(max_length=20)
-    description = models.CharField(max_length=255)
     judge_vote = models.CharField(max_length=50, choices=JUDGE_VOTE)
+    expire_date = models.DateField()
+    description = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, choices=CONTRACT_STATUS)
 
     def settlement_type_verbose(self):
         return dict(SETTLEMENT_TYPE)[self.settlement_type]
@@ -129,27 +135,36 @@ class Contract(models.Model):
     def judge_vote_verbose(self):
         return dict(JUDGE_VOTE)[self.judge_vote]
 
+    def status_verbose(self):
+        return dict(CONTRACT_STATUS)[self.status]
+
 
 class Subcontract(models.Model):
     id = models.IntegerField(primary_key=True)
-    expire_date = models.DateField()
+    parent = models.ForeignKey(Contract, on_delete=models.CASCADE)
+    dst_owner = models.IntegerField()
     value_in_rial = models.IntegerField()
     remittance_value = models.IntegerField()
-    status = models.CharField(max_length=20)
-    description = models.CharField(max_length=255)
-    dst_owner = models.CharField(max_length=50)
-    parent = models.ForeignKey(Contract, on_delete=models.CASCADE)
     judge_vote = models.CharField(max_length=50, choices=JUDGE_VOTE)
+    expire_date = models.DateField()
+    description = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, choices=CONTRACT_STATUS)
+
+    def judge_vote_verbose(self):
+        return dict(JUDGE_VOTE)[self.judge_vote]
+
+    def status_verbose(self):
+        return dict(CONTRACT_STATUS)[self.status]
 
 
 class Transaction(models.Model):
     id = models.IntegerField(primary_key=True)
+    owner = models.IntegerField()
+    otherside_owner = models.IntegerField()
     transaction_type = models.CharField(max_length=50, choices=TRANSACTION_TYPE, default='1')
-    owner = models.CharField(max_length=50)
-    otherside_owner = models.CharField(max_length=50)
     value = models.IntegerField()
-    operator_type = models.CharField(max_length=50, choices=OPERATOR_TYPE, default='1')
     operator = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
+    operator_type = models.CharField(max_length=50, choices=OPERATOR_TYPE, default='1')
 
     def transaction_type_verbose(self):
         return dict(TRANSACTION_TYPE)[self.transaction_type]

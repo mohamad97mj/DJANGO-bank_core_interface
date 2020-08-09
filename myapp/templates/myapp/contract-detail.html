@@ -1,4 +1,4 @@
-{% extends "myapp/user_logged_in_nav.html" %}
+{% extends "myapp/user-logged-in-nav.html" %}
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 {% load widget_tweaks %}
@@ -31,7 +31,60 @@
             {% endfor %}
         </form>
 
+        <br/>
+        <br/>
+        <br/>
+
+        {% if owner_type == "1" %}
+            <h4>لیست قرارداد های مربوطه</h4>
+            <form method="post" id="login-form" class="myform user-contracts-list-form" action="">
+                {% csrf_token %}
+
+                <div class="table-responsive">
+                    <table style="margin: auto" class="center table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">شناسه</th>
+                            <th scope="col">حساب صادر کننده</th>
+                            <th scope="col">مبلغ به ریال</th>
+                            <th scope="col">مبلغ حواله</th>
+                            <th scope="col">رای داور</th>
+                            <th scope="col">تاریخ اعتبار</th>
+                            <th scope="col">توضیحات</th>
+                            <th scope="col">وضعیت</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for subcontract in subcontracts %}
+                            <tr>
+                                <th scope="row">
+                                    <a href="{% url 'myapp:my_subcontract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><u>{{ subcontract.id }}</u></a>
+                                </th>
+                                <td>{{ subcontract.dst_owner }}</td>
+                                <td>{{ subcontract.value_in_rial }}</td>
+                                <td>{{ subcontract.remittance_value }}</td>
+                                <td>{{ subcontract.judge_vote_verbose }}</td>
+                                <td>{{ subcontract.expire_date }}</td>
+                                <td>{{ subcontract.description }}</td>
+                                <td>{{ subcontract.status_verbose }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        {% endif %}
+
         <script>
+            $(document).ready(function () {
+                var tmp =
+                {{ owner_type }}
+                if (tmp == '3') {
+                    $('label[for="id_dst_owner"]').text("شماره حساب صراف")
+                    $('#id_dst_owner').val(
+                        {{ contract_detail_form.instance.parent.dst_owner }})
+                }
+            })
         </script>
     </div>
 {% endblock %}

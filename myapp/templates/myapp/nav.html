@@ -1,6 +1,7 @@
 {% extends "myapp/base.html" %}
 {% load bootstrap4 %}
 {% load static %}
+{% load myapp_extras %}
 
 {% block navbar %}
     <header class="sis-portal-header">
@@ -33,13 +34,15 @@
                                     <div class="header">
                                         <div class="wsmenu clearfix">
                                             <ul class="mobile-sub wsmenu-list">
-                                                <li><a title="سامانه صرافی نوین">سامانه صرافی نوین</a><span
-                                                        class="arrow"></span></li>
-                                                <li><a title=" ورود به سامانه">ورود به سامانه</a><span
-                                                        class="arrow"></span>
-                                                </li>
-                                                <li class="contact"><a title="ارتباط با ما">ارتباط با ما</a><span
-                                                        class="arrow"></span></li>
+                                                {% block items %}
+
+                                                    <li class="contact"><a title="قرارداد های من"
+                                                                           href="{% url 'myapp:login' %}">ورود به سامانه</a><span
+                                                            class="arrow"></span></li>
+
+                                                    <li class="contact"><a title="تراکنش های من">درباره ما</a><span
+                                                            class="arrow" disabled></span></li>
+                                                {% endblock items %}
                                             </ul>
                                         </div>
                                     </div>
@@ -63,4 +66,5 @@
         </div>
     </header>
 {% endblock %}
+
 {% block content %}{% endblock %}

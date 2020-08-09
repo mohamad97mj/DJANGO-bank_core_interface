@@ -1,56 +1,84 @@
 import datetime
 import os
-from myapp.models import UserProfile, JudgeProfile, Contract, Subcontract, Transaction
+from myapp.models import Owner, UserProfile, JudgeProfile, Contract, Subcontract, Transaction
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mydjango.settings")
 
 
-def run():
-    user = UserProfile(
-        '0924043687',
-        'محمد',
-        'مجاهد')
+# def run():
+user = UserProfile(
+    '0924043687',
+    'محمد',
+    'مجاهد'
+)
 
-    owner = Owner(
-        '1234567890',
-        '1'
-    )
+user.save()
 
-    judge = JudgeProfile(
-        '123456',
-        'پرداخت نوین')
+owner1 = Owner(
+    123123123,
+    '1'
+)
+owner1.save()
 
-    contract = Contract(
-        '111111',
-        datetime.datetime.now(),
-        '1',
-        '4000000',
-        'دلار',
-        '20',
-        '123456',
-        '0924043687',
-        '22222222',
-        'نامعلوم',
-        'یک معامله برای تست',
-        '1', )
+owner2 = Owner(
+    bank_account_id=456456456,
+    owner_type='2'
+)
 
-    subcontract = Subcontract(
-        '111110',
-        datetime.datetime.now(),
-        '4000000',
-        '20',
-        'نامعلوم',
-        'یک زیر معامله برای تست',
-        '22222222',
-        '111111',
-        '1', )
+owner2.save()
 
-    transaction = Transaction(
-        '2222',
-        '1',
-        '1234567890',
-        '3333333333',
-        '1000000',
-        '1',
-        '0924043687',
-    )
+owner3 = Owner(
+    789789789,
+    '3'
+)
+
+owner3.save()
+
+judge = JudgeProfile(
+    '123456',
+    'پرداخت نوین'
+)
+
+judge.save()
+
+contract = Contract(
+    '111111',
+    123123123,
+    456456456,
+    '4000000',
+    'دلار',
+    '20',
+    '1',
+    '123456',
+    '1',
+    datetime.datetime.now(),
+    'یک معامله برای تست',
+    '1',
+)
+
+contract.save()
+
+subcontract = Subcontract(
+    '111110',
+    '111111',
+    789789789,
+    '4000000',
+    '20',
+    '1',
+    datetime.datetime.now(),
+    'یک زیر معامله برای تست',
+    '1',
+)
+
+subcontract.save()
+transaction = Transaction(
+    '2222',
+    123123123,
+    456456456,
+    '1',
+    1000000,
+    '0924043687',
+    '1',
+)
+
+transaction.save()

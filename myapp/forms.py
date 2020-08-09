@@ -78,21 +78,32 @@ class ContractDetailForm(ModelForm):
 
     class Meta:
         model = Contract
-        fields = ['id', 'src_owner', 'dst_owner', 'expire_date', 'settlement_type', 'value_in_rial',
-                  'remittance_currency', 'remittance_value',
-                  'judge', 'status', 'description', 'judge_vote']
+        fields = [
+            'id',
+            'src_owner',
+            'dst_owner',
+            'value_in_rial',
+            'remittance_currency',
+            'remittance_value',
+            'settlement_type',
+            'judge',
+            'judge_vote',
+            'expire_date',
+            'status',
+            'description',
+        ]
         labels = {
             'id': 'شناسه',
             'src_owner': 'شماره حساب مبداء',
             'dst_owner': 'شماره حساب مقصد',
-            'expire_date': 'تاریخ اعتبار',
-            'settlement_type': 'نوع تسویه',
             'value_in_rial': 'مبلغ به ریال',
             'remittance_currency': 'ارز حواله',
             'remittance_value': 'مبلغ حواله',
+            'settlement_type': 'نوع تسویه',
             'judge': 'شناسه ملی داور',
-            'status': 'وضعیت',
             'judge_vote': 'رای داور',
+            'expire_date': 'تاریخ اعتبار',
+            'status': 'وضعیت',
             'description': 'توضیحات',
         }
 
@@ -100,47 +111,83 @@ class ContractDetailForm(ModelForm):
 class NewContractForm(ModelForm):
     class Meta:
         model = Contract
-        fields = ['dst_owner', 'expire_date', 'settlement_type', 'value_in_rial', 'remittance_currency',
-                  'remittance_value',
-                  'judge', 'description']
+        fields = [
+            'dst_owner',
+            'value_in_rial',
+            'remittance_currency',
+            'remittance_value',
+            'settlement_type',
+            'judge',
+            'expire_date',
+            'description'
+        ]
         labels = {
             'dst_owner': 'شماره حساب مقصد',
-            'expire_date': 'تاریخ اعتبار',
-            'settlement_type': 'نوع تسویه',
             'value_in_rial': 'مبلغ به ریال',
             'remittance_currency': 'ارز حواله',
             'remittance_value': 'مبلغ حواله',
+            'settlement_type': 'نوع تسویه',
             'judge': 'شناسه ملی داور',
+            'expire_date': 'تاریخ اعتبار',
             'description': 'توضیحات',
         }
 
 
 class SubcontractDetailForm(ModelForm):
+    judge = forms.CharField(max_length=50)
+    remittance_currency = forms.CharField(max_length=40)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.fields['id'].widget.attrs['disabled'] = True
         self.fields['dst_owner'].widget.attrs['disabled'] = True
-        self.fields['expire_date'].widget.attrs['disabled'] = True
         self.fields['value_in_rial'].widget.attrs['disabled'] = True
         self.fields['remittance_value'].widget.attrs['disabled'] = True
-        self.fields['status'].widget.attrs['disabled'] = True
-        self.fields['description'].widget.attrs['disabled'] = True
         self.fields['judge_vote'].widget.attrs['disabled'] = True
+        self.fields['expire_date'].widget.attrs['disabled'] = True
+        self.fields['description'].widget.attrs['disabled'] = True
+        self.fields['status'].widget.attrs['disabled'] = True
+        self.fields['judge'].widget = forms.HiddenInput()
+        self.fields['remittance_currency'].widget = forms.HiddenInput()
+
+    # this method is called just for exporter point of view
+    def add_extra_fields(self):
+        self.fields['judge'].widget = forms.TextInput()
+        self.fields['remittance_currency'].widget = forms.TextInput()
+        self.fields['judge'].label = 'شناسه ملی داور'
+        self.fields['judge'].widget.attrs['disabled'] = True
+        self.fields['judge'].initial = self.instance.parent.judge
+        self.fields['remittance_currency'].label = 'ارز حواله'
+        self.fields['remittance_currency'].widget.attrs['disabled'] = True
+        self.fields['remittance_currency'].initial = self.instance.parent.remittance_currency
+
+        pass
 
     class Meta:
         model = Subcontract
-        fields = ['id', 'expire_date', 'value_in_rial', 'remittance_value',
-                  'status', 'description', 'judge_vote', 'dst_owner']
+        fields = [
+            'id',
+            'dst_owner',
+            'value_in_rial',
+            'remittance_currency',
+            'remittance_value',
+            'judge',
+            'judge_vote',
+            'expire_date',
+            'description',
+            'status',
+
+        ]
         labels = {
             'id': 'شناسه',
-            'expire_date': 'تاریخ اعتبار',
+            'dst_owner': 'حساب طرف دیگر قرارداد',
             'value_in_rial': 'مبلغ به ریال',
             'remittance_value': 'مبلغ حواله',
-            'status': 'وضعیت',
-            'judge_vote': 'رای داور',
             'description': 'توضیحات',
-            'dst_owner': 'شماره حساب طرف دیگر قرارداد',
+            'judge_vote': 'رای داور',
+            'expire_date': 'تاریخ اعتبار',
+            'status': 'وضعیت',
         }
 
 
@@ -154,7 +201,7 @@ class NewSubcontractForm(ModelForm):
             'remittance_value': 'مبلغ حواله',
             'status': 'وضعیت',
             'description': 'توضیحات',
-            'dst_owner': 'شماره حساب طرف دیگر قرار داد',
+            'dst_owner': 'حساب طرف دیگر قرار داد',
         }
 
 
@@ -175,7 +222,7 @@ class TransactionDetailForm(ModelForm):
         labels = {
             'id': 'شناسه',
             'transaction_type': 'نوع تراکنش',
-            'otherside_owner': 'شماره حساب طرف دیگر تراکنش',
+            'otherside_owner': 'حساب طرف دیگر تراکنش',
             'value': 'مبلغ',
             'operator_type': 'نوع اپراتور',
             'operator': 'کد ملی اپراتور',
