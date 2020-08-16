@@ -7,17 +7,6 @@ from .utils import *
 #     pass
 
 
-class NewContractView(APIView):
-    renderer_classes = [renderers.TemplateHTMLRenderer]
-
-    def get(self, request, pk, pk2, format=None):
-        new_contract_form = forms.NewContractForm()
-        context = {'pk': pk, 'pk2': pk2, 'new_contract_form': new_contract_form}
-        return Response(context, template_name='myapp/new-contract.html')
-
-    # TODO define post method
-
-
 # class UserContractsListView(APIView):
 #     renderer_classes = [renderers.TemplateHTMLRenderer]
 #     template_name = 'myapp/contracts-list.html'
@@ -34,20 +23,6 @@ class NewContractView(APIView):
 #         user_profile = get_user(pk)
 #         contracts = self.get_list(instance=user_profile)
 #         return Response({"pk": pk, "contracts": contracts})
-
-
-class JudgeContractsListView(APIView):
-    renderer_classes = [renderers.TemplateHTMLRenderer]
-    template_name = 'myapp/judge-contracts-list.html'
-
-    def get(self, request, pk, format=None):
-        judge_profile = get_judge(pk)
-        print("judge profile is :", judge_profile)
-        contracts = judge_profile.contract_set.all()
-        print(contracts)
-        return Response({"pk": pk, "contracts": contracts})
-
-    # Subcontract views ......................................................................................
 
 
 class MyNewContractView(APIView):
@@ -86,8 +61,8 @@ class MyContractListView(APIView):
             judge_national_id = request.GET.get('judge', '')
             judge_profile = get_judge(pk=judge_national_id)
             # contracts = judge_profile.contract_set.all()
-            judged_contracts = judge_profile.contract_set.filter(Q(status='2'))
-            not_judged_contracts = judge_profile.contract_set.filter(Q(status='3'))
+            not_judged_contracts = judge_profile.contract_set.filter(Q(status='2'))
+            judged_contracts = judge_profile.contract_set.filter(Q(status='3'))
 
             context = {'judge': judge_profile.national_id, 'judged_contracts': judged_contracts,
                        'not_judged_contracts': not_judged_contracts}
@@ -108,38 +83,60 @@ class MyContractDetailView(APIView):
 
     def get(self, request, pk, format=None):
 
-        print("hello")
-        print("hello")
         role = request.GET.get('role', '')
-        national_code = request.GET.get('user', '')
-        bank_account_id = request.GET.get('account', '')
-
-        user = get_user(pk=national_code)
-        owner = get_owner(pk=bank_account_id)
-        # TODO check if the account is for this user
-
         format = request.accepted_renderer.format
 
-        if owner.owner_type == '3':
-            contract = get_subcontract(pk)
+        if role == 'user':
+            national_code = request.GET.get('user', '')
+            bank_account_id = request.GET.get('account', '')
+
+            user = get_user(pk=national_code)
+            owner = get_owner(pk=bank_account_id)
+            # TODO check if the account is for this user
+
+            if owner.owner_type == '3':
+                contract = get_subcontract(pk)
+                if format == 'html':
+                    contract_detail_form = forms.SubcontractDetailForm(instance=contract)
+
+            else:
+                contract = get_contract(pk)
+                if format == 'html':
+                    contract_detail_form = forms.ContractDetailForm(instance=contract)
+
             if format == 'html':
-                contract_detail_form = forms.SubcontractDetailForm(instance=contract)
+                context = {'role': role, "user": user.national_code, "owner": owner.bank_account_id,
+                           "owner_type": owner.owner_type,
+                           'contract': contract.id, 'contract_detail_form': contract_detail_form}
+
+            if owner.owner_type == '1':
+                subcontracts = contract.subcontract_set.all()
+                if format == 'html':
+                    context['subcontracts'] = subcontracts
+
+            if format == 'html':
+                return Response(context, template_name='myapp/contract-detail.html')
+
+            serializer = serializers.ContractSerializer(contract)
+            data = serializer.data
+            return Response(data)
 
         else:
+            national_id = request.GET.get('judge', '')
+            judge = get_judge(national_id)
             contract = get_contract(pk)
-            if format == 'html':
-                contract_detail_form = forms.ContractDetailForm(instance=contract)
 
-        if format == 'html':
-            context = {"user": national_code, "owner": owner.bank_account_id, "owner_type": owner.owner_type,
-                       'contract': contract.id, 'contract_detail_form': contract_detail_form}
-
-        if owner.owner_type == '1':
             subcontracts = contract.subcontract_set.all()
+
             if format == 'html':
-                context['subcontracts'] = subcontracts
+                to = request.GET.get('to', '')
+                contract_detail_form = forms.ContractDetailForm(instance=contract)
+                context = {'role': role, 'contract': contract.id, 'subcontracts': subcontracts,
+                           'judge': judge.national_id,
+                           'contract_detail_form': contract_detail_form, 'to': to}
+                return Response(context, template_name='myapp/judge-contract-detail.html')
 
-        if format == 'html':
-            return Response(context, template_name='myapp/contract-detail.html')
-
-        return Response("hello")
+            elif to == 'view':
+                serializer = serializers.ContractSerializer(contract)
+                data = serializer.data
+                return Response(data)

@@ -8,6 +8,7 @@ class UserDetailView(APIView):
         user_profile = get_user(pk)
         user_profile_form = forms.UserProfileForm(instance=user_profile)
         context = {'user': pk, 'user_profile_form': user_profile_form}
+        # TODO rest api
         return Response(context, template_name='myapp/user-profile.html')
 
 

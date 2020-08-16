@@ -40,7 +40,7 @@
                 {% for contract in not_judged_contracts %}
                     <tr>
                         <th scope="row"><a
-                            {#                                href="{% url 'myapp:contract_detail' pk pk2 contract.id %}"><u>{{ contract.id }}</u></a>#}
+                                href="{% url 'myapp:my_contract_detail' contract.id %}?role=judge&judge={{ judge }}&to=judge&format=html"><u>{{ contract.id }}</u></a>
                         </th>
                         {% if owner == contract.src_owner %}
                             {% if owner_type == '1' %}
@@ -61,7 +61,7 @@
                         <td>{{ contract.judge_vote_verbose }}</td>
                         <td>{{ contract.expire_date }}</td>
                         <td>{{ contract.description }}</td>
-                        <td>{{ contract.status }}</td>
+                        <td>{{ contract.status_verbose }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -99,7 +99,7 @@
                 {% for contract in judged_contracts %}
                     <tr>
                         <th scope="row"><a
-                            {#                                href="{% url 'myapp:contract_detail' pk pk2 contract.id %}"><u>{{ contract.id }}</u></a>#}
+                                href="{% url 'myapp:my_contract_detail' contract.id %}?role=judge&judge={{ judge }}&to=view&format=html"><u>{{ contract.id }}</u></a>
                         </th>
                         {% if owner == contract.src_owner %}
                             {% if owner_type == '1' %}
@@ -120,7 +120,7 @@
                         <td>{{ contract.judge_vote_verbose }}</td>
                         <td>{{ contract.expire_date }}</td>
                         <td>{{ contract.description }}</td>
-                        <td>{{ contract.status }}</td>
+                        <td>{{ contract.status_verbose }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

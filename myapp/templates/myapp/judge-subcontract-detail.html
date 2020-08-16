@@ -1,0 +1,56 @@
+{% extends "myapp/judge-logged-in-nav.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block content %}
+    <div class="block-content">
+        <h4>اطلاعات قرارداد مربوطه</h4>
+        <form method="post" id="login-form" class="myform user-profile-form" action="">
+            {% csrf_token %}
+
+            {% for hidden in subcontract_detail_form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% for field in subcontract_detail_form.visible_fields %}
+                {% if to == 'view' or field.name != 'judge_vote' %}
+                    <div class="form-group">
+
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field|add_class:'form-control' }}
+                        <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
+                        {% for error in field.errors %}
+                            <span class="help- error-message">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </form>
+
+        <form method="post" action="{% url 'myapp:judge-subcontract' %}">
+            {% if to == 'judge' %}
+
+                <label for="vote">رای شما به عنوان داور</label>
+                <select class="form-control" name="vote" id="vote">
+                    <option value="معامله انجام نشده است">معامله انجام نشده است</option>
+                    <option value="معامله انجام شده است">معامله انجام شده است</option>
+                </select>
+                <div style="margin-top: 10px">
+                    <button class="btn btn-block btn-success">
+                        ثبت رای
+                    </button>
+                </div>
+            {% endif %}
+        </form>
+
+        <script>
+        </script>
+    </div>
+    <script>
+    </script>
+
+{% endblock %}
+
