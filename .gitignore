@@ -3,3 +3,7 @@
 /myapp/migrations
 /.idea
 /static
+uwsgi_params
+mydjango_uwsgi.ini
+mydjango/setting.py_
+
