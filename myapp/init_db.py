@@ -42,18 +42,17 @@ judge = JudgeProfile(
 judge.save()
 
 contract = Contract(
-    '111111',
-    123123123,
-    456456456,
-    '4000000',
-    'دلار',
-    '20',
-    '1',
-    '123456',
-    '1',
-    datetime.datetime.now(),
-    'یک معامله برای تست',
-    '1',
+    src_owner=123123123,
+    dst_owner=456456456,
+    value_in_rial='4000000',
+    remittance_currency='دلار',
+    remittance_value='20',
+    settlement_type='1',
+    judge=judge,
+    judge_vote='1',
+    expire_date='2020-12-11',
+    description='یک معامله برای تست',
+    status='1',
 )
 
 contract.save()

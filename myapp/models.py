@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
+import uuid
+
 SETTLEMENT_TYPE = (
     ('1', 'تک حواله ای'),
     ('2', 'چند حواله ای'),
@@ -117,7 +119,7 @@ class JudgeProfile(models.Model):
 
 
 class Contract(models.Model):
-    id = models.IntegerField(primary_key=True)
+    # id = models.UUIDField(primary_key=True)
     src_owner = models.IntegerField()
     dst_owner = models.IntegerField()
     value_in_rial = models.IntegerField()
@@ -126,7 +128,7 @@ class Contract(models.Model):
     settlement_type = models.CharField(max_length=50, choices=SETTLEMENT_TYPE, default='1')
     judge = models.ForeignKey(JudgeProfile, on_delete=models.SET_NULL, null=True)
     judge_vote = models.CharField(max_length=50, choices=JUDGE_VOTE)
-    expire_date = models.DateField()
+    expire_date = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=CONTRACT_STATUS)
 
@@ -147,7 +149,7 @@ class Subcontract(models.Model):
     value_in_rial = models.IntegerField()
     remittance_value = models.IntegerField()
     judge_vote = models.CharField(max_length=50, choices=JUDGE_VOTE)
-    expire_date = models.DateField()
+    expire_date = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=CONTRACT_STATUS)
 

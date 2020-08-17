@@ -7,7 +7,7 @@ from . import views
 app_name = 'myapp'
 
 urlpatterns = [
-    # path('', views.index, name='index'),
+    path('', views.LoginView.as_view(), name='login'),
     path('login', views.LoginView.as_view(), name='login'),
     path('users', views.UserListView.as_view(), name='my_users_list'),
     path('users/<slug:pk>', views.UserDetailView.as_view(), name='my_user_detail'),

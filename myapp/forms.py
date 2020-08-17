@@ -2,6 +2,10 @@ from django import forms
 from django.forms import ModelForm, TextInput, Form
 from .models import AuthProfile, UserProfile, JudgeProfile, Transaction, Contract, Subcontract
 from django.utils.translation import gettext_lazy as _
+from functools import partial
+
+# DateInput = partial(forms.DateInput, {'class': 'datepicker'})
+
 
 LOGIN_ROLES = [
     ('user', 'کاربر حساب'),
@@ -60,10 +64,10 @@ class JudgeProfileForm(ModelForm):
 
 
 class ContractDetailForm(ModelForm):
+    myid = forms.IntegerField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['id'].widget.attrs['disabled'] = True
         self.fields['src_owner'].widget.attrs['disabled'] = True
         self.fields['dst_owner'].widget.attrs['disabled'] = True
         self.fields['expire_date'].widget.attrs['disabled'] = True
@@ -75,11 +79,14 @@ class ContractDetailForm(ModelForm):
         self.fields['status'].widget.attrs['disabled'] = True
         self.fields['description'].widget.attrs['disabled'] = True
         self.fields['judge_vote'].widget.attrs['disabled'] = True
+        self.fields['myid'].widget.attrs['disabled'] = True
+        self.fields['myid'].initial = self.instance.id
+        self.fields['myid'].label = 'شناسه'
 
     class Meta:
         model = Contract
         fields = [
-            'id',
+            'myid',
             'src_owner',
             'dst_owner',
             'value_in_rial',
@@ -109,9 +116,23 @@ class ContractDetailForm(ModelForm):
 
 
 class NewContractForm(ModelForm):
+    def __init__(self, src_owner, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['src_owner'].widget = forms.HiddenInput()
+        self.fields['src_owner'].initial = src_owner
+
+    def save(self, commit=True):
+        m = super(NewContractForm, self).save(commit=False)
+        m.judge_vote = '0'
+        m.status = '1'
+        if commit:
+            m.save()
+        return m
+
     class Meta:
         model = Contract
         fields = [
+            'src_owner',
             'dst_owner',
             'value_in_rial',
             'remittance_currency',
@@ -127,8 +148,8 @@ class NewContractForm(ModelForm):
             'remittance_currency': 'ارز حواله',
             'remittance_value': 'مبلغ حواله',
             'settlement_type': 'نوع تسویه',
-            'judge': 'شناسه ملی داور',
             'expire_date': 'تاریخ اعتبار',
+            'judge': 'شناسه ملی داور',
             'description': 'توضیحات',
         }
 

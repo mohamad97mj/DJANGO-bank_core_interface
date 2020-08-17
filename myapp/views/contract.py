@@ -26,16 +26,41 @@ from .utils import *
 
 
 class MyNewContractView(APIView):
-    renderer_classes = [renderers.TemplateHTMLRenderer]
+    renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer,)
 
     def get(self, request, format=None):
         national_code = request.GET.get('user', '')
         bank_account_id = request.GET.get('account', '')
         user = get_user(national_code)
         owner = get_owner(bank_account_id)
-        new_contract_form = forms.NewContractForm()
+        new_contract_form = forms.NewContractForm(src_owner=owner.bank_account_id)
         context = {'user': user.national_code, 'owner': owner.bank_account_id, 'new_contract_form': new_contract_form}
         return Response(context, template_name='myapp/new-contract.html')
+
+    def post(self, request, format=None):
+        data = request.data
+        format = request.accepted_renderer.format
+        user = request.query_params['user']
+
+        if format == 'html':
+            new_contract_form = forms.NewContractForm(data=data, src_owner=data['src_owner'])
+            flag = new_contract_form.is_valid()
+            if new_contract_form.is_valid():
+                new_contract = new_contract_form.save(commit=False)
+                new_contract.save()
+                query_param = '?' + 'role=user' + '&' + 'user=' + user + '&' + 'account=' + str(
+                    get_owner(pk=new_contract.src_owner).bank_account_id)
+                return redirect(reverse('myapp:my_contract_detail', kwargs={'pk': new_contract.id}) + query_param)
+            else:
+                context = {'new_contract_form': new_contract_form}
+                return render(request, 'myapp/new-contract.html', context)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            serializer = serializers.ContractSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # incomplete

@@ -1,5 +1,6 @@
 from .utils import *
 
+
 class LoginView(APIView):
 
     def get(self, request):
@@ -14,7 +15,8 @@ class LoginView(APIView):
         if login_form.is_valid():
             if request.data['role'] == 'user':
                 print(request.data)
-                return redirect('myapp:my_user_detail', pk=request.data['username'])
+                return redirect(
+                    reverse('myapp:my_user_detail', kwargs={'pk': request.data['username']}))
             else:
                 return redirect('myapp:my_judge_detail', pk=request.data['username'])
 
