@@ -27,8 +27,8 @@ JUDGE_VOTE = (
 )
 
 OWNER_TYPE = (
-    ('1', 'صراف'),
-    ('2', 'وارد کننده'),
+    ('1', 'وارد کننده'),
+    ('2', 'صراف'),
     ('3', 'صادر کننده'),
 )
 
@@ -161,7 +161,7 @@ class Subcontract(models.Model):
 
 
 class Transaction(models.Model):
-    id = models.IntegerField(primary_key=True)
+    # id = models.IntegerField(primary_key=True)
     owner = models.IntegerField()
     otherside_owner = models.IntegerField()
     transaction_type = models.CharField(max_length=50, choices=TRANSACTION_TYPE, default='1')

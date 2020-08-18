@@ -1,4 +1,5 @@
-from .utils import *
+from myapp.utils import *
+from myapp import forms
 
 
 # class ContractListView(generics.ListAPIView):
@@ -55,7 +56,7 @@ class MyNewContractView(APIView):
                 context = {'new_contract_form': new_contract_form}
                 return render(request, 'myapp/new-contract.html', context)
             # return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
+        else:  # TODO test later
             serializer = serializers.ContractSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()

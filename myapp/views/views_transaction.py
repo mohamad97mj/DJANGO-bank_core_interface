@@ -1,4 +1,5 @@
-from .utils import *
+from myapp.utils import *
+from myapp import forms
 
 
 # class UserTransactionsListView(APIView):
@@ -30,15 +31,43 @@ class MyNewTransactionView(APIView):
     renderer_classes = [renderers.TemplateHTMLRenderer]
 
     def get(self, request, format=None):
-        new_transaction_form = forms.NewTransactionForm()
         national_code = request.GET.get('user', '')
         bank_account_id = request.GET.get('account', '')
         user = get_user(national_code)
         owner = get_owner(bank_account_id)
+        new_transaction_form = forms.NewTransactionForm(owner=owner.bank_account_id, operator=user.national_code)
 
         context = {'user': user.national_code, 'owner': owner.bank_account_id,
                    'new_transaction_form': new_transaction_form}
         return Response(context, template_name='myapp/new-transaction.html')
+
+    def post(self, request, format=None):
+        data = request.data
+        format = request.accepted_renderer.format
+        user = request.query_params['user']
+
+        if format == 'html':
+            new_transaction_form = forms.NewTransactionForm(data=data,
+                                                            owner=data['owner'],
+                                                            operator=data['operator']
+                                                            )
+            flag = new_transaction_form.is_valid()
+            if new_transaction_form.is_valid():
+                new_transaction = new_transaction_form.save(commit=False)
+                new_transaction.save()
+                query_param = '?' + 'role=user' + '&' + 'user=' + user + '&' + 'account=' + str(
+                    get_owner(pk=new_transaction.owner).bank_account_id)
+                return redirect(reverse('myapp:my_transaction_detail', kwargs={'pk': new_transaction.id}) + query_param)
+            else:
+                context = {'new_transaction_form': new_transaction_form}
+                return render(request, 'myapp/new-transaction.html', context)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:  # TODO test later
+            serializer = serializers.TransactionSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MyTransactionListView(APIView):

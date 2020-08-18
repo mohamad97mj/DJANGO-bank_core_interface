@@ -1,4 +1,5 @@
-from .utils import *
+from myapp.utils import *
+from myapp import forms
 
 
 class OwnerListView(generics.ListAPIView):

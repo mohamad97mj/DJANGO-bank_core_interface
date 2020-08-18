@@ -7,7 +7,6 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework import renderers
 from myapp import models
-from myapp import forms
 from myapp import serializers
 from django.db.models import Q
 
