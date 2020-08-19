@@ -44,22 +44,25 @@ class MyNewTransactionView(APIView):
     def post(self, request, format=None):
         data = request.data
         format = request.accepted_renderer.format
-        user = request.query_params['user']
+        national_code = request.query_params['user']
+        bank_account_id = request.query_params['account']
+
+        user = get_user(national_code)
+        owner = get_owner(bank_account_id)
 
         if format == 'html':
             new_transaction_form = forms.NewTransactionForm(data=data,
                                                             owner=data['owner'],
-                                                            operator=data['operator']
-                                                            )
-            flag = new_transaction_form.is_valid()
+                                                            operator=data['operator'])
             if new_transaction_form.is_valid():
                 new_transaction = new_transaction_form.save(commit=False)
                 new_transaction.save()
-                query_param = '?' + 'role=user' + '&' + 'user=' + user + '&' + 'account=' + str(
-                    get_owner(pk=new_transaction.owner).bank_account_id)
+                query_param = '?' + 'role=user' + '&' + 'user=' + national_code + '&' + 'account=' \
+                              + str(owner.bank_account_id)
                 return redirect(reverse('myapp:my_transaction_detail', kwargs={'pk': new_transaction.id}) + query_param)
             else:
-                context = {'new_transaction_form': new_transaction_form}
+                context = {'new_transaction_form': new_transaction_form, 'user': user.national_code,
+                           'owner': owner.bank_account_id}
                 return render(request, 'myapp/new-transaction.html', context)
             # return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:  # TODO test later
@@ -85,10 +88,28 @@ class MyTransactionDetailView(APIView):
         owner = get_owner(pk=bank_account_id)
         transaction = get_transaction(pk)
         transaction_detail_form = forms.TransactionDetailForm(instance=transaction)
+
+        transaction_detail_form.fields['otherside_owner'].label = "hello"
+
+        if owner.owner_type != '2':
+            transaction_detail_form.fields['otherside_owner'].label = 'شماره حساب صراف'
+            if owner.owner_type == '1':
+                transaction_detail_form.fields['transaction_type'].initial = '1'
+            else:
+                transaction_detail_form.fields['transaction_type'].initial = '2'
+        else:
+            if owner.bank_account_id == transaction.owner:
+                transaction_detail_form.fields['otherside_owner'].label = 'شماره حساب صادر کننده'
+                transaction_detail_form.initial['otherside_owner'] = transaction.otherside_owner
+                transaction_detail_form.fields['transaction_type'].initial = '1'
+            else:
+                transaction_detail_form.fields['otherside_owner'].label = 'شماره حساب وارد کننده'
+                transaction_detail_form.initial['otherside_owner'] = transaction.owner
+                transaction_detail_form.fields['transaction_type'].initial = '2'
+
         context = {
             'transaction': transaction.id,
             'user': user.national_code,
-            'owner': owner.bank_account_id,
             'transaction_detail_form': transaction_detail_form}
 
         if request.accepted_renderer.format == 'html':

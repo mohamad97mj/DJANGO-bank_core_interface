@@ -9,7 +9,7 @@
 {% block content %}
     <div class="block-content">
         <h4>اطلاعات تراکنش جدید را وارد کنید</h4>
-        <form method="post" id="login-form" class="myform user-profile-form" action="{% url 'myapp:my_new_transaction' %}?user={{ user }}">
+        <form method="post" id="login-form" class="myform user-profile-form" action="{% url 'myapp:my_new_transaction' %}?role=user&user={{ user }}&account={{ owner }}">
             {% csrf_token %}
 
             {% for hidden in new_transaction_form.hidden_fields %}

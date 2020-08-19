@@ -1,6 +1,6 @@
 import datetime
 import os
-from myapp.models import Owner, UserProfile, JudgeProfile, Contract, Subcontract, Transaction
+from myapp.models import Owner, UserProfile, JudgeProfile, NormalContract, Subcontract, Transaction
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mydjango.settings")
 
@@ -41,7 +41,7 @@ judge = JudgeProfile(
 
 judge.save()
 
-contract = Contract(
+contract = NormalContract(
     src_owner=123123123,
     dst_owner=456456456,
     value_in_rial='4000000',

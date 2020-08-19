@@ -6,7 +6,7 @@ class ContractDetailForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['src_owner'].widget.attrs['disabled'] = True
+        # self.fields['src_owner'].widget.attrs['disabled'] = True
         self.fields['dst_owner'].widget.attrs['disabled'] = True
         self.fields['expire_date'].widget.attrs['disabled'] = True
         self.fields['settlement_type'].widget.attrs['disabled'] = True
@@ -22,10 +22,10 @@ class ContractDetailForm(ModelForm):
         self.fields['myid'].label = 'شناسه'
 
     class Meta:
-        model = Contract
+        model = NormalContract
         fields = [
             'myid',
-            'src_owner',
+            # 'src_owner',
             'dst_owner',
             'value_in_rial',
             'remittance_currency',

@@ -1,5 +1,6 @@
 from .utils import *
 
+
 class UserProfileForm(ModelForm):
 
     def __init__(self, *args, **kwargs):

@@ -4,11 +4,8 @@ from .utils import *
 class NewContractForm(ModelForm):
     judge = forms.CharField(max_length=50, required=False)
 
-    def __init__(self, src_owner, *args, **kwargs):
+    def __init__(self, src_owner,  *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.src_owner = src_owner
-        self.fields['src_owner'].widget = forms.HiddenInput()
-        self.fields['src_owner'].initial = src_owner
         self.fields['expire_date'].widget.attrs['placeholder'] = "1400/11/05"
         self.fields['dst_owner'].required = False
         self.fields['value_in_rial'].required = False
@@ -63,14 +60,17 @@ class NewContractForm(ModelForm):
     def clean_value_in_rial(self):
         value_in_rial = self.cleaned_data['value_in_rial']
         empty_field_validator(value_in_rial)
+        return value_in_rial
 
     def clean_remittance_currency(self):
         remittance_currency = self.cleaned_data['remittance_currency']
         empty_field_validator(remittance_currency)
+        return remittance_currency
 
     def clean_remittance_value(self):
         remittance_value = self.cleaned_data['remittance_value']
         empty_field_validator(remittance_value)
+        return remittance_value
 
     def clean_judge(self):
         judge_national_id = self.cleaned_data['judge']
@@ -81,7 +81,7 @@ class NewContractForm(ModelForm):
             raise forms.ValidationError('خطا: داور با این مشخسات در سامانه ثبت نشده است!')
 
     class Meta:
-        model = Contract
+        model = NormalContract
         fields = [
             'src_owner',
             'dst_owner',

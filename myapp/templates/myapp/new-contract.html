@@ -9,7 +9,7 @@
 {% block content %}
     <div class="block-content">
         <h4>اطلاعات قرارداد جدید را وارد کنید</h4>
-        <form method="post" id="login-form" class="myform user-profile-form" action="{% url 'myapp:my_new_contract' %}?user={{ user }}">
+        <form method="post" id="login-form" class="myform user-profile-form" action="{% url 'myapp:my_new_contract' %}?role=user&user={{ user }}&account={{ owner }}">
             {% csrf_token %}
 
             {% for hidden in new_contract_form.hidden_fields %}
@@ -33,9 +33,7 @@
                 </button>
             </div>
 
-
         </form>
-
         <script>
         </script>
     </div>

@@ -10,11 +10,6 @@ SETTLEMENT_TYPE = (
     ('2', 'چند حواله ای'),
 )
 
-TRANSACTION_TYPE = (
-    ('1', 'واریزی'),
-    ('2', 'پرداختی')
-)
-
 OPERATOR_TYPE = (
     ('1', 'کاربر'),
     ('2', 'سیستم')
@@ -119,58 +114,47 @@ class JudgeProfile(models.Model):
 
 
 class Contract(models.Model):
-    # id = models.UUIDField(primary_key=True)
-    src_owner = models.IntegerField()
     dst_owner = models.IntegerField()
     value_in_rial = models.IntegerField()
-    remittance_currency = models.CharField(max_length=40)
     remittance_value = models.IntegerField()
-    settlement_type = models.CharField(max_length=50, choices=SETTLEMENT_TYPE, default='1')
-    judge = models.ForeignKey(JudgeProfile, on_delete=models.SET_NULL, null=True)
     judge_vote = models.CharField(max_length=50, choices=JUDGE_VOTE)
     expire_date = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=CONTRACT_STATUS)
+
+    def judge_vote_verbose(self):
+        return dict(JUDGE_VOTE)[self.judge_vote]
+
+    def status_verbose(self):
+        return dict(CONTRACT_STATUS)[self.status]
+
+    class Meta:
+        abstract = True
+
+
+class NormalContract(Contract):
+    # id = models.UUIDField(primary_key=True)
+    src_owner = models.IntegerField()
+    remittance_currency = models.CharField(max_length=40)
+    settlement_type = models.CharField(max_length=50, choices=SETTLEMENT_TYPE, default='1')
+    judge = models.ForeignKey(JudgeProfile, on_delete=models.SET_NULL, null=True)
 
     def settlement_type_verbose(self):
         return dict(SETTLEMENT_TYPE)[self.settlement_type]
 
-    def judge_vote_verbose(self):
-        return dict(JUDGE_VOTE)[self.judge_vote]
 
-    def status_verbose(self):
-        return dict(CONTRACT_STATUS)[self.status]
-
-
-class Subcontract(models.Model):
-    id = models.IntegerField(primary_key=True)
-    parent = models.ForeignKey(Contract, on_delete=models.CASCADE)
-    dst_owner = models.IntegerField()
-    value_in_rial = models.IntegerField()
-    remittance_value = models.IntegerField()
-    judge_vote = models.CharField(max_length=50, choices=JUDGE_VOTE)
-    expire_date = models.CharField(max_length=50)
-    description = models.CharField(max_length=255)
-    status = models.CharField(max_length=20, choices=CONTRACT_STATUS)
-
-    def judge_vote_verbose(self):
-        return dict(JUDGE_VOTE)[self.judge_vote]
-
-    def status_verbose(self):
-        return dict(CONTRACT_STATUS)[self.status]
+class Subcontract(Contract):
+    # id = models.IntegerField(primary_key=True)
+    parent = models.ForeignKey(NormalContract, on_delete=models.CASCADE)
 
 
 class Transaction(models.Model):
     # id = models.IntegerField(primary_key=True)
     owner = models.IntegerField()
     otherside_owner = models.IntegerField()
-    transaction_type = models.CharField(max_length=50, choices=TRANSACTION_TYPE, default='1')
     value = models.IntegerField()
     operator = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
     operator_type = models.CharField(max_length=50, choices=OPERATOR_TYPE, default='1')
-
-    def transaction_type_verbose(self):
-        return dict(TRANSACTION_TYPE)[self.transaction_type]
 
     def operator_type_verbose(self):
         return dict(OPERATOR_TYPE)[self.operator_type]

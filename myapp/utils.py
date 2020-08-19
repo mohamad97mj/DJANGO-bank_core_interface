@@ -34,8 +34,8 @@ def get_owner(pk):
 
 def get_contract(pk):
     try:
-        return models.Contract.objects.get(pk=pk)
-    except models.Contract.DoesNotExist:
+        return models.NormalContract.objects.get(pk=pk)
+    except models.NormalContract.DoesNotExist:
         raise Http404
 
 

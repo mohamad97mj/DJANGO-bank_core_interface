@@ -35,25 +35,35 @@ class MyNewContractView(APIView):
         user = get_user(national_code)
         owner = get_owner(bank_account_id)
         new_contract_form = forms.NewContractForm(src_owner=owner.bank_account_id)
+        if owner.owner_type == '1':
+            new_contract_form.fields['dst_owner'].label = "شماره حساب صراف"
+        else:
+            new_contract_form.fields['dst_owner'].label = "شماره حساب صادر کننده"
+
         context = {'user': user.national_code, 'owner': owner.bank_account_id, 'new_contract_form': new_contract_form}
         return Response(context, template_name='myapp/new-contract.html')
 
     def post(self, request, format=None):
         data = request.data
         format = request.accepted_renderer.format
-        user = request.query_params['user']
+        national_code = request.query_params['user']
+        bank_account_id = request.query_params['account']
+
+        user = get_user(national_code)
+        owner = get_owner(bank_account_id)
 
         if format == 'html':
             new_contract_form = forms.NewContractForm(data=data, src_owner=data['src_owner'])
-            flag = new_contract_form.is_valid()
             if new_contract_form.is_valid():
                 new_contract = new_contract_form.save(commit=False)
                 new_contract.save()
-                query_param = '?' + 'role=user' + '&' + 'user=' + user + '&' + 'account=' + str(
-                    get_owner(pk=new_contract.src_owner).bank_account_id)
+                query_param = '?' + 'role=user' + '&' + 'user=' + user.national_code + '&' + 'account=' \
+                              + str(owner.bank_account_id)
                 return redirect(reverse('myapp:my_contract_detail', kwargs={'pk': new_contract.id}) + query_param)
             else:
-                context = {'new_contract_form': new_contract_form}
+                context = {'user': user.national_code, 'owner': owner.bank_account_id,
+                           'new_contract_form': new_contract_form}
+
                 return render(request, 'myapp/new-contract.html', context)
             # return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:  # TODO test later
@@ -69,9 +79,9 @@ class MyContractListView(APIView):
     renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer,)
 
     def get_user_list_of_contracts(self, instance):
-        queryset = models.Contract.objects.none()
+        queryset = models.NormalContract.objects.none()
         for owner in instance.owners.all():
-            queryset = queryset | models.Contract.objects.filter(
+            queryset = queryset | models.NormalContract.objects.filter(
                 Q(dst_owner=owner.bank_account_id) | Q(src_owner=owner.bank_account_id))
 
         return queryset
@@ -124,18 +134,26 @@ class MyContractDetailView(APIView):
                 contract = get_subcontract(pk)
                 if format == 'html':
                     contract_detail_form = forms.SubcontractDetailForm(instance=contract)
+                    contract_detail_form.fields['dst_owner'].label = "شماره حساب صراف"
 
             else:
                 contract = get_contract(pk)
                 if format == 'html':
                     contract_detail_form = forms.ContractDetailForm(instance=contract)
+                    if owner.owner_type == '1':
+                        contract_detail_form.fields['dst_owner'].label = "شماره حساب صراف"
+                    else:
+                        if owner.bank_account_id == contract.src_owner:
+                            contract_detail_form.fields['dst_owner'].label = 'شماره حساب صادر کننده'
+                        else:
+                            contract_detail_form.fields['dst_owner'].label = 'شماره حساب وارد کننده'
 
             if format == 'html':
                 context = {'role': role, "user": user.national_code, "owner": owner.bank_account_id,
                            "owner_type": owner.owner_type,
                            'contract': contract.id, 'contract_detail_form': contract_detail_form}
 
-            if owner.owner_type == '1':
+            if owner.owner_type == '2':
                 subcontracts = contract.subcontract_set.all()
                 if format == 'html':
                     context['subcontracts'] = subcontracts

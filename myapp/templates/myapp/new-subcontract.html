@@ -9,7 +9,7 @@
 {% block content %}
     <div class="block-content">
         <h4>اطلاعات قرارداد مربوطه جدید را وارد کنید</h4>
-        <form method="post" id="login-form" class="myform user-profile-form" action="">
+        <form method="post" id="login-form" class="myform user-profile-form" action="{% url 'myapp:my_new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}">
             {% csrf_token %}
 
             {% for hidden in new_subcontract_form.hidden_fields %}

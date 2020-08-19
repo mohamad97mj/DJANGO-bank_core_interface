@@ -29,13 +29,15 @@
                     {% endfor %}
                 </div>
             {% endfor %}
+
+
         </form>
 
         <br/>
         <br/>
         <br/>
 
-        {% if owner_type == "1" %}
+        {% if owner_type == "2" %}
             <h4>لیست قرارداد های مربوطه</h4>
             <form method="post" id="login-form" class="myform user-contracts-list-form" action="">
                 {% csrf_token %}
@@ -45,7 +47,7 @@
                         <thead>
                         <tr>
                             <th scope="col">شناسه</th>
-                            <th scope="col">حساب صادر کننده</th>
+                            <th scope="col">شماره حساب صادر کننده</th>
                             <th scope="col">مبلغ به ریال</th>
                             <th scope="col">مبلغ حواله</th>
                             <th scope="col">رای داور</th>
@@ -73,18 +75,18 @@
                     </table>
                 </div>
             </form>
+            <div class="text-center" style="padding:10px ">
+                <a class="btn mybutton"
+                   href="{% url 'myapp:my_new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><span
+                        class="color-white">ثبت قرار داد جدید</span></a>
+            </div>
+
         {% endif %}
 
+
+
+
         <script>
-            $(document).ready(function () {
-                var tmp =
-                {{ owner_type }}
-                if (tmp == '3') {
-                    $('label[for="id_dst_owner"]').text("شماره حساب صراف")
-                    $('#id_dst_owner').val(
-                        {{ contract_detail_form.instance.parent.dst_owner }})
-                }
-            })
         </script>
     </div>
 {% endblock %}

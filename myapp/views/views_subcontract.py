@@ -8,19 +8,36 @@ class SubcontractListView(generics.ListAPIView):
     pass
 
 
-class NewSubcontractView(APIView):
-    renderer_classes = [renderers.TemplateHTMLRenderer]
+class MyNewSubcontractView(APIView):
+    renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer,)
 
     def get(self, request, format=None):
+        national_code = request.GET.get('user', '')
+        bank_account_id = request.GET.get('account', '')
+        contract_id = request.GET.get('contract', '')
+        user = get_user(national_code)
+        owner = get_owner(bank_account_id)
+        contract = get_contract(contract_id)
         new_subcontract_form = forms.NewSubcontractForm()
-        context = {'new_subcontract_form': new_subcontract_form}
+        context = {'new_subcontract_form': new_subcontract_form, 'user': user.national_code,
+                   'owner': owner.bank_account_id, 'contract': contract.id}
         return Response(context, template_name='myapp/new-subcontract.html')
 
     # TODO define post method
 
+    def post(self, request, format=None):
+        data = request.data
+        format = request.accepted_renderer.format
+        national_code = request.query_params['user']
+        bank_account_id = request.query_params['account']
+        contract_id = request.query_params['contract']
 
-class MyNewSubcontractView(APIView):
-    pass
+        user = get_user(national_code)
+        owner = get_owner(bank_account_id)
+        contract = get_contract(contract_id)
+
+
+        pass
 
 
 class MySubcontractListView(APIView):

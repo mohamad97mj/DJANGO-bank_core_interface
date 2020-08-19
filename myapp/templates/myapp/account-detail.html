@@ -38,7 +38,7 @@
                             {% for subcontract in contracts %}
                                 <tr>
                                     <th scope="row">
-                                        <a href="{% url 'myapp:my_contract_detail' subcontract.id %}?role-user&user={{ user }}&account={{owner|addstr:"&format=html"}}"><u>{{ subcontract.id }}</u></a>
+                                        <a href="{% url 'myapp:my_contract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner|addstr:"&format=html" }}"><u>{{ subcontract.id }}</u></a>
                                     </th>
 
                                     <td>{{ subcontract.parent.dst_owner }}</td>
@@ -60,9 +60,8 @@
                         <thead>
                         <tr>
                             <th scope="col">شناسه</th>
-                            {% if owner_type == '1' %}
-                                <th scope="col">نوع حساب طرف دیگر قرارداد</th>
-                                <th scope="col">شماره حساب طرف دیگر قرارداد</th>
+                            {% if owner_type == '2' %}
+                                <th scope="col">شماره حساب وارد کننده</th>
                             {% else %}
                                 <th scope="col">شماره حساب صراف</th>
                             {% endif %}
@@ -82,17 +81,11 @@
                         {% for contract in contracts %}
                             <tr>
                                 <th scope="row"><a
-                                        href="{% url 'myapp:my_contract_detail' contract.id %}?role-user&user={{ user }}&account={{ owner|addstr:"&format=html" }}"><u>{{ contract.id }}</u></a>
+                                        href="{% url 'myapp:my_contract_detail' contract.id %}?role=user&user={{ user }}&account={{ owner|addstr:"&format=html" }}"><u>{{ contract.id }}</u></a>
                                 </th>
                                 {% if owner == contract.src_owner %}
-                                    {% if owner_type == '1' %}
-                                        <td>صادر کننده</td>
-                                    {% endif %}
                                     <td>{{ contract.dst_owner }}</td>
                                 {% else %}
-                                    {% if owner_type == '1' %}
-                                        <td>وارد کننده</td>
-                                    {% endif %}
                                     <td>{{ contract.src_owner }}</td>
                                 {% endif %}
                                 <td>{{ contract.value_in_rial }}</td>
@@ -113,7 +106,9 @@
 
             {% if  owner_type != '3' %}
                 <div class="text-center" style="padding:10px ">
-                    <a class="btn mybutton" href="{% url 'myapp:my_new_contract' %}?role=user&user={{ user }}&account={{ owner }}"><span class="color-white">ثبت قرار داد جدید</span></a>
+                    <a class="btn mybutton"
+                       href="{% url 'myapp:my_new_contract' %}?role=user&user={{ user }}&account={{ owner }}"><span
+                            class="color-white">ثبت قرار داد جدید</span></a>
                 </div>
             {% endif %}
 
@@ -132,7 +127,7 @@
                     <thead>
                     <tr>
                         <th scope="col">شناسه</th>
-                        {% if owner_type == '1' %}
+                        {% if owner_type == '2' %}
                             <th scope="col">نوع حساب طرف دیگر تراکنش</th>
                             <th scope="col">شماره حساب طرف دیگر تراکنش</th>
                         {% else %}
@@ -151,19 +146,29 @@
                                     href="{% url 'myapp:my_transaction_detail' transaction.id %}?role=user&user={{ user }}&account={{ owner }}"><u>{{ transaction.id }}</u></a>
                             </th>
                             {% if owner == transaction.owner %}
-                                {% if owner_type == '1' %}
+                                {% if owner_type == '2' %}
                                     <td>صادر کننده</td>
                                 {% endif %}
                                 <td>{{ transaction.otherside_owner }}</td>
                             {% else %}
-                                {% if owner_type == '1' %}
+                                {% if owner_type == '2' %}
                                     <td>وارد کننده</td>
                                 {% endif %}
                                 <td>{{ transaction.owner }}</td>
                             {% endif %}
 
+                            {% if owner_type == '1' %}
+                                <td>پرداختی</td>
+                            {% elif owner_type == '2' %}
+                                {% if owner == transaction.owner %}
+                                    <td>پرداختی</td>
+                                {% else %}
+                                    <td>واریزی</td>
+                                {% endif %}
+                            {% else %}
+                                <td>واریزی</td>
+                            {% endif %}
 
-                            <td>{{ transaction.transaction_type_verbose }}</td>
                             <td>{{ transaction.value }}</td>
                             <td>{{ transaction.operator_type_verbose }}</td>
                             <td>{{ transaction.operator }}</td>
@@ -174,7 +179,9 @@
             </div>
             {% if  owner_type != '3' %}
                 <div class="text-center" style="padding:10px ">
-                    <a class="btn mybutton" href="{% url 'myapp:my_new_transaction'%}?role=user&user={{ user }}&account={{ owner }}"><span class="color-white">انجام تراکنش جدید</span></a>
+                    <a class="btn mybutton"
+                       href="{% url 'myapp:my_new_transaction' %}?role=user&user={{ user }}&account={{ owner }}"><span
+                            class="color-white">انجام تراکنش جدید</span></a>
                 </div>
             {% endif %}
 

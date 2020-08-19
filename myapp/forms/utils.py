@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm, TextInput, Form
-from myapp.models import AuthProfile, UserProfile, JudgeProfile, Transaction, Contract, Subcontract
+from myapp.models import AuthProfile, UserProfile, JudgeProfile, Transaction, NormalContract, Subcontract
 from django.utils.translation import gettext_lazy as _
 from functools import partial
 from myapp.utils import *
@@ -15,6 +15,11 @@ LOGIN_ROLES = [
     ('user', 'کاربر حساب'),
     ('judge', 'داور'),
 ]
+
+TRANSACTION_TYPE = (
+    ('1', 'پرداختی'),
+    ('2', 'واریزی'),
+)
 
 
 def empty_field_validator(field_value):

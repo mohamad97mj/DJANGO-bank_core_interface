@@ -46,7 +46,7 @@ class MyOwnerDetailView(APIView):
     renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer,)
 
     def get_contracts_list(self, instance):
-        queryset = models.Contract.objects.filter(
+        queryset = models.NormalContract.objects.filter(
             Q(src_owner=instance.bank_account_id) | Q(dst_owner=instance.bank_account_id))
         return queryset
 
