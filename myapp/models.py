@@ -130,6 +130,7 @@ class Contract(models.Model):
 
     class Meta:
         abstract = True
+#     just for git
 
 
 class NormalContract(Contract):
