@@ -1,35 +1,36 @@
-drop table django_migrations;
+drop table if exists django_migrations;
 
-drop table auth_group_permissions;
+drop table if exists auth_group_pearmissions;
 
-drop table myapp_userprofile_owners;
+drop table if exists myapp_userprofile_owners;
 
-drop table myapp_transaction;
+drop table if exists myapp_transaction;
 
-drop table myapp_userprofile;
+drop table if exists myapp_userprofile;
 
-drop table myapp_subcontract;
+drop table if exists myapp_subcontract;
 
-drop table myapp_normalcontract;
+drop table if exists myapp_normalcontract;
 
-drop table myapp_judgeprofile;
+drop table if exists myapp_judgeprofile;
 
-drop table myapp_owner;
+drop table if exists myapp_owner;
 
-drop table myapp_authprofile_groups;
+drop table if exists myapp_authprofile_groups;
 
-drop table auth_group;
+drop table if exists auth_group;
 
-drop table myapp_authprofile_user_permissions;
+drop table if exists myapp_authprofile_user_permissions;
 
-drop table auth_permission;
+drop table if exists auth_permission;
 
-drop table django_admin_log;
+drop table if exists django_admin_log;
 
-drop table django_content_type;
+drop table if exists django_content_type;
 
-drop table authtoken_token;
+drop table if exists authtoken_token;
 
-drop table myapp_authprofile;
+drop table if exists myapp_authprofile;
 
-drop table django_session;
+drop table if exists django_session;
+
