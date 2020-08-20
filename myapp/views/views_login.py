@@ -10,12 +10,12 @@ class LoginView(APIView):
         return render(request, 'myapp/login.html', context)
 
     def post(self, request):
-        print("post request received")
+        # print("post request received")
 
         login_form = forms.LoginForm(request.data)
         if login_form.is_valid():
             if request.data['role'] == 'user':
-                print(request.data)
+                # print(request.data)
                 return redirect(
                     reverse('myapp:my_user_detail', kwargs={'pk': request.data['username']}))
             else:

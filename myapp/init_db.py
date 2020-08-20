@@ -77,3 +77,7 @@ transaction = Transaction(
 )
 
 transaction.save()
+
+user.owners.add(owner1)
+user.owners.add(owner2)
+user.owners.add(owner3)
