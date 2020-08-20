@@ -5,11 +5,11 @@ class SubcontractDetailForm(ModelForm):
     judge = forms.CharField(max_length=50)
     remittance_currency = forms.CharField(max_length=40)
     src_owner = forms.IntegerField()
+    dst_owner = forms.CharField(max_length=50, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['id'].widget.attrs['disabled'] = True
         self.fields['dst_owner'].widget.attrs['disabled'] = True
         self.fields['value_in_rial'].widget.attrs['disabled'] = True
         self.fields['remittance_value'].widget.attrs['disabled'] = True

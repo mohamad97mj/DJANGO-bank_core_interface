@@ -1,4 +1,4 @@
-from myapp.utils import *
+from myapp.views.utils import *
 from myapp import forms
 
 
@@ -36,8 +36,27 @@ class MyNewSubcontractView(APIView):
         owner = get_owner(bank_account_id)
         contract = get_contract(contract_id)
 
+        if format == 'html':
+            new_subcontract_form = forms.NewSubcontractForm(data=data)
+            if new_subcontract_form.is_valid():
+                new_subcontract = new_subcontract_form.save(commit=False)
+                new_subcontract.parent = contract
+                new_subcontract.save()
+                query_param = '?' + 'role=user' + '&' + 'user=' + user.national_code + '&' + 'account=' \
+                              + str(owner.bank_account_id) + "&" + 'contract=' + str(contract.id)
+                return redirect(reverse('myapp:my_subcontract_detail', kwargs={'pk': new_subcontract.id}) + query_param)
+            else:
+                context = {'user': user.national_code, 'owner': owner.bank_account_id, 'contract': contract.id,
+                           'new_subcontract_form': new_subcontract_form}
 
-        pass
+                return render(request, 'myapp/new-subcontract.html', context)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:  # TODO test later
+            serializer = serializers.ContractSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MySubcontractListView(APIView):
@@ -62,7 +81,7 @@ class MySubcontractDetailView(APIView):
                 bank_account_id = request.GET.get('account', '')
                 user = get_user(national_code)
                 owner = get_owner(bank_account_id)
-                subcontract_detail_form.add_exporter_fields()
+                # subcontract_detail_form.add_exporter_fields()
                 context = {'user': user.national_code, 'owner': owner.bank_account_id, 'contract': contract.id,
                            'subcontract_detail_form': subcontract_detail_form}
 

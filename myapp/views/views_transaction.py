@@ -1,4 +1,4 @@
-from myapp.utils import *
+from myapp.views.utils import *
 from myapp import forms
 
 
@@ -35,7 +35,7 @@ class MyNewTransactionView(APIView):
         bank_account_id = request.GET.get('account', '')
         user = get_user(national_code)
         owner = get_owner(bank_account_id)
-        new_transaction_form = forms.NewTransactionForm(owner=owner.bank_account_id, operator=user.national_code)
+        new_transaction_form = forms.NewTransactionForm(owner=owner, operator=user.national_code)
 
         context = {'user': user.national_code, 'owner': owner.bank_account_id,
                    'new_transaction_form': new_transaction_form}
@@ -52,7 +52,7 @@ class MyNewTransactionView(APIView):
 
         if format == 'html':
             new_transaction_form = forms.NewTransactionForm(data=data,
-                                                            owner=data['owner'],
+                                                            owner=get_owner(data['owner']),
                                                             operator=data['operator'])
             if new_transaction_form.is_valid():
                 new_transaction = new_transaction_form.save(commit=False)
@@ -99,7 +99,7 @@ class MyTransactionDetailView(APIView):
                 transaction_detail_form.fields['transaction_type'].initial = '2'
         else:
             if owner.bank_account_id == transaction.owner:
-                transaction_detail_form.fields['otherside_owner'].label = 'شماره حساب صادر کننده'
+                transaction_detail_form.fields['otherside_owner'].label = 'شماره حساب صادرکننده'
                 transaction_detail_form.initial['otherside_owner'] = transaction.otherside_owner
                 transaction_detail_form.fields['transaction_type'].initial = '1'
             else:

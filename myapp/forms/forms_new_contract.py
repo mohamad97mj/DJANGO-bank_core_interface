@@ -3,8 +3,9 @@ from .utils import *
 
 class NewContractForm(ModelForm):
     judge = forms.CharField(max_length=50, required=False)
+    dst_owner = forms.CharField(max_length=50, required=False)
 
-    def __init__(self, src_owner,  *args, **kwargs):
+    def __init__(self, src_owner=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['expire_date'].widget.attrs['placeholder'] = "1400/11/05"
         self.fields['dst_owner'].required = False
@@ -12,13 +13,17 @@ class NewContractForm(ModelForm):
         self.fields['remittance_currency'].required = False
         self.fields['remittance_value'].required = False
         self.fields['judge'].label = 'داور'
+        self.fields['dst_owner'].label = 'شماره حساب صراف'
         self.fields['expire_date'].required = False
         self.fields['description'].required = False
+        self.fields['src_owner'].widget = forms.HiddenInput()
+        self.fields['src_owner'].initial = src_owner
+        self.src_owner = src_owner
 
     def save(self, commit=True):
         m = super(NewContractForm, self).save(commit=False)
         m.judge_vote = '0'
-        m.status = '1'
+        m.status = '11'
         if commit:
             m.save()
         return m
@@ -27,27 +32,16 @@ class NewContractForm(ModelForm):
 
         dst_owner_bank_account_id = self.cleaned_data['dst_owner']
         empty_field_validator(dst_owner_bank_account_id)
-        src_owner = get_owner(self.src_owner)
 
         try:
-            dst_owner = models.Owner.objects.get(pk=dst_owner_bank_account_id)
-            if src_owner.owner_type == '1':
-                if dst_owner.owner_type == '2':
-                    return dst_owner.bank_account_id
-                else:
-                    raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
-
-            elif src_owner.owner_type == '2':
-                if dst_owner.owner_type == '3':
-                    return dst_owner.bank_account_id
-                else:
-                    raise forms.ValidationError("خطا: صادر کننده با این مشخصات در صامانه ثبت نشده است!")
-
-        except models.Owner.DoesNotExist:
-            if src_owner.owner_type == '1':
-                raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
+            dst_owner = Owner.objects.get(pk=dst_owner_bank_account_id)
+            if dst_owner.owner_type == '2':
+                return dst_owner
             else:
-                raise forms.ValidationError("خطا: صادر کننده با این مشخصات در سامانه ثبت نشده است!")
+                raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
+
+        except Owner.DoesNotExist:
+            raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
 
     def clean_expire_date(self):
         expire_date = self.cleaned_data['expire_date']
@@ -76,9 +70,9 @@ class NewContractForm(ModelForm):
         judge_national_id = self.cleaned_data['judge']
         empty_field_validator(judge_national_id)
         try:
-            return models.JudgeProfile.objects.get(pk=judge_national_id)
-        except models.JudgeProfile.DoesNotExist:
-            raise forms.ValidationError('خطا: داور با این مشخسات در سامانه ثبت نشده است!')
+            return JudgeProfile.objects.get(pk=judge_national_id)
+        except JudgeProfile.DoesNotExist:
+            raise forms.ValidationError('خطا: داور با این مشخصات در سامانه ثبت نشده است!')
 
     class Meta:
         model = NormalContract
@@ -94,13 +88,11 @@ class NewContractForm(ModelForm):
             'description'
         ]
         labels = {
-            'dst_owner': 'شماره حساب مقصد',
             'value_in_rial': 'مبلغ به ریال',
             'remittance_currency': 'ارز حواله',
             'remittance_value': 'مبلغ حواله',
             'settlement_type': 'نوع تسویه',
             'expire_date': 'تاریخ اعتبار',
-            'judge': 'شناسه ملی داور',
             'description': 'توضیحات',
         }
         help_texts = {

@@ -14,11 +14,11 @@ class LoginForm(Form):
         role = self.cleaned_data['role']
         if role == 'user':
             try:
-                return models.UserProfile.objects.get(pk=username).national_code
-            except models.UserProfile.DoesNotExist:
+                return UserProfile.objects.get(pk=username).national_code
+            except UserProfile.DoesNotExist:
                 raise forms.ValidationError("خطا: کاربر با این مشخصات در سامانه ثبت نشده است!")
         else:
             try:
-                return models.JudgeProfile.objects.get(pk=username).national_id
-            except models.JudgeProfile.DoesNotExist:
+                return JudgeProfile.objects.get(pk=username).national_id
+            except JudgeProfile.DoesNotExist:
                 raise forms.ValidationError("خطا: داور با این مشخصات در سامانه ثبت نشده است!")

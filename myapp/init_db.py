@@ -4,7 +4,6 @@ from myapp.models import Owner, UserProfile, JudgeProfile, NormalContract, Subco
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mydjango.settings")
 
-
 # def run():
 user = UserProfile(
     '0924043687',
@@ -41,9 +40,9 @@ judge = JudgeProfile(
 
 judge.save()
 
-contract = NormalContract(
-    src_owner=123123123,
-    dst_owner=456456456,
+normalcontract = NormalContract(
+    src_owner=owner1,
+    dst_owner=owner2,
     value_in_rial='4000000',
     remittance_currency='دلار',
     remittance_value='20',
@@ -55,29 +54,26 @@ contract = NormalContract(
     status='1',
 )
 
-contract.save()
+normalcontract.save()
 
 subcontract = Subcontract(
-    '111110',
-    '111111',
-    789789789,
-    '4000000',
-    '20',
-    '1',
-    datetime.datetime.now(),
-    'یک زیر معامله برای تست',
-    '1',
+    parent=normalcontract,
+    dst_owner=owner3,
+    value_in_rial='4000000',
+    remittance_value='20',
+    judge_vote='1',
+    expire_date=datetime.datetime.now(),
+    description='یک زیر معامله برای تست',
+    status='1',
 )
 
 subcontract.save()
 transaction = Transaction(
-    '2222',
-    123123123,
-    456456456,
-    '1',
-    1000000,
-    '0924043687',
-    '1',
+    owner=owner1,
+    otherside_owner=owner2,
+    value=1000000,
+    operator=user,
+    operator_type='1',
 )
 
 transaction.save()

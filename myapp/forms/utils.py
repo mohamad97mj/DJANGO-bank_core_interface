@@ -1,9 +1,6 @@
 from django import forms
-from django.forms import ModelForm, TextInput, Form
-from myapp.models import AuthProfile, UserProfile, JudgeProfile, Transaction, NormalContract, Subcontract
-from django.utils.translation import gettext_lazy as _
-from functools import partial
-from myapp.utils import *
+from myapp.models import *
+from django.forms import Form, ModelForm
 import datetime
 
 # DateInput = partial(forms.DateInput, {'class': 'datepicker'})

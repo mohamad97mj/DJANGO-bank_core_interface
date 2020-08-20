@@ -37,54 +37,89 @@
         <br/>
         <br/>
 
-        {% if owner_type == "2" %}
-            <h4>لیست قرارداد های مربوطه</h4>
-            <form method="post" id="login-form" class="myform user-contracts-list-form" action="">
-                {% csrf_token %}
+        {% if owner_type == '2' or owner_type == '3' %}
+            {% if status == '21' or status == '22' %}
+                <form style="margin-top: -75px; margin-bottom: 25px;" method="post"
+                      action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=end">
+                    <div style="margin-top: 20px">
+                        <button class="btn mybutton"
+                                type="submit"
+                        ><span>{{ sat }}پایان معامله</span></button>
+                    </div>
+                </form>
+            {% endif %}
 
-                <div class="table-responsive">
-                    <table style="margin: auto" class="center table table-striped">
-                        <thead>
-                        <tr>
-                            <th scope="col">شناسه</th>
-                            <th scope="col">شماره حساب صادر کننده</th>
-                            <th scope="col">مبلغ به ریال</th>
-                            <th scope="col">مبلغ حواله</th>
-                            <th scope="col">رای داور</th>
-                            <th scope="col">تاریخ اعتبار</th>
-                            <th scope="col">توضیحات</th>
-                            <th scope="col">وضعیت</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for subcontract in subcontracts %}
+            {% if  status == '11' or status == '13' %}
+                <form style="margin-top: -50px" method="post"
+                      action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=confirm">
+                    <div class="form-check form-check-inline">
+                        <label for="{{ field.id_for_label }}">آیا قرار داد را تایید می کنید؟</label>
+                        {{ field|add_class:'form-control' }}
+                        <label class="form-check-label" for="id_radio1">بله</label>
+                        <input style="display: inline" class="form-check-input" type="radio" name="isconfirmed"
+                               id="id_radio1"
+                               value="yes" checked="checked">
+                        <label class="form-check-label" for="id_radio2">خیر</label>
+                        <input style="display: inline" class="form-check-input" type="radio" name="isconfirmed"
+                               id="id_radio2"
+                               value="no">
+                    </div>
+                    <div style="margin-top: 20px">
+                        <button class="btn mybutton"
+                                type="submit"
+                        ><span>ثبت</span></button>
+                    </div>
+                </form>
+            {% elif owner_type == '2' and status != '23' %}
+                <h4>لیست قرارداد های مربوطه</h4>
+                <form method="post" id="login-form" class="myform user-contracts-list-form" action="">
+                    {% csrf_token %}
+
+                    <div class="table-responsive">
+                        <table style="margin: auto" class="center table table-striped">
+                            <thead>
                             <tr>
-                                <th scope="row">
-                                    <a href="{% url 'myapp:my_subcontract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><u>{{ subcontract.id }}</u></a>
-                                </th>
-                                <td>{{ subcontract.dst_owner }}</td>
-                                <td>{{ subcontract.value_in_rial }}</td>
-                                <td>{{ subcontract.remittance_value }}</td>
-                                <td>{{ subcontract.judge_vote_verbose }}</td>
-                                <td>{{ subcontract.expire_date }}</td>
-                                <td>{{ subcontract.description }}</td>
-                                <td>{{ subcontract.status_verbose }}</td>
+                                <th scope="col">شناسه</th>
+                                <th scope="col">شماره حساب صادرکننده</th>
+                                <th scope="col">مبلغ به ریال</th>
+                                <th scope="col">مبلغ حواله</th>
+                                <th scope="col">رای داور</th>
+                                <th scope="col">تاریخ اعتبار</th>
+                                <th scope="col">توضیحات</th>
+                                <th scope="col">وضعیت</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% for subcontract in subcontracts %}
+                                <tr>
+                                    <th scope="row">
+                                        <a href="{% url 'myapp:my_subcontract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><u>{{ subcontract.id }}</u></a>
+                                    </th>
+                                    <td>{{ subcontract.dst_owner }}</td>
+                                    <td>{{ subcontract.value_in_rial }}</td>
+                                    <td>{{ subcontract.remittance_value }}</td>
+                                    <td>{{ subcontract.judge_vote_verbose }}</td>
+                                    <td>{{ subcontract.expire_date }}</td>
+                                    <td>{{ subcontract.description }}</td>
+                                    <td>{{ subcontract.status_verbose }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+                <div class="text-center" style="padding:10px ">
+                    <a class="btn mybutton"
+                       href="{% url 'myapp:my_new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><span
+                            class="color-white">ثبت قرار داد جدید</span></a>
                 </div>
-            </form>
-            <div class="text-center" style="padding:10px ">
-                <a class="btn mybutton"
-                   href="{% url 'myapp:my_new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><span
-                        class="color-white">ثبت قرار داد جدید</span></a>
-            </div>
+
+            {% endif %}
+
+
+
 
         {% endif %}
-
-
-
 
         <script>
         </script>

@@ -83,7 +83,8 @@
                                 <th scope="row"><a
                                         href="{% url 'myapp:my_contract_detail' contract.id %}?role=user&user={{ user }}&account={{ owner|addstr:"&format=html" }}"><u>{{ contract.id }}</u></a>
                                 </th>
-                                {% if owner == contract.src_owner %}
+
+                                {% if owner == contract.src_owner.bank_account_id %}
                                     <td>{{ contract.dst_owner }}</td>
                                 {% else %}
                                     <td>{{ contract.src_owner }}</td>
@@ -104,7 +105,7 @@
                 </div>
             {% endif %}
 
-            {% if  owner_type != '3' %}
+            {% if  owner_type == '1' %}
                 <div class="text-center" style="padding:10px ">
                     <a class="btn mybutton"
                        href="{% url 'myapp:my_new_contract' %}?role=user&user={{ user }}&account={{ owner }}"><span
@@ -147,7 +148,7 @@
                             </th>
                             {% if owner == transaction.owner %}
                                 {% if owner_type == '2' %}
-                                    <td>صادر کننده</td>
+                                    <td>صادرکننده</td>
                                 {% endif %}
                                 <td>{{ transaction.otherside_owner }}</td>
                             {% else %}

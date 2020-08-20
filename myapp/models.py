@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+import datetime
 
 import uuid
 
@@ -24,11 +25,19 @@ JUDGE_VOTE = (
 OWNER_TYPE = (
     ('1', 'وارد کننده'),
     ('2', 'صراف'),
-    ('3', 'صادر کننده'),
+    ('3', 'صادرکننده'),
 )
 
 CONTRACT_STATUS = (
-    ('1', 'در انتظار تایید طرف دیگر قرارداد'),
+    ('11', 'در انتظار تایید صراف'),
+    ('12', 'در انتظار تایید صادرکننده(ها)'),
+    ('13', 'در انتظار تایید صادرکننده'),
+    ('21', 'تایید شده و در حال انجام توسط صراف'),
+    ('22', 'تایید شده و درحال انجام توسط صادرکننده'),
+    ('23', 'رد شده توسط صراف'),
+    ('24', 'رد شده توسط صادرکننده'),
+    ('31', 'پایان معامله توسط صراف'),
+    ('32', 'پایان معامله توسط صادر کننده'),
     ('2', 'در انتظار داوری'),
     ('3', 'داوری شده است'),
 )
@@ -94,6 +103,9 @@ class Owner(models.Model):
     def owner_type_verbose(self):
         return dict(OWNER_TYPE)[self.owner_type]
 
+    def __str__(self):
+        return str(self.bank_account_id)
+
 
 class UserProfile(models.Model):
     national_code = models.CharField(max_length=255, primary_key=True)
@@ -114,7 +126,10 @@ class JudgeProfile(models.Model):
 
 
 class Contract(models.Model):
-    dst_owner = models.IntegerField()
+    dst_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
+                                  , related_name="%(app_label)s_%(class)s_dst_owner"
+                                  , related_query_name="%(app_label)s_%(class)ss")
+
     value_in_rial = models.IntegerField()
     remittance_value = models.IntegerField()
     judge_vote = models.CharField(max_length=50, choices=JUDGE_VOTE)
@@ -130,12 +145,16 @@ class Contract(models.Model):
 
     class Meta:
         abstract = True
+
+
 #     just for git
 
 
 class NormalContract(Contract):
-    # id = models.UUIDField(primary_key=True)
-    src_owner = models.IntegerField()
+    src_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
+                                  , related_name="%(app_label)s_%(class)s_src_owner"
+                                  , related_query_name="%(app_label)s_%(class)ss")
+
     remittance_currency = models.CharField(max_length=40)
     settlement_type = models.CharField(max_length=50, choices=SETTLEMENT_TYPE, default='1')
     judge = models.ForeignKey(JudgeProfile, on_delete=models.SET_NULL, null=True)
@@ -145,17 +164,16 @@ class NormalContract(Contract):
 
 
 class Subcontract(Contract):
-    # id = models.IntegerField(primary_key=True)
     parent = models.ForeignKey(NormalContract, on_delete=models.CASCADE)
 
 
 class Transaction(models.Model):
-    # id = models.IntegerField(primary_key=True)
-    owner = models.IntegerField()
-    otherside_owner = models.IntegerField()
+    owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="owner")
+    otherside_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="otherside_owner")
     value = models.IntegerField()
     operator = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
     operator_type = models.CharField(max_length=50, choices=OPERATOR_TYPE, default='1')
+    datetime = models.CharField(max_length=50)
 
     def operator_type_verbose(self):
         return dict(OPERATOR_TYPE)[self.operator_type]

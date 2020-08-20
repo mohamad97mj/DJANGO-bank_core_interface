@@ -1,4 +1,4 @@
-from myapp.utils import *
+from myapp.views.utils import *
 from myapp import forms
 
 
@@ -34,11 +34,7 @@ class MyNewContractView(APIView):
         bank_account_id = request.GET.get('account', '')
         user = get_user(national_code)
         owner = get_owner(bank_account_id)
-        new_contract_form = forms.NewContractForm(src_owner=owner.bank_account_id)
-        if owner.owner_type == '1':
-            new_contract_form.fields['dst_owner'].label = "شماره حساب صراف"
-        else:
-            new_contract_form.fields['dst_owner'].label = "شماره حساب صادر کننده"
+        new_contract_form = forms.NewContractForm(src_owner=owner)
 
         context = {'user': user.national_code, 'owner': owner.bank_account_id, 'new_contract_form': new_contract_form}
         return Response(context, template_name='myapp/new-contract.html')
@@ -53,7 +49,7 @@ class MyNewContractView(APIView):
         owner = get_owner(bank_account_id)
 
         if format == 'html':
-            new_contract_form = forms.NewContractForm(data=data, src_owner=data['src_owner'])
+            new_contract_form = forms.NewContractForm(data=data)
             if new_contract_form.is_valid():
                 new_contract = new_contract_form.save(commit=False)
                 new_contract.save()
@@ -134,6 +130,7 @@ class MyContractDetailView(APIView):
                 contract = get_subcontract(pk)
                 if format == 'html':
                     contract_detail_form = forms.SubcontractDetailForm(instance=contract)
+                    contract_detail_form.add_exporter_fields()
                     contract_detail_form.fields['dst_owner'].label = "شماره حساب صراف"
 
             else:
@@ -143,15 +140,14 @@ class MyContractDetailView(APIView):
                     if owner.owner_type == '1':
                         contract_detail_form.fields['dst_owner'].label = "شماره حساب صراف"
                     else:
-                        if owner.bank_account_id == contract.src_owner:
-                            contract_detail_form.fields['dst_owner'].label = 'شماره حساب صادر کننده'
-                        else:
-                            contract_detail_form.fields['dst_owner'].label = 'شماره حساب وارد کننده'
+                        contract_detail_form.fields['dst_owner'].label = 'شماره حساب وارد کننده'
+                        contract_detail_form.initial['dst_owner'] = contract.src_owner
 
             if format == 'html':
                 context = {'role': role, "user": user.national_code, "owner": owner.bank_account_id,
                            "owner_type": owner.owner_type,
-                           'contract': contract.id, 'contract_detail_form': contract_detail_form}
+                           'contract': contract.id, 'contract_detail_form': contract_detail_form,
+                           'status': contract.status}
 
             if owner.owner_type == '2':
                 subcontracts = contract.subcontract_set.all()
@@ -184,3 +180,68 @@ class MyContractDetailView(APIView):
                 serializer = serializers.ContractSerializer(contract)
                 data = serializer.data
                 return Response(data)
+
+    def post(self, request, pk, format=None):
+        role = request.GET.get('role', '')
+        format = request.accepted_renderer.format
+
+        if role == 'user':
+            national_code = request.GET.get('user', '')
+            bank_account_id = request.GET.get('account', '')
+            action = request.GET.get('action')
+
+            user = get_user(pk=national_code)
+            owner = get_owner(pk=bank_account_id)
+
+            if owner.owner_type == '3':
+                contract = get_subcontract(pk)
+                if action == 'confirm':
+                    if request.data['isconfirmed'] == 'yes':
+                        contract.status = '22'
+                    elif request.data['isconfirmed'] == 'no':
+                        contract.status = '24'
+
+                else:
+                    contract.status = '32'
+                contract.save()
+                if format == 'html':
+                    contract_detail_form = forms.SubcontractDetailForm(instance=contract)
+                    contract_detail_form.add_exporter_fields()
+                    contract_detail_form.fields['dst_owner'].label = "شماره حساب صراف"
+
+            else:
+                contract = get_contract(pk)
+                if action == 'confirm':
+                    if request.data['isconfirmed'] == 'yes':
+                        contract.status = '21'
+                    elif request.data['isconfirmed'] == 'no':
+                        contract.status = '22'
+                else:
+                    contract.status = '31'
+
+                contract.save()
+                if format == 'html':
+                    contract_detail_form = forms.ContractDetailForm(instance=contract)
+                    contract_detail_form.fields['dst_owner'].label = 'شماره حساب وارد کننده'
+                    contract_detail_form.initial['dst_owner'] = contract.src_owner
+
+            if format == 'html':
+                context = {'role': role, "user": user.national_code, "owner": owner.bank_account_id,
+                           "owner_type": owner.owner_type,
+                           'contract': contract.id, 'contract_detail_form': contract_detail_form,
+                           'status': contract.status}
+
+            if owner.owner_type == '2':
+                subcontracts = contract.subcontract_set.all()
+                if format == 'html':
+                    context['subcontracts'] = subcontracts
+
+            if format == 'html':
+                return Response(context, template_name='myapp/contract-detail.html')
+
+            serializer = serializers.ContractSerializer(contract)
+            data = serializer.data
+            return Response(data)
+
+        contract = models.NormalContract(pk)
+        contract_detail_form = forms.ContractDetailForm(instance=contract, data=request.data)

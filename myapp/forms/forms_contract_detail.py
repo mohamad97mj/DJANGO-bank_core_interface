@@ -3,6 +3,8 @@ from .utils import *
 
 class ContractDetailForm(ModelForm):
     myid = forms.IntegerField()
+    dst_owner = forms.CharField(max_length=50, required=False)
+    judge = forms.CharField(max_length=50, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -14,12 +16,14 @@ class ContractDetailForm(ModelForm):
         self.fields['remittance_currency'].widget.attrs['disabled'] = True
         self.fields['remittance_value'].widget.attrs['disabled'] = True
         self.fields['judge'].widget.attrs['disabled'] = True
+        self.fields['judge'].label = "شناسه ملی داور"
         self.fields['status'].widget.attrs['disabled'] = True
         self.fields['description'].widget.attrs['disabled'] = True
         self.fields['judge_vote'].widget.attrs['disabled'] = True
         self.fields['myid'].widget.attrs['disabled'] = True
         self.fields['myid'].initial = self.instance.id
         self.fields['myid'].label = 'شناسه'
+        # self.fields['expire_date'].initial = self.instance.expire_date.
 
     class Meta:
         model = NormalContract
@@ -38,8 +42,6 @@ class ContractDetailForm(ModelForm):
             'description',
         ]
         labels = {
-            'src_owner': 'شماره حساب مبداء',
-            'dst_owner': 'شماره حساب مقصد',
             'value_in_rial': 'مبلغ به ریال',
             'remittance_currency': 'ارز حواله',
             'remittance_value': 'مبلغ حواله',

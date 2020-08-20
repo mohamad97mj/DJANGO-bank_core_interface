@@ -1,4 +1,4 @@
-from myapp.utils import *
+from myapp.views.utils import *
 from myapp import forms
 
 

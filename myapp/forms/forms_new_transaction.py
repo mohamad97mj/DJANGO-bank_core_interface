@@ -2,6 +2,7 @@ from .utils import *
 
 
 class NewTransactionForm(ModelForm):
+    otherside_owner = forms.CharField(max_length=50, required=False)
 
     def __init__(self, owner, operator, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -11,31 +12,35 @@ class NewTransactionForm(ModelForm):
         self.fields['operator'].widget = forms.HiddenInput()
         self.fields['operator'].initial = operator
         self.fields['otherside_owner'].required = False
+        if owner.owner_type == '1':
+            self.fields['otherside_owner'].label = "شماره حساب صراف"
+        else:
+            self.fields['otherside_owner'].label = "شماره حساب صادرکننده"
+
         self.fields['value'].required = False
 
     def clean_otherside_owner(self):
         otherside_owner_bank_account_id = self.cleaned_data['otherside_owner']
         empty_field_validator(otherside_owner_bank_account_id)
-        owner = get_owner(self.owner)
 
         try:
-            otherside_owner = models.Owner.objects.get(pk=otherside_owner_bank_account_id)
-            if owner.owner_type == '1':
+            otherside_owner = Owner.objects.get(pk=otherside_owner_bank_account_id)
+            if self.owner.owner_type == '1':
                 if otherside_owner.owner_type == '2':
-                    return otherside_owner.bank_account_id
+                    return otherside_owner
                 else:
                     raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
-            elif owner.owner_type == '2':
+            elif self.owner.owner_type == '2':
                 if otherside_owner.owner_type == '3':
-                    return otherside_owner.bank_account_id
+                    return otherside_owner
                 else:
-                    raise forms.ValidationError("خطا: صادر کننده با این مشخصات در صامانه ثبت نشده است!")
+                    raise forms.ValidationError("خطا: صادرکننده با این مشخصات در سامانه ثبت نشده است!")
 
-        except models.Owner.DoesNotExist:
-            if owner.owner_type == '1':
+        except Owner.DoesNotExist:
+            if self.owner.owner_type == '1':
                 raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
             else:
-                raise forms.ValidationError("خطا: صادر کننده با این مشخصات در سامانه ثبت نشده است!")
+                raise forms.ValidationError("خطا: صادرکننده با این مشخصات در سامانه ثبت نشده است!")
 
     def clean_value(self):
         value = self.cleaned_data['value']

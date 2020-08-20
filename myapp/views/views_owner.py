@@ -1,5 +1,4 @@
-from myapp.utils import *
-from myapp import forms
+from myapp.views.utils import *
 
 
 class OwnerListView(generics.ListAPIView):
@@ -45,9 +44,14 @@ class MyOwnerListView(APIView):
 class MyOwnerDetailView(APIView):
     renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer,)
 
-    def get_contracts_list(self, instance):
-        queryset = models.NormalContract.objects.filter(
-            Q(src_owner=instance.bank_account_id) | Q(dst_owner=instance.bank_account_id))
+    def get_normal_contracts_list(self, instance):
+        if instance.owner_type == '1':
+            queryset = models.NormalContract.objects.filter(
+                Q(src_owner=instance.bank_account_id))
+        else:
+            queryset = models.NormalContract.objects.filter(
+                Q(dst_owner=instance.bank_account_id))
+
         return queryset
 
     def get_subcontracts_list(self, instance):
@@ -70,7 +74,7 @@ class MyOwnerDetailView(APIView):
         if owner.owner_type == '3':  # exporter
             contracts = self.get_subcontracts_list(owner)
         else:
-            contracts = self.get_contracts_list(owner)
+            contracts = self.get_normal_contracts_list(owner)
 
         transactions = self.get_transactions_list(owner)
 
