@@ -35,7 +35,7 @@
         <br/>
         <br/>
 
-        <h4>لیست قرارداد های مربوطه</h4>
+        <h4>لیست قرارداد های مربوطه داوری نشده</h4>
         {% if to == 'judge' %}
             <h5>(جهت داوری روی شناسه قرارداد مربوطه کلیک کنید)</h5>
         {% else %}
@@ -59,24 +59,64 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for subcontract in subcontracts %}
+                    {% for not_judged_subcontract in not_judged_subcontracts %}
                         <tr>
                             <th scope="row">
-                                <a href="{% url 'myapp:my_subcontract_detail' subcontract.id %}?role=judge&judge={{ judge }}&contract={{ contract }}&to={{ to }}"><u>{{ subcontract.id }}</u></a>
+                                <a href="{% url 'myapp:my_subcontract_detail' not_judged_subcontract.id %}?role=judge&judge={{ judge }}&contract={{ contract }}&to={{ to }}"><u>{{ not_judged_subcontract.id }}</u></a>
                             </th>
-                            <td>{{ subcontract.dst_owner }}</td>
-                            <td>{{ subcontract.value_in_rial }}</td>
-                            <td>{{ subcontract.remittance_value }}</td>
-                            <td>{{ subcontract.judge_vote_verbose }}</td>
-                            <td>{{ subcontract.expire_date }}</td>
-                            <td>{{ subcontract.description }}</td>
-                            <td>{{ subcontract.status_verbose }}</td>
+                            <td>{{ not_judged_subcontract.dst_owner }}</td>
+                            <td>{{ not_judged_subcontract.value_in_rial }}</td>
+                            <td>{{ not_judged_subcontract.remittance_value }}</td>
+                            <td>{{ not_judged_subcontract.judge_vote_verbose }}</td>
+                            <td>{{ not_judged_subcontract.expire_date }}</td>
+                            <td>{{ not_judged_subcontract.description }}</td>
+                            <td>{{ not_judged_subcontract.status_verbose }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
             </div>
         </form>
+
+        <h4>لیست قرارداد های مربوطه داوری شده</h4>
+        <h5>(جهت مشاهده جزپیات روی شناسه قرارداد مربوطه کلیک کنید)</h5>
+        <form method="post" id="login-form" class="myform user-contracts-list-form" action="">
+            {% csrf_token %}
+
+            <div class="table-responsive">
+                <table style="margin: auto" class="center table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">شناسه</th>
+                        <th scope="col">حساب صادرکننده</th>
+                        <th scope="col">مبلغ به ریال</th>
+                        <th scope="col">مبلغ حواله</th>
+                        <th scope="col">رای داور</th>
+                        <th scope="col">تاریخ اعتبار</th>
+                        <th scope="col">توضیحات</th>
+                        <th scope="col">وضعیت</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for judged_subcontract in judged_subcontracts %}
+                        <tr>
+                            <th scope="row">
+                                <a href="{% url 'myapp:my_subcontract_detail' judged_subcontract.id %}?role=judge&judge={{ judge }}&contract={{ contract }}&to={{ to }}"><u>{{ judged_subcontract.id }}</u></a>
+                            </th>
+                            <td>{{ judged_subcontract.dst_owner }}</td>
+                            <td>{{ judged_subcontract.value_in_rial }}</td>
+                            <td>{{ judged_subcontract.remittance_value }}</td>
+                            <td>{{ judged_subcontract.judge_vote_verbose }}</td>
+                            <td>{{ judged_subcontract.expire_date }}</td>
+                            <td>{{ judged_subcontract.description }}</td>
+                            <td>{{ judged_subcontract.status_verbose }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
 
         <script>
         </script>

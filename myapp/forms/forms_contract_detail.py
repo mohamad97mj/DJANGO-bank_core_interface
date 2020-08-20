@@ -3,13 +3,14 @@ from .utils import *
 
 class ContractDetailForm(ModelForm):
     myid = forms.IntegerField()
-    dst_owner = forms.CharField(max_length=50, required=False)
+    dst_owner = forms.CharField(max_length=50, required=False, label="شماره حساب صراف")
     judge = forms.CharField(max_length=50, required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # self.fields['src_owner'].widget.attrs['disabled'] = True
         self.fields['dst_owner'].widget.attrs['disabled'] = True
+        self.fields['src_owner'].widget.attrs['disabled'] = True
         self.fields['expire_date'].widget.attrs['disabled'] = True
         self.fields['settlement_type'].widget.attrs['disabled'] = True
         self.fields['value_in_rial'].widget.attrs['disabled'] = True
@@ -29,7 +30,7 @@ class ContractDetailForm(ModelForm):
         model = NormalContract
         fields = [
             'myid',
-            # 'src_owner',
+            'src_owner',
             'dst_owner',
             'value_in_rial',
             'remittance_currency',
@@ -42,6 +43,9 @@ class ContractDetailForm(ModelForm):
             'description',
         ]
         labels = {
+
+            'src_owner': 'شماره حساب واردکننده',
+            'dst_owner': 'شماره حساب صراف',
             'value_in_rial': 'مبلغ به ریال',
             'remittance_currency': 'ارز حواله',
             'remittance_value': 'مبلغ حواله',

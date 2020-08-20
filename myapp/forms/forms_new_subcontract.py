@@ -2,7 +2,7 @@ from .utils import *
 
 
 class NewSubcontractForm(ModelForm):
-    dst_owner = forms.CharField(max_length=50, required=False)
+    dst_owner = forms.CharField(max_length=50, required=False, label="شماره حساب صادرکننده")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -14,13 +14,13 @@ class NewSubcontractForm(ModelForm):
         self.fields['expire_date'].required = False
         self.fields['description'].required = False
         self.fields['dst_owner'].widget = forms.TextInput()
-        self.fields['dst_owner'].label = "شماره حساب صادرکننده"
         # self.fields['judge_vote'].initial = '0'
+        self.fields['expire_date'].widget.attrs['placeholder'] = "1400/11/05"
 
     def save(self, commit=True):
         m = super(NewSubcontractForm, self).save(commit=False)
         m.judge_vote = '0'
-        m.status = '12'
+        m.status = '13'
         if commit:
             m.save()
         return m
@@ -74,5 +74,9 @@ class NewSubcontractForm(ModelForm):
             'value_in_rial': 'مبلغ به ریال',
             'remittance_value': 'مبلغ حواله',
             'description': 'توضیحات',
+            'src_owner': 'شماره حساب صراف',
             'dst_owner': 'شماره حساب صادرکننده',
+        }
+        help_texts = {
+            'expire_date': 'با فرمت YYYY/MM/DD',
         }

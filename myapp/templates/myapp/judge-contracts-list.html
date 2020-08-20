@@ -18,12 +18,8 @@
                 <thead>
                 <tr>
                     <th scope="col">شناسه</th>
-                    {% if owner_type == '1' %}
-                        <th scope="col">نوع حساب طرف دیگر قرارداد</th>
-                        <th scope="col">شماره حساب طرف دیگر قرارداد</th>
-                    {% else %}
-                        <th scope="col">شماره حساب صراف</th>
-                    {% endif %}
+                    <th scope="col">شماره حساب واردکننده</th>
+                    <th scope="col">شماره حساب صراف</th>
                     <th scope="col">مبلغ به ریال</th>
                     <th scope="col">ارز حواله</th>
                     <th scope="col">مبلغ حواله</th>
@@ -42,17 +38,8 @@
                         <th scope="row"><a
                                 href="{% url 'myapp:my_contract_detail' contract.id %}?role=judge&judge={{ judge }}&to=judge&format=html"><u>{{ contract.id }}</u></a>
                         </th>
-                        {% if owner == contract.src_owner %}
-                            {% if owner_type == '1' %}
-                                <td>صادرکننده</td>
-                            {% endif %}
-                            <td>{{ contract.dst_owner }}</td>
-                        {% else %}
-                            {% if owner_type == '1' %}
-                                <td>وارد کننده</td>
-                            {% endif %}
-                            <td>{{ contract.src_owner }}</td>
-                        {% endif %}
+                        <td>{{ contract.src_owner }}</td>
+                        <td>{{ contract.dst_owner }}</td>
                         <td>{{ contract.value_in_rial }}</td>
                         <td>{{ contract.remittance_currency }}</td>
                         <td>{{ contract.remittance_value }}</td>
@@ -71,18 +58,14 @@
         <br/>
         <br/>
 
-        <h4>لیست قرار داد های قبلی</h4>
+        <h4>لیست قرار داد های داوری شده</h4>
         <div class="table-responsive">
             <table style="margin: auto" class="center table table-striped">
                 <thead>
                 <tr>
                     <th scope="col">شناسه</th>
-                    {% if owner_type == '1' %}
-                        <th scope="col">نوع حساب طرف دیگر قرارداد</th>
-                        <th scope="col">شماره حساب طرف دیگر قرارداد</th>
-                    {% else %}
-                        <th scope="col">شماره حساب صراف</th>
-                    {% endif %}
+                    <th scope="col">شماره حساب واردکننده</th>
+                    <th scope="col">شماره حساب صراف</th>
                     <th scope="col">مبلغ به ریال</th>
                     <th scope="col">ارز حواله</th>
                     <th scope="col">مبلغ حواله</th>
@@ -101,17 +84,8 @@
                         <th scope="row"><a
                                 href="{% url 'myapp:my_contract_detail' contract.id %}?role=judge&judge={{ judge }}&to=view&format=html"><u>{{ contract.id }}</u></a>
                         </th>
-                        {% if owner == contract.src_owner %}
-                            {% if owner_type == '1' %}
-                                <td>صادرکننده</td>
-                            {% endif %}
-                            <td>{{ contract.dst_owner }}</td>
-                        {% else %}
-                            {% if owner_type == '1' %}
-                                <td>وارد کننده</td>
-                            {% endif %}
-                            <td>{{ contract.src_owner }}</td>
-                        {% endif %}
+                        <td>{{ contract.src_owner }}</td>
+                        <td>{{ contract.dst_owner }}</td>
                         <td>{{ contract.value_in_rial }}</td>
                         <td>{{ contract.remittance_currency }}</td>
                         <td>{{ contract.remittance_value }}</td>

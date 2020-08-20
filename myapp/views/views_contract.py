@@ -93,8 +93,8 @@ class MyContractListView(APIView):
             judge_national_id = request.GET.get('judge', '')
             judge_profile = get_judge(pk=judge_national_id)
             # contracts = judge_profile.contract_set.all()
-            not_judged_contracts = judge_profile.contract_set.filter(Q(status='2'))
-            judged_contracts = judge_profile.contract_set.filter(Q(status='3'))
+            not_judged_contracts = judge_profile.normalcontract_set.filter(Q(status='31'))
+            judged_contracts = judge_profile.normalcontract_set.filter(Q(status='4'))
 
             context = {'judge': judge_profile.national_id, 'judged_contracts': judged_contracts,
                        'not_judged_contracts': not_judged_contracts}
@@ -131,17 +131,11 @@ class MyContractDetailView(APIView):
                 if format == 'html':
                     contract_detail_form = forms.SubcontractDetailForm(instance=contract)
                     contract_detail_form.add_exporter_fields()
-                    contract_detail_form.fields['dst_owner'].label = "شماره حساب صراف"
 
             else:
                 contract = get_contract(pk)
                 if format == 'html':
                     contract_detail_form = forms.ContractDetailForm(instance=contract)
-                    if owner.owner_type == '1':
-                        contract_detail_form.fields['dst_owner'].label = "شماره حساب صراف"
-                    else:
-                        contract_detail_form.fields['dst_owner'].label = 'شماره حساب وارد کننده'
-                        contract_detail_form.initial['dst_owner'] = contract.src_owner
 
             if format == 'html':
                 context = {'role': role, "user": user.national_code, "owner": owner.bank_account_id,
@@ -150,9 +144,9 @@ class MyContractDetailView(APIView):
                            'status': contract.status}
 
             if owner.owner_type == '2':
-                subcontracts = contract.subcontract_set.all()
+                judged_subcontracts = contract.subcontract_set.all()
                 if format == 'html':
-                    context['subcontracts'] = subcontracts
+                    context['judged_subcontracts'] = judged_subcontracts
 
             if format == 'html':
                 return Response(context, template_name='myapp/contract-detail.html')
@@ -166,12 +160,14 @@ class MyContractDetailView(APIView):
             judge = get_judge(national_id)
             contract = get_contract(pk)
 
-            subcontracts = contract.subcontract_set.all()
+            judged_subcontracts = contract.subcontract_set.filter(Q(status='4'))
+            not_judged_subcontracts = contract.subcontract_set.filter(Q(status='32'))
 
             if format == 'html':
                 to = request.GET.get('to', '')
                 contract_detail_form = forms.ContractDetailForm(instance=contract)
-                context = {'role': role, 'contract': contract.id, 'subcontracts': subcontracts,
+                context = {'role': role, 'contract': contract.id, 'judged_subcontracts': judged_subcontracts,
+                           'not_judged_subcontracts': not_judged_subcontracts,
                            'judge': judge.national_id,
                            'contract_detail_form': contract_detail_form, 'to': to}
                 return Response(context, template_name='myapp/judge-contract-detail.html')
@@ -222,8 +218,7 @@ class MyContractDetailView(APIView):
                 contract.save()
                 if format == 'html':
                     contract_detail_form = forms.ContractDetailForm(instance=contract)
-                    contract_detail_form.fields['dst_owner'].label = 'شماره حساب وارد کننده'
-                    contract_detail_form.initial['dst_owner'] = contract.src_owner
+
 
             if format == 'html':
                 context = {'role': role, "user": user.national_code, "owner": owner.bank_account_id,
@@ -243,5 +238,5 @@ class MyContractDetailView(APIView):
             data = serializer.data
             return Response(data)
 
-        contract = models.NormalContract(pk)
-        contract_detail_form = forms.ContractDetailForm(instance=contract, data=request.data)
+        else:
+            national_id = request.GET.get('judge')

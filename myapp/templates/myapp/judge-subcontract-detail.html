@@ -30,16 +30,16 @@
             {% endfor %}
         </form>
 
-        <form method="post" action="{% url 'myapp:judge-subcontract' %}">
+        <form class="myform user-profile-form" style="margin-top: -20px" method="post" action="{% url 'myapp:my_subcontract_detail' subcontract %}?role=judge&judge={{ judge }}&contract={{ contract }}">
             {% if to == 'judge' %}
 
                 <label for="vote">رای شما به عنوان داور</label>
                 <select class="form-control" name="vote" id="vote">
-                    <option value="معامله انجام نشده است">معامله انجام نشده است</option>
-                    <option value="معامله انجام شده است">معامله انجام شده است</option>
+                    <option value="no">معامله انجام نشده است</option>
+                    <option value="yes">معامله انجام شده است</option>
                 </select>
                 <div style="margin-top: 10px">
-                    <button class="btn btn-block btn-success">
+                    <button class="btn mybutton btn-block btn-success">
                         ثبت رای
                     </button>
                 </div>

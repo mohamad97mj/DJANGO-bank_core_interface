@@ -4,12 +4,13 @@ from .utils import *
 class SubcontractDetailForm(ModelForm):
     judge = forms.CharField(max_length=50)
     remittance_currency = forms.CharField(max_length=40)
-    src_owner = forms.IntegerField()
-    dst_owner = forms.CharField(max_length=50, required=False)
+    src_owner = forms.CharField(max_length=50, required=False, label="شماره حساب صراف")
+    dst_owner = forms.CharField(max_length=50, required=False, label="شماره حساب صادرکننده")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.fields['src_owner'].widget.attrs['disabled'] = True
         self.fields['dst_owner'].widget.attrs['disabled'] = True
         self.fields['value_in_rial'].widget.attrs['disabled'] = True
         self.fields['remittance_value'].widget.attrs['disabled'] = True
@@ -18,8 +19,8 @@ class SubcontractDetailForm(ModelForm):
         self.fields['description'].widget.attrs['disabled'] = True
         self.fields['status'].widget.attrs['disabled'] = True
         self.fields['judge'].widget = forms.HiddenInput()
+        self.fields['src_owner'].initial = self.instance.parent.dst_owner
         self.fields['remittance_currency'].widget = forms.HiddenInput()
-        self.fields['src_owner'].widget = forms.HiddenInput()
 
     # this method is called just for exporter point of view
 

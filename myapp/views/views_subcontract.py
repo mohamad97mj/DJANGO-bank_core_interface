@@ -96,7 +96,7 @@ class MySubcontractDetailView(APIView):
             judge = get_judge(national_id)
             if format == 'html':
                 subcontract_detail_form.add_judge_fields()
-                context = {'judge': judge.national_id, 'contract': contract.id,
+                context = {'judge': judge.national_id, 'contract': contract.id, 'subcontract': subcontract.id,
                            'subcontract_detail_form': subcontract_detail_form, 'to': to}
                 return Response(context, template_name='myapp/judge-subcontract-detail.html')
 
@@ -105,10 +105,29 @@ class MySubcontractDetailView(APIView):
                 data = serializer.data
                 return Response(data)
 
-    def put(self, request, pk, format=None):
+    def post(self, request, pk, format=None):
+        role = request.GET.get('role', '')
         subcontract = get_subcontract(pk)
-        serializer = SnippetSerializer(snippet, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        contract_id = request.GET.get('contract', '')
+        contract = get_contract(contract_id)
+        data = request.data
+        format = request.accepted_renderer.format
+
+        if role == 'judge':
+            national_id = request.GET.get('judge', '')
+            judge = get_judge(national_id)
+            # to = request.GET.get('to', '')
+            vote = data['vote']
+            subcontract.status = '4'
+            if vote == 'yes':
+                subcontract.judge_vote = '1'
+            elif vote == 'no':
+                subcontract.judge_vote = '2'
+            subcontract.save()
+
+            if format == 'html':
+                subcontract_detail_form = forms.SubcontractDetailForm(instance=subcontract)
+                subcontract_detail_form.add_judge_fields()
+                context = {'judge': judge.national_id, 'contract': contract.id, 'subcontract': subcontract.id,
+                           'subcontract_detail_form': subcontract_detail_form, 'to': 'view'}
+                return Response(context, template_name='myapp/judge-subcontract-detail.html')
