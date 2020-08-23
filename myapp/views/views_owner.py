@@ -18,8 +18,6 @@ class UserOwnersListView(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        # tmp = request.GET.get('test', '')
-        # print("temppppppppppp", tmp)
         user_profile = self.get_object(pk)
         accounts = user_profile.owners.all()
         return Response({"pk": pk, "accounts": accounts})
