@@ -3,6 +3,7 @@ from .utils import *
 
 class NewContractForm(ModelForm):
     judge = forms.CharField(max_length=50, required=False)
+    judge_name = forms.CharField(max_length=255, required=False)
     dst_owner = forms.CharField(max_length=50, required=False)
 
     def __init__(self, src_owner=None, *args, **kwargs):
@@ -12,7 +13,8 @@ class NewContractForm(ModelForm):
         self.fields['value_in_rial'].required = False
         self.fields['remittance_currency'].required = False
         self.fields['remittance_value'].required = False
-        self.fields['judge'].label = 'داور'
+        self.fields['judge'].label = 'شناسه ملی داور'
+        self.fields['judge_name'].label = 'نام داور'
         self.fields['dst_owner'].label = 'شماره حساب صراف'
         self.fields['expire_date'].required = False
         self.fields['description'].required = False
@@ -83,6 +85,7 @@ class NewContractForm(ModelForm):
             'remittance_currency',
             'remittance_value',
             'settlement_type',
+            'judge_name',
             'judge',
             'expire_date',
             'description'

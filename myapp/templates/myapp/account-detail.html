@@ -13,6 +13,8 @@
 {% block content %}
     <div class="block-content">
         <h4>لیست قرارداد ها</h4>
+        <h5>(جهت مشاهده جزپیات بیشتر روی شناسه قرارداد کلیک کنید)</h5>
+
         <form method="post" id="" class="myform user-contracts-list-form" action="">
             {% csrf_token %}
 
@@ -28,9 +30,9 @@
                                 <th scope="col">شماره حساب صراف</th>
                                 <th scope="col">مبلغ به ریال</th>
                                 <th scope="col">مبلغ حواله</th>
+                                <th scope="col">نام داور</th>
                                 <th scope="col">رای داور</th>
                                 <th scope="col">تاریخ اعتبار</th>
-                                <th scope="col">توضیحات</th>
                                 <th scope="col">وضعیت</th>
                             </tr>
                             </thead>
@@ -44,9 +46,9 @@
                                     <td>{{ subcontract.parent.dst_owner }}</td>
                                     <td>{{ subcontract.value_in_rial }}</td>
                                     <td>{{ subcontract.remittance_value }}</td>
+                                    <td>{{ subcontract.parent.judge.name }}</td>
                                     <td>{{ subcontract.judge_vote_verbose }}</td>
                                     <td>{{ subcontract.expire_date }}</td>
-                                    <td>{{ subcontract.description }}</td>
                                     <td>{{ subcontract.status_verbose }}</td>
                                 </tr>
                             {% endfor %}
@@ -69,11 +71,10 @@
                             <th scope="col">ارز حواله</th>
                             <th scope="col">مبلغ حواله</th>
                             <th scope="col">نوع تسویه</th>
-                            <th scope="col">شناسه ملی داور</th>
+                            <th scope="col"> نام داور</th>
                             <th scope="col">رای داور</th>
                             <th scope="col">تاریخ اعتبار</th>
                             <th scope="col">وضعیت</th>
-                            <th scope="col">توضیحات</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -93,11 +94,10 @@
                                 <td>{{ contract.remittance_currency }}</td>
                                 <td>{{ contract.remittance_value }}</td>
                                 <td>{{ contract.settlement_type_verbose }}</td>
-                                <td>{{ contract.judge }}</td>
+                                <td>{{ contract.judge.name }}</td>
                                 <td>{{ contract.judge_vote_verbose }}</td>
                                 <td>{{ contract.expire_date }}</td>
                                 <td>{{ contract.status_verbose }}</td>
-                                <td>{{ contract.description }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -120,6 +120,8 @@
         <br/>
 
         <h4>لیست تراکنش ها</h4>
+        <h5>(جهت مشاهده جزپیات بیشتر روی شناسه تراکنش کلیک کنید)</h5>
+
         <form method="post" id="" class="myform user-transaction-list-form" action="">
             {% csrf_token %}
 

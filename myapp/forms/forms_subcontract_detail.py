@@ -2,62 +2,96 @@ from .utils import *
 
 
 class SubcontractDetailForm(ModelForm):
-    judge = forms.CharField(max_length=50)
-    remittance_currency = forms.CharField(max_length=40)
-    src_owner = forms.CharField(max_length=50, required=False, label="شماره حساب صراف")
-    dst_owner = forms.CharField(max_length=50, required=False, label="شماره حساب صادرکننده")
+    field_order = ['id',
+                   'src_owner',
+                   'dst_owner',
+                   'value_in_rial',
+                   'remittance_currency',
+                   'remittance_value',
+                   'settlement_type',
+                   'judge_name',
+                   'judge',
+                   'judge_vote',
+                   'expire_date',
+                   'status',
+                   'description'
+                   ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['src_owner'].widget.attrs['disabled'] = True
-        self.fields['dst_owner'].widget.attrs['disabled'] = True
+        self.fields['id'] = forms.IntegerField(disabled=True, label="شناسه", initial=self.instance.id)
         self.fields['value_in_rial'].widget.attrs['disabled'] = True
         self.fields['remittance_value'].widget.attrs['disabled'] = True
         self.fields['judge_vote'].widget.attrs['disabled'] = True
         self.fields['expire_date'].widget.attrs['disabled'] = True
-        self.fields['description'].widget.attrs['disabled'] = True
         self.fields['status'].widget.attrs['disabled'] = True
-        self.fields['judge'].widget = forms.HiddenInput()
-        self.fields['src_owner'].initial = self.instance.parent.dst_owner
-        self.fields['remittance_currency'].widget = forms.HiddenInput()
+        self.fields['description'].widget.attrs['disabled'] = True
 
     # this method is called just for exporter point of view
 
-    def add_judge_field(self):
-        self.fields['judge'].widget = forms.TextInput()
-        self.fields['judge'].label = 'شناسه ملی داور'
-        self.fields['judge'].widget.attrs['disabled'] = True
-        self.fields['judge'].initial = self.instance.parent.judge
+    def hide_judge_vote_and_status(self):
+        self.fields['judge_vote'].widget = forms.HiddenInput()
+        self.fields['status'].widget = forms.HiddenInput()
+
+    # def display_judge_vote_and_status(self):
+    #     self.fields['judge_vote'].widget = forms.TextInput()
+    #     self.fields['status'].widget = forms.TextInput()
+
+    def add_judge_information_fields(self):
+        self.fields['judge'] = forms.CharField(max_length=50,
+                                               label="شناسه ملی داور",
+                                               disabled=True,
+                                               initial=self.instance.parent.judge)
+
+        self.fields['judge_name'] = forms.CharField(max_length=100,
+                                                    required=False,
+                                                    label="نام داور",
+                                                    disabled=True,
+                                                    initial=self.instance.parent.judge.name)
+
+        self.order_fields(self.field_order)
 
     def add_remittance_currency_field(self):
-        self.fields['remittance_currency'].widget = forms.TextInput()
-        self.fields['remittance_currency'].label = 'ارز حواله'
-        self.fields['remittance_currency'].widget.attrs['disabled'] = True
-        self.fields['remittance_currency'].initial = self.instance.parent.remittance_currency
+        self.fields['remittance_currency'] = forms.CharField(max_length=40,
+                                                             label='ارز حواله',
+                                                             disabled=True,
+                                                             initial=self.instance.parent.remittance_currency)
+        self.order_fields(self.field_order)
 
-    def add_exporter_fields(self):
-        self.add_judge_field()
-        self.add_remittance_currency_field()
+    def add_src_owner_field(self):
+        self.fields['src_owner'] = forms.CharField(max_length=50,
+                                                   label="شماره حساب صراف",
+                                                   disabled=True,
+                                                   initial=self.instance.parent.dst_owner)
 
-    def add_judge_fields(self):
+    def add_dst_owner_field(self):
+        self.fields['dst_owner'] = forms.CharField(max_length=50,
+                                                   label="شماره حساب صادرکننده",
+                                                   disabled=True,
+                                                   initial=self.instance.dst_owner)
+
+    def perform_exchanger_point_of_view(self):
+        self.add_dst_owner_field()
+        self.order_fields(self.field_order)
+
+    def perform_exporter_point_of_view(self):
+        self.add_src_owner_field()
+        self.add_judge_information_fields()
         self.add_remittance_currency_field()
-        self.fields['src_owner'].widget = forms.TextInput()
-        self.fields['src_owner'].widget.attrs['disabled'] = True
-        self.fields['src_owner'].initial = self.instance.parent.dst_owner
-        self.fields['src_owner'].label = 'حساب مبداء'
-        self.fields['dst_owner'].label = 'حساب مقصد'
+        self.order_fields(self.field_order)
+
+    def perform_judge_point_of_view(self):
+        self.add_remittance_currency_field()
+        self.add_src_owner_field()
+        self.add_dst_owner_field()
+        self.order_fields(self.field_order)
 
     class Meta:
         model = Subcontract
         fields = [
-            'id',
-            'src_owner',
-            'dst_owner',
             'value_in_rial',
-            'remittance_currency',
             'remittance_value',
-            'judge',
             'judge_vote',
             'expire_date',
             'description',
@@ -65,8 +99,6 @@ class SubcontractDetailForm(ModelForm):
 
         ]
         labels = {
-            'id': 'شناسه',
-            'dst_owner': 'حساب طرف دیگر قرارداد',
             'value_in_rial': 'مبلغ به ریال',
             'remittance_value': 'مبلغ حواله',
             'description': 'توضیحات',

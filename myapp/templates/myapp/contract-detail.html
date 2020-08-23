@@ -20,7 +20,6 @@
 
             {% for field in contract_detail_form.visible_fields %}
                 <div class="form-group">
-
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     {{ field|add_class:'form-control' }}
                     <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
@@ -49,7 +48,7 @@
                 </form>
             {% endif %}
 
-            {% if  status == '11' or status == '13' %}
+            {% if status == '11' or status == '12' %}
                 <form style="margin-top: -50px" method="post"
                       action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=confirm">
                     <div class="form-check form-check-inline">
@@ -72,6 +71,8 @@
                 </form>
             {% elif owner_type == '2' and status != '23' %}
                 <h4>لیست قرارداد های مربوطه</h4>
+                <h5>(جهت مشاهده جزپیات بیشتر روی شناسه قرارداد مربوطه کلیک کنید)</h5>
+
                 <form method="post" id="login-form" class="myform user-contracts-list-form" action="">
                     {% csrf_token %}
 
@@ -85,7 +86,6 @@
                                 <th scope="col">مبلغ حواله</th>
                                 <th scope="col">رای داور</th>
                                 <th scope="col">تاریخ اعتبار</th>
-                                <th scope="col">توضیحات</th>
                                 <th scope="col">وضعیت</th>
                             </tr>
                             </thead>
@@ -100,7 +100,6 @@
                                     <td>{{ subcontract.remittance_value }}</td>
                                     <td>{{ subcontract.judge_vote_verbose }}</td>
                                     <td>{{ subcontract.expire_date }}</td>
-                                    <td>{{ subcontract.description }}</td>
                                     <td>{{ subcontract.status_verbose }}</td>
                                 </tr>
                             {% endfor %}
@@ -108,11 +107,13 @@
                         </table>
                     </div>
                 </form>
-                <div class="text-center" style="padding:10px ">
-                    <a class="btn mybutton"
-                       href="{% url 'myapp:my_new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><span
-                            class="color-white">ثبت قرار داد جدید</span></a>
-                </div>
+                {% if status == '21' %}
+                    <div class="text-center" style="padding:10px ">
+                        <a class="btn mybutton"
+                           href="{% url 'myapp:my_new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><span
+                                class="color-white">ثبت قرار داد مربوطه جدید</span></a>
+                    </div>
+                {% endif %}
 
             {% endif %}
 

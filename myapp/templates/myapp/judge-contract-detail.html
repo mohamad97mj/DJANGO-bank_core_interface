@@ -39,7 +39,7 @@
         {% if to == 'judge' %}
             <h5>(جهت داوری روی شناسه قرارداد مربوطه کلیک کنید)</h5>
         {% else %}
-            <h5>(جهت مشاهده جزپیات روی شناسه قرارداد مربوطه کلیک کنید)</h5>
+            <h5>(جهت مشاهده جزپیات بیشتر روی شناسه قرارداد مربوطه کلیک کنید)</h5>
         {% endif %}
         <form method="post" id="login-form" class="myform user-contracts-list-form" action="">
             {% csrf_token %}
@@ -54,7 +54,6 @@
                         <th scope="col">مبلغ حواله</th>
                         <th scope="col">رای داور</th>
                         <th scope="col">تاریخ اعتبار</th>
-                        <th scope="col">توضیحات</th>
                         <th scope="col">وضعیت</th>
                     </tr>
                     </thead>
@@ -69,7 +68,6 @@
                             <td>{{ not_judged_subcontract.remittance_value }}</td>
                             <td>{{ not_judged_subcontract.judge_vote_verbose }}</td>
                             <td>{{ not_judged_subcontract.expire_date }}</td>
-                            <td>{{ not_judged_subcontract.description }}</td>
                             <td>{{ not_judged_subcontract.status_verbose }}</td>
                         </tr>
                     {% endfor %}
@@ -93,7 +91,6 @@
                         <th scope="col">مبلغ حواله</th>
                         <th scope="col">رای داور</th>
                         <th scope="col">تاریخ اعتبار</th>
-                        <th scope="col">توضیحات</th>
                         <th scope="col">وضعیت</th>
                     </tr>
                     </thead>
@@ -108,7 +105,6 @@
                             <td>{{ judged_subcontract.remittance_value }}</td>
                             <td>{{ judged_subcontract.judge_vote_verbose }}</td>
                             <td>{{ judged_subcontract.expire_date }}</td>
-                            <td>{{ judged_subcontract.description }}</td>
                             <td>{{ judged_subcontract.status_verbose }}</td>
                         </tr>
                     {% endfor %}

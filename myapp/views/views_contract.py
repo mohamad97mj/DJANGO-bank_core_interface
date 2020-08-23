@@ -130,12 +130,20 @@ class MyContractDetailView(APIView):
                 contract = get_subcontract(pk)
                 if format == 'html':
                     contract_detail_form = forms.SubcontractDetailForm(instance=contract)
-                    contract_detail_form.add_exporter_fields()
+                    if contract.status == '12':
+                        contract_detail_form.hide_judge_vote_and_status()
+                    contract_detail_form.perform_exporter_point_of_view()
 
             else:
                 contract = get_contract(pk)
                 if format == 'html':
                     contract_detail_form = forms.ContractDetailForm(instance=contract)
+                    if contract.status == '11':
+                        contract_detail_form.hide_judge_vote_and_status()
+                    if owner.owner_type == '1':
+                        contract_detail_form.perform_importer_point_of_view()
+                    else:
+                        contract_detail_form.perform_exchanger_point_of_view()
 
             if format == 'html':
                 context = {'role': role, "user": user.national_code, "owner": owner.bank_account_id,
@@ -144,9 +152,9 @@ class MyContractDetailView(APIView):
                            'status': contract.status}
 
             if owner.owner_type == '2':
-                judged_subcontracts = contract.subcontract_set.all()
+                subcontracts = contract.subcontract_set.all()
                 if format == 'html':
-                    context['judged_subcontracts'] = judged_subcontracts
+                    context['subcontracts'] = subcontracts
 
             if format == 'html':
                 return Response(context, template_name='myapp/contract-detail.html')
@@ -166,6 +174,7 @@ class MyContractDetailView(APIView):
             if format == 'html':
                 to = request.GET.get('to', '')
                 contract_detail_form = forms.ContractDetailForm(instance=contract)
+                contract_detail_form.add_src_owner_field()
                 context = {'role': role, 'contract': contract.id, 'judged_subcontracts': judged_subcontracts,
                            'not_judged_subcontracts': not_judged_subcontracts,
                            'judge': judge.national_id,
@@ -202,8 +211,7 @@ class MyContractDetailView(APIView):
                 contract.save()
                 if format == 'html':
                     contract_detail_form = forms.SubcontractDetailForm(instance=contract)
-                    contract_detail_form.add_exporter_fields()
-                    contract_detail_form.fields['dst_owner'].label = "شماره حساب صراف"
+                    contract_detail_form.perform_exporter_point_of_view()
 
             else:
                 contract = get_contract(pk)
@@ -218,7 +226,6 @@ class MyContractDetailView(APIView):
                 contract.save()
                 if format == 'html':
                     contract_detail_form = forms.ContractDetailForm(instance=contract)
-
 
             if format == 'html':
                 context = {'role': role, "user": user.national_code, "owner": owner.bank_account_id,

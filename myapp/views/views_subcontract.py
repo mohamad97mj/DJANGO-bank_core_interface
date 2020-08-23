@@ -81,7 +81,9 @@ class MySubcontractDetailView(APIView):
                 bank_account_id = request.GET.get('account', '')
                 user = get_user(national_code)
                 owner = get_owner(bank_account_id)
-                # subcontract_detail_form.add_exporter_fields()
+                if owner.owner_type == '2':  # not necessary
+                    subcontract_detail_form.perform_exchanger_point_of_view()
+
                 context = {'user': user.national_code, 'owner': owner.bank_account_id, 'contract': contract.id,
                            'subcontract_detail_form': subcontract_detail_form}
 
@@ -95,7 +97,7 @@ class MySubcontractDetailView(APIView):
             to = request.GET.get('to', '')
             judge = get_judge(national_id)
             if format == 'html':
-                subcontract_detail_form.add_judge_fields()
+                subcontract_detail_form.perform_judge_point_of_view()
                 context = {'judge': judge.national_id, 'contract': contract.id, 'subcontract': subcontract.id,
                            'subcontract_detail_form': subcontract_detail_form, 'to': to}
                 return Response(context, template_name='myapp/judge-subcontract-detail.html')
@@ -127,7 +129,7 @@ class MySubcontractDetailView(APIView):
 
             if format == 'html':
                 subcontract_detail_form = forms.SubcontractDetailForm(instance=subcontract)
-                subcontract_detail_form.add_judge_fields()
+                subcontract_detail_form.perform_judge_point_of_view()
                 context = {'judge': judge.national_id, 'contract': contract.id, 'subcontract': subcontract.id,
                            'subcontract_detail_form': subcontract_detail_form, 'to': 'view'}
                 return Response(context, template_name='myapp/judge-subcontract-detail.html')

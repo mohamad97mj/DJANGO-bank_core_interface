@@ -64,7 +64,7 @@ subcontract = Subcontract(
     judge_vote='0',
     expire_date=datetime.datetime.now(),
     description='یک زیر معامله برای تست',
-    status='13',
+    status='12',
 )
 
 subcontract.save()

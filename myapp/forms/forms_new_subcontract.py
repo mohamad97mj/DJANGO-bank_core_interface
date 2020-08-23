@@ -20,7 +20,7 @@ class NewSubcontractForm(ModelForm):
     def save(self, commit=True):
         m = super(NewSubcontractForm, self).save(commit=False)
         m.judge_vote = '0'
-        m.status = '13'
+        m.status = '12'
         if commit:
             m.save()
         return m
