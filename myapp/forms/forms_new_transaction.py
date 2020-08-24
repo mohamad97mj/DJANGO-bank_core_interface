@@ -12,7 +12,7 @@ class NewTransactionForm(ModelForm):
         self.fields['operator'].widget = forms.HiddenInput()
         self.fields['operator'].initial = operator
         self.fields['otherside_owner'].required = False
-        if owner.owner_type == '1':
+        if owner.owner_type == OwnerType.IMPORTER:
             self.fields['otherside_owner'].label = "شماره حساب صراف"
         else:
             self.fields['otherside_owner'].label = "شماره حساب صادرکننده"
@@ -25,19 +25,19 @@ class NewTransactionForm(ModelForm):
 
         try:
             otherside_owner = Owner.objects.get(pk=otherside_owner_bank_account_id)
-            if self.owner.owner_type == '1':
-                if otherside_owner.owner_type == '2':
+            if self.owner.owner_type == OwnerType.IMPORTER:
+                if otherside_owner.owner_type == OwnerType.EXCHANGER:
                     return otherside_owner
                 else:
                     raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
-            elif self.owner.owner_type == '2':
-                if otherside_owner.owner_type == '3':
+            elif self.owner.owner_type == OwnerType.EXCHANGER:
+                if otherside_owner.owner_type == OwnerType.EXPORTER:
                     return otherside_owner
                 else:
                     raise forms.ValidationError("خطا: صادرکننده با این مشخصات در سامانه ثبت نشده است!")
 
         except Owner.DoesNotExist:
-            if self.owner.owner_type == '1':
+            if self.owner.owner_type == OwnerType.IMPORTER:
                 raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
             else:
                 raise forms.ValidationError("خطا: صادرکننده با این مشخصات در سامانه ثبت نشده است!")
@@ -49,8 +49,8 @@ class NewTransactionForm(ModelForm):
 
     def save(self, commit=True):
         m = super(NewTransactionForm, self).save(commit=False)
-        m.owner_type = '2'
-        m.operator_type = '1'
+        m.owner_type = OwnerType.EXCHANGER
+        m.operator_type = OperatorType.USER
         if commit:
             m.save()
         return m

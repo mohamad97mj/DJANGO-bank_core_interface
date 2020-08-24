@@ -18,7 +18,7 @@
 }
 
 
-.login-form {
+.small-form {
     width: 250px;
 }
 
@@ -52,7 +52,13 @@
     border-radius: 0;
 }
 
-.mybutton:hover {
+.another-mybutton{
+    background-color: #66f866;
+    color: white;
+    border-radius: 0px;
+}
+
+.mybutton:hover .another-mybutton:hover {
     background-color: #5d2f77;
     color: white;
 }

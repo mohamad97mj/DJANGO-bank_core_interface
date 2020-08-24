@@ -3,7 +3,7 @@ from myapp import forms
 
 
 class SubcontractListView(generics.ListAPIView):
-    queryset = models.Subcontract.objects.all()
+    queryset = Subcontract.objects.all()
     serializer_class = serializers.SubcontractSerializer
     pass
 
@@ -81,7 +81,7 @@ class MySubcontractDetailView(APIView):
                 bank_account_id = request.GET.get('account', '')
                 user = get_user(national_code)
                 owner = get_owner(bank_account_id)
-                if owner.owner_type == '2':  # not necessary
+                if owner.owner_type == OwnerType.EXCHANGER:  # not necessary
                     subcontract_detail_form.perform_exchanger_point_of_view()
 
                 context = {'user': user.national_code, 'owner': owner.bank_account_id, 'contract': contract.id,
@@ -120,12 +120,14 @@ class MySubcontractDetailView(APIView):
             judge = get_judge(national_id)
             # to = request.GET.get('to', '')
             vote = data['vote']
-            subcontract.status = '4'
+            subcontract.status = ContractStatus.JUDGED
             if vote == 'yes':
-                subcontract.judge_vote = '1'
+                subcontract.judge_vote = JudgeVote.DONE
             elif vote == 'no':
-                subcontract.judge_vote = '2'
+                subcontract.judge_vote = JudgeVote.NOT_DONE
             subcontract.save()
+
+            # TODO automatically judge the parent
 
             if format == 'html':
                 subcontract_detail_form = forms.SubcontractDetailForm(instance=subcontract)

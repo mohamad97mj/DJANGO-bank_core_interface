@@ -13,6 +13,6 @@ class JudgeDetailView(APIView):
 
 
 class JudgeListView(generics.ListAPIView):
-    queryset = models.JudgeProfile.objects.all()
+    queryset = JudgeProfile.objects.all()
     serializer_class = serializers.JudgeSerializer
     pass

@@ -1,8 +1,21 @@
 from myapp.views.utils import *
 
 
+def get_owners(user_national_code):
+    owners = []
+    r = requests.get("http://localhost:8080/api/users/{}/owners".format(user_national_code))
+    for j in r.json():
+        owner_serializer = OwnerSerializer(data=j)
+        flag = owner_serializer.is_valid()
+        if owner_serializer.is_valid():
+            owner = Owner(j['bank_account_id'], j['owner_type'])
+            owners.append(owner)
+    print("hello")
+    return owners
+
+
 class OwnerListView(generics.ListAPIView):
-    queryset = models.Owner.objects.all()
+    queryset = Owner.objects.all()
     serializer_class = serializers.OwnerSerializer
     pass
 
@@ -13,8 +26,8 @@ class UserOwnersListView(APIView):
 
     def get_object(self, pk):
         try:
-            return models.UserProfile.objects.get(pk=pk)
-        except models.UserProfile.DoesNotExist:
+            return UserProfile.objects.get(pk=pk)
+        except UserProfile.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
@@ -28,8 +41,11 @@ class MyOwnerListView(APIView):
 
     def get(self, request, format=None):
         national_code = request.GET.get('user', '')
-        user_profile = get_user(national_code)
-        accounts = user_profile.owners.all()
+        # user_profile = get_user(national_code)
+        accounts = get_owners(national_code)
+        for account in accounts:
+            print(account.bank_account_id)
+
         if request.accepted_renderer.format == 'html':
             context = {"user": national_code, "accounts": accounts}
             return Response(context, template_name='myapp/accounts-list.html')
@@ -43,22 +59,22 @@ class MyOwnerDetailView(APIView):
     renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer,)
 
     def get_normal_contracts_list(self, instance):
-        if instance.owner_type == '1':
-            queryset = models.NormalContract.objects.filter(
+        if instance.owner_type == OwnerType.IMPORTER:
+            queryset = NormalContract.objects.filter(
                 Q(src_owner=instance.bank_account_id))
         else:
-            queryset = models.NormalContract.objects.filter(
+            queryset = NormalContract.objects.filter(
                 Q(dst_owner=instance.bank_account_id))
 
         return queryset
 
     def get_subcontracts_list(self, instance):
-        queryset = models.Subcontract.objects.filter(
+        queryset = Subcontract.objects.filter(
             Q(dst_owner=instance.bank_account_id))
         return queryset
 
     def get_transactions_list(self, instance):
-        queryset = models.Transaction.objects.filter(
+        queryset = Transaction.objects.filter(
             Q(owner=instance.bank_account_id) | Q(otherside_owner=instance.bank_account_id))
         return queryset
 
@@ -69,7 +85,7 @@ class MyOwnerDetailView(APIView):
         owner = get_owner(pk=pk)
         user_profile = get_user(pk=national_code)
 
-        if owner.owner_type == '3':  # exporter
+        if owner.owner_type == OwnerType.EXPORTER:  # exporter
             contracts = self.get_subcontracts_list(owner)
         else:
             contracts = self.get_normal_contracts_list(owner)

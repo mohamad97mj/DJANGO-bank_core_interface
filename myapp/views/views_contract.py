@@ -3,7 +3,7 @@ from myapp import forms
 
 
 # class ContractListView(generics.ListAPIView):
-#     queryset = models.Contract.objects.all()
+#     queryset = Contract.objects.all()
 #     serializer_class = serializers.ContractSerializer
 #     pass
 
@@ -13,9 +13,9 @@ from myapp import forms
 #     template_name = 'myapp/contracts-list.html'
 #
 #     def get_list(self, instance):
-#         queryset = models.Contract.objects.none()
+#         queryset = Contract.objects.none()
 #         for owner in instance.owners.all():
-#             queryset = queryset | models.Contract.objects.filter(
+#             queryset = queryset | Contract.objects.filter(
 #                 Q(dst_owner=owner.bank_account_id) | Q(src_owner=owner.bank_account_id))
 #
 #         return queryset
@@ -75,9 +75,9 @@ class MyContractListView(APIView):
     renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer,)
 
     def get_user_list_of_contracts(self, instance):
-        queryset = models.NormalContract.objects.none()
+        queryset = NormalContract.objects.none()
         for owner in instance.owners.all():
-            queryset = queryset | models.NormalContract.objects.filter(
+            queryset = queryset | NormalContract.objects.filter(
                 Q(dst_owner=owner.bank_account_id) | Q(src_owner=owner.bank_account_id))
 
         return queryset
@@ -93,8 +93,8 @@ class MyContractListView(APIView):
             judge_national_id = request.GET.get('judge', '')
             judge_profile = get_judge(pk=judge_national_id)
             # contracts = judge_profile.contract_set.all()
-            not_judged_contracts = judge_profile.normalcontract_set.filter(Q(status='31'))
-            judged_contracts = judge_profile.normalcontract_set.filter(Q(status='4'))
+            not_judged_contracts = judge_profile.normalcontract_set.filter(Q(status=ContractStatus.CLAIMED_BY_IMPORTER))
+            judged_contracts = judge_profile.normalcontract_set.filter(Q(status=ContractStatus.JUDGED))
 
             context = {'judge': judge_profile.national_id, 'judged_contracts': judged_contracts,
                        'not_judged_contracts': not_judged_contracts}
@@ -126,11 +126,11 @@ class MyContractDetailView(APIView):
             owner = get_owner(pk=bank_account_id)
             # TODO check if the account is for this user
 
-            if owner.owner_type == '3':
+            if owner.owner_type == OwnerType.EXPORTER:
                 contract = get_subcontract(pk)
                 if format == 'html':
                     contract_detail_form = forms.SubcontractDetailForm(instance=contract)
-                    if contract.status == '12':
+                    if contract.status == ContractStatus.WAITING_FOR_EXPORTER:
                         contract_detail_form.hide_judge_vote_and_status()
                     contract_detail_form.perform_exporter_point_of_view()
 
@@ -138,9 +138,9 @@ class MyContractDetailView(APIView):
                 contract = get_contract(pk)
                 if format == 'html':
                     contract_detail_form = forms.ContractDetailForm(instance=contract)
-                    if contract.status == '11':
+                    if contract.status == ContractStatus.WAITING_FOR_EXCHANGER:
                         contract_detail_form.hide_judge_vote_and_status()
-                    if owner.owner_type == '1':
+                    if owner.owner_type == OwnerType.IMPORTER:
                         contract_detail_form.perform_importer_point_of_view()
                     else:
                         contract_detail_form.perform_exchanger_point_of_view()
@@ -151,7 +151,7 @@ class MyContractDetailView(APIView):
                            'contract': contract.id, 'contract_detail_form': contract_detail_form,
                            'status': contract.status}
 
-            if owner.owner_type == '2':
+            if owner.owner_type == OwnerType.EXCHANGER:
                 subcontracts = contract.subcontract_set.all()
                 if format == 'html':
                     context['subcontracts'] = subcontracts
@@ -168,8 +168,8 @@ class MyContractDetailView(APIView):
             judge = get_judge(national_id)
             contract = get_contract(pk)
 
-            judged_subcontracts = contract.subcontract_set.filter(Q(status='4'))
-            not_judged_subcontracts = contract.subcontract_set.filter(Q(status='32'))
+            judged_subcontracts = contract.subcontract_set.filter(Q(status=ContractStatus.JUDGED))
+            not_judged_subcontracts = contract.subcontract_set.filter(Q(status=ContractStatus.CLAIMED_BY_IMPORTER))
 
             if format == 'html':
                 to = request.GET.get('to', '')
@@ -198,47 +198,55 @@ class MyContractDetailView(APIView):
             user = get_user(pk=national_code)
             owner = get_owner(pk=bank_account_id)
 
-            if owner.owner_type == '3':
-                contract = get_subcontract(pk)
-                if action == 'confirm':
-                    if request.data['isconfirmed'] == 'yes':
-                        contract.status = '22'
-                    elif request.data['isconfirmed'] == 'no':
-                        contract.status = '24'
-
-                else:
-                    contract.status = '32'
+            if owner.owner_type == OwnerType.IMPORTER:
+                contract = get_contract(pk)
+                if action == ContractAction.END.value:
+                    contract.status = ContractStatus.ENDED_BY_IMPORTER
+                elif action == ContractAction.CLAIM.value:
+                    contract.status = ContractStatus.CLAIMED_BY_IMPORTER
+                    contract.subcontract_set.update(status=ContractStatus.CLAIMED_BY_IMPORTER)
                 contract.save()
                 if format == 'html':
-                    contract_detail_form = forms.SubcontractDetailForm(instance=contract)
-                    contract_detail_form.perform_exporter_point_of_view()
+                    contract_detail_form = forms.ContractDetailForm(instance=contract)
 
-            else:
+            elif owner.owner_type == OwnerType.EXCHANGER:
                 contract = get_contract(pk)
                 if action == 'confirm':
-                    if request.data['isconfirmed'] == 'yes':
-                        contract.status = '21'
-                    elif request.data['isconfirmed'] == 'no':
-                        contract.status = '22'
+                    contract.status = ContractStatus.CONFIRMED_BY_EXCHANGER
+                elif action == 'deny':
+                    contract.status = ContractStatus.DENIED_BY_EXCHANGER
                 else:
-                    contract.status = '31'
+                    contract.status = ContractStatus.ENDED_BY_EXCHANGER
 
                 contract.save()
                 if format == 'html':
                     contract_detail_form = forms.ContractDetailForm(instance=contract)
 
+            else:
+                contract = get_subcontract(pk)
+                if action == 'confirm':
+                    contract.status = ContractStatus.CONFIRMED_BY_EXPORTER
+                elif action == 'deny':
+                    contract.status = ContractStatus.DENIED_BY_EXPORTER
+                else:
+                    contract.status = ContractStatus.ENDED_BY_EXPORTER
+                contract.save()
+                if format == 'html':
+                    contract_detail_form = forms.SubcontractDetailForm(instance=contract)
+                    contract_detail_form.perform_exporter_point_of_view()
+
+            #  response .............................................................................................
             if format == 'html':
                 context = {'role': role, "user": user.national_code, "owner": owner.bank_account_id,
                            "owner_type": owner.owner_type,
                            'contract': contract.id, 'contract_detail_form': contract_detail_form,
                            'status': contract.status}
 
-            if owner.owner_type == '2':
-                subcontracts = contract.subcontract_set.all()
-                if format == 'html':
-                    context['subcontracts'] = subcontracts
+                if owner.owner_type == OwnerType.EXCHANGER:
+                    subcontracts = contract.subcontract_set.all()
+                    if format == 'html':
+                        context['subcontracts'] = subcontracts
 
-            if format == 'html':
                 return Response(context, template_name='myapp/contract-detail.html')
 
             serializer = serializers.ContractSerializer(contract)
@@ -246,4 +254,4 @@ class MyContractDetailView(APIView):
             return Response(data)
 
         else:
-            national_id = request.GET.get('judge')
+            pass

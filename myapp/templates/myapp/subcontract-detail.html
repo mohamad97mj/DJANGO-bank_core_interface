@@ -28,7 +28,7 @@
             {% endfor %}
         </form>
 
-        {% if owner_type == '3' and  status == '12' %}
+        {% if owner_type == 'EXPORTER' and  status == 'WAITING_FOR_EXPORTER' %}
             <form style="margin-top: -50px" method="post"
                   action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}">
                 <div class="form-check form-check-inline">

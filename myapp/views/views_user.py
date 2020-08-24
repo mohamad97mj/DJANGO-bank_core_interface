@@ -14,6 +14,6 @@ class UserDetailView(APIView):
 
 
 class UserListView(generics.ListAPIView):
-    queryset = models.UserProfile.objects.all()
+    queryset = UserProfile.objects.all()
     serializer_class = serializers.UserSerializer
     pass

@@ -8,9 +8,9 @@ from myapp import forms
 #
 #
 #     def get_transaction_list(self, instance):
-#         queryset = models.Transaction.objects.none()
+#         queryset = Transaction.objects.none()
 #         for owner in instance.owners.all():
-#             queryset = queryset | models.Transaction.objects.filter(
+#             queryset = queryset | Transaction.objects.filter(
 #                 Q(owner=owner.bank_account_id) | Q(otherside_owner=owner.bank_account_id))
 #
 #         return queryset
@@ -22,7 +22,7 @@ from myapp import forms
 
 
 # class TransactionListView(generics.ListAPIView):
-#     queryset = models.Transaction.objects.all()
+#     queryset = Transaction.objects.all()
 #     serializer_class = serializers.TransactionSerializer
 #     pass
 
@@ -91,9 +91,9 @@ class MyTransactionDetailView(APIView):
 
         transaction_detail_form.fields['otherside_owner'].label = "hello"
 
-        if owner.owner_type != '2':
+        if owner.owner_type != OWNER_TYPE.EXCHANGER:
             transaction_detail_form.fields['otherside_owner'].label = 'شماره حساب صراف'
-            if owner.owner_type == '1':
+            if owner.owner_type == OwnerType.IMPORTER:
                 transaction_detail_form.fields['transaction_type'].initial = '1'
             else:
                 transaction_detail_form.fields['transaction_type'].initial = '2'

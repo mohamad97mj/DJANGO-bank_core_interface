@@ -13,14 +13,12 @@ class NewSubcontractForm(ModelForm):
         self.fields['remittance_value'].required = False
         self.fields['expire_date'].required = False
         self.fields['description'].required = False
-        self.fields['dst_owner'].widget = forms.TextInput()
-        # self.fields['judge_vote'].initial = '0'
         self.fields['expire_date'].widget.attrs['placeholder'] = "1400/11/05"
 
     def save(self, commit=True):
         m = super(NewSubcontractForm, self).save(commit=False)
-        m.judge_vote = '0'
-        m.status = '12'
+        m.judge_vote = JudgeVote.NOT_JUDGED
+        m.status = ContractStatus.WAITING_FOR_EXPORTER
         if commit:
             m.save()
         return m
@@ -31,7 +29,7 @@ class NewSubcontractForm(ModelForm):
 
         try:
             dst_owner = Owner.objects.get(pk=dst_owner_bank_account_id)
-            if dst_owner.owner_type == '3':
+            if dst_owner.owner_type == OwnerType.EXPORTER:
                 return dst_owner
             else:
                 raise forms.ValidationError("خطا: صادرکننده با این مشخصات در سامانه ثبت نشده است!")

@@ -15,7 +15,6 @@ class TransactionDetailForm(ModelForm):
         self.fields['myid'].initial = self.instance.id
         self.fields['myid'].label = 'شناسه'
 
-
     class Meta:
         model = Transaction
         fields = ['myid', 'transaction_type', 'otherside_owner', 'value', 'operator_type', 'operator']

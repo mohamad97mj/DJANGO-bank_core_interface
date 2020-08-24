@@ -45,11 +45,11 @@ class ContractDetailForm(ModelForm):
                                                     disabled=True,
                                                     initial=self.instance.judge.name)
 
-        self.fields['judge'] = forms.CharField(max_length=100,
-                                               required=False,
-                                               label="شناسه ملی داور",
-                                               disabled=True,
-                                               initial=self.instance.judge)
+        self.fields['judge_national_id'] = forms.CharField(max_length=100,
+                                                           required=False,
+                                                           label="شناسه ملی داور",
+                                                           disabled=True,
+                                                           initial=self.instance.judge)
 
     def add_src_owner_field(self):
         self.fields['src_owner'] = forms.CharField(max_length=50,

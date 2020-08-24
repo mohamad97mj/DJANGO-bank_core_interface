@@ -6,48 +6,50 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from rest_framework import renderers
-from myapp import models
+from myapp.models import *
+from myapp.serializers import *
 from myapp import serializers
 from django.db.models import Q
+import requests
 
 
 def get_user(pk):
     try:
-        return models.UserProfile.objects.get(pk=pk)
-    except models.UserProfile.DoesNotExist:
+        return UserProfile.objects.get(pk=pk)
+    except UserProfile.DoesNotExist:
         raise Http404
 
 
 def get_judge(pk):
     try:
-        return models.JudgeProfile.objects.get(pk=pk)
-    except models.JudgeProfile.DoesNotExist:
+        return JudgeProfile.objects.get(pk=pk)
+    except JudgeProfile.DoesNotExist:
         raise Http404
 
 
 def get_owner(pk):
     try:
-        return models.Owner.objects.get(pk=pk)
-    except models.Owner.DoesNotExist:
+        return Owner.objects.get(pk=pk)
+    except Owner.DoesNotExist:
         raise Http404
 
 
 def get_contract(pk):
     try:
-        return models.NormalContract.objects.get(pk=pk)
-    except models.NormalContract.DoesNotExist:
+        return NormalContract.objects.get(pk=pk)
+    except NormalContract.DoesNotExist:
         raise Http404
 
 
 def get_subcontract(pk):
     try:
-        return models.Subcontract.objects.get(pk=pk)
-    except models.Subcontract.DoesNotExist:
+        return Subcontract.objects.get(pk=pk)
+    except Subcontract.DoesNotExist:
         raise Http404
 
 
 def get_transaction(pk):
     try:
-        return models.Transaction.objects.get(pk=pk)
-    except models.Transaction.DoesNotExist:
+        return Transaction.objects.get(pk=pk)
+    except Transaction.DoesNotExist:
         raise Http404

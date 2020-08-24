@@ -24,8 +24,8 @@ class NewContractForm(ModelForm):
 
     def save(self, commit=True):
         m = super(NewContractForm, self).save(commit=False)
-        m.judge_vote = '0'
-        m.status = '11'
+        m.judge_vote = JudgeVote.NOT_JUDGED
+        m.status = ContractStatus.WAITING_FOR_EXCHANGER
         if commit:
             m.save()
         return m
@@ -37,7 +37,7 @@ class NewContractForm(ModelForm):
 
         try:
             dst_owner = Owner.objects.get(pk=dst_owner_bank_account_id)
-            if dst_owner.owner_type == '2':
+            if dst_owner.owner_type == OwnerType.EXCHANGER:
                 return dst_owner
             else:
                 raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")

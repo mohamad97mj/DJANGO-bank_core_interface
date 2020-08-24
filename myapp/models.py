@@ -2,43 +2,53 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+from django.utils.translation import gettext_lazy as _
 import datetime
-
 import uuid
+from enum import Enum
 
-SETTLEMENT_TYPE = (
-    ('1', 'تک حواله ای'),
-    ('2', 'چند حواله ای'),
-)
 
-OPERATOR_TYPE = (
-    ('1', 'کاربر'),
-    ('2', 'سیستم')
-)
+class ContractAction(Enum):
+    CONFIRM = "confirm"
+    REJECT = "reject"
+    END = 'end'
+    CLAIM = 'claim'
 
-JUDGE_VOTE = (
-    ('0', 'هنوز داوری نشده'),
-    ('1', 'معامله انجام شده است'),
-    ('2', 'معامله انجام نشده است')
-)
 
-OWNER_TYPE = (
-    ('1', 'وارد کننده'),
-    ('2', 'صراف'),
-    ('3', 'صادرکننده'),
-)
+class ContractStatus(models.TextChoices):
+    WAITING_FOR_EXCHANGER = 'WAITING_FOR_EXCHANGER', _('در انتظار تایید صراف')
+    WAITING_FOR_EXPORTER = 'WAITING_FOR_EXPORTER', _('در انتظار تایید صادرکننده')
+    CONFIRMED_BY_EXCHANGER = 'CONFIRMED_BY_EXCHANGER', _('تایید شده و در حال انجام توسط صراف')
+    CONFIRMED_BY_EXPORTER = 'CONFIRMED_BY_EXPORTER', _('تایید شده و درحال انجام توسط صادرکننده')
+    DENIED_BY_EXCHANGER = 'DENIED_BY_EXCHANGER', _('رد شده توسط صراف')
+    DENIED_BY_EXPORTER = 'DENIED_BY_EXPORTER', _('رد شده توسط صادرکننده')
+    ENDED_BY_EXCHANGER = 'ENDED_BY_EXCHANGER', _('پایان معامله توسط صراف، در انتظار تایید واردکننده')
+    ENDED_BY_EXPORTER = 'ENDED_BY_EXPORTER', _('پایان معامله توسط صادرکننده')
+    ENDED_BY_IMPORTER = 'CONFIRMED_BY_IMPORTER', _('تایید شده توسط واردکننده')
+    CLAIMED_BY_IMPORTER = 'CLAIMED_BY_IMPORTER', _('رد شده توسط واردکننده، در انتظار داوری')
+    JUDGED = 'JUDGED', _('داوری شده است')
 
-CONTRACT_STATUS = (
-    ('11', 'در انتظار تایید صراف'),
-    ('12', 'در انتظار تایید صادرکننده'),
-    ('21', 'تایید شده و در حال انجام توسط صراف'),
-    ('22', 'تایید شده و درحال انجام توسط صادرکننده'),
-    ('23', 'رد شده توسط صراف'),
-    ('24', 'رد شده توسط صادرکننده'),
-    ('31', 'پایان معامله توسط صراف، در انتظار داوری'),
-    ('32', 'پایان معامله توسط صادر کننده، در انتظار داوری'),
-    ('4', 'داوری شده است'),
-)
+
+class JudgeVote(models.TextChoices):
+    NOT_JUDGED = "NOT_JUDGED", _('هنوز داوری نشده است')
+    DONE = "DONE", _('معامله انجام شده است')
+    NOT_DONE = "NOT_DONE", _('معامله انجام نشده است')
+
+
+class SettlementType(models.TextChoices):
+    SINGLE = 'SINGLE', _('تک حواله ای')
+    MULTI = 'MULTI', _('چند حواله ای')
+
+
+class OperatorType(models.TextChoices):
+    USER = 'USER', _('کاربر')
+    ADMIN = 'ADMIN', _('سیستم')
+
+
+class OwnerType(models.TextChoices):
+    IMPORTER = 'IMPORTER', _('واردکننده')
+    EXCHANGER = 'EXCHANGER', _('صراف')
+    EXPORTER = 'EXPORTER', _('صادرکننده')
 
 
 # Create your models here.
@@ -96,23 +106,32 @@ class AuthProfile(AbstractBaseUser, PermissionsMixin):
 
 class Owner(models.Model):
     bank_account_id = models.IntegerField(primary_key=True)
-    owner_type = models.CharField(max_length=50, choices=OWNER_TYPE, default='1')
+    owner_type = models.CharField(max_length=50, choices=OwnerType.choices, default=OwnerType.IMPORTER)
 
     def owner_type_verbose(self):
-        return dict(OWNER_TYPE)[self.owner_type]
+        return OwnerType(self.owner_type).label
 
     def __str__(self):
         return str(self.bank_account_id)
+
+    class Meta:
+        # managed = False
+        pass
 
 
 class UserProfile(models.Model):
     national_code = models.CharField(max_length=255, primary_key=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    owners = models.ManyToManyField(Owner)
+
+    # owners = models.ManyToManyField(Owner)
 
     def __str__(self):
         return self.national_code
+
+    class Meta:
+        # managed = False
+        pass
 
 
 class JudgeProfile(models.Model):
@@ -122,56 +141,81 @@ class JudgeProfile(models.Model):
     def __str__(self):
         return self.national_id
 
+    class Meta:
+        # managed = False
+        pass
+
 
 class Contract(models.Model):
-    dst_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
-                                  , related_name="%(app_label)s_%(class)s_dst_owner"
-                                  , related_query_name="%(app_label)s_%(class)ss")
+    # dst_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
+    #                               , related_name="%(app_label)s_%(class)s_dst_owner"
+    #                               , related_query_name="%(app_label)s_%(class)ss")
+    dst_owner = models.IntegerField()
 
     value_in_rial = models.IntegerField()
     remittance_value = models.IntegerField()
-    judge_vote = models.CharField(max_length=50, choices=JUDGE_VOTE)
+    judge_vote = models.CharField(max_length=50, choices=JudgeVote.choices)
     expire_date = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
-    status = models.CharField(max_length=20, choices=CONTRACT_STATUS)
+    status = models.CharField(max_length=50, choices=ContractStatus.choices)
 
     def judge_vote_verbose(self):
-        return dict(JUDGE_VOTE)[self.judge_vote]
+        return JudgeVote(self.judge_vote).label
 
     def status_verbose(self):
-        return dict(CONTRACT_STATUS)[self.status]
+        return ContractStatus(self.status).label
 
     class Meta:
         abstract = True
+        # managed = False
 
 
 #     just for git
 
 
 class NormalContract(Contract):
-    src_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
-                                  , related_name="%(app_label)s_%(class)s_src_owner"
-                                  , related_query_name="%(app_label)s_%(class)ss")
+    # src_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
+    #                               , related_name="%(app_label)s_%(class)s_src_owner"
+    #                               , related_query_name="%(app_label)s_%(class)ss")
+    src_owner = models.IntegerField()
 
     remittance_currency = models.CharField(max_length=40)
-    settlement_type = models.CharField(max_length=50, choices=SETTLEMENT_TYPE, default='1')
-    judge = models.ForeignKey(JudgeProfile, on_delete=models.SET_NULL, null=True)
+    settlement_type = models.CharField(max_length=50, choices=SettlementType.choices, default=SettlementType.SINGLE)
+    # judge = models.ForeignKey(JudgeProfile, on_delete=models.SET_NULL, null=True)
+    judge_national_id = models.IntegerField()
+    judge_name = models.CharField(max_length=255)
 
     def settlement_type_verbose(self):
-        return dict(SETTLEMENT_TYPE)[self.settlement_type]
+        return SettlementType(self.settlement_type).label
+
+    class Meta:
+        # managed = False
+        pass
 
 
 class Subcontract(Contract):
-    parent = models.ForeignKey(NormalContract, on_delete=models.CASCADE)
+    # parent = models.ForeignKey(NormalContract, on_delete=models.CASCADE)
+    parent = models.IntegerField()
+
+    class Meta:
+        # managed = False
+        pass
 
 
 class Transaction(models.Model):
-    owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="owner")
-    otherside_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="otherside_owner")
+    # owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="owner")
+    owner = models.IntegerField()
+    # otherside_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="otherside_owner")
+    otherside_owner = models.IntegerField()
     value = models.IntegerField()
-    operator = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
-    operator_type = models.CharField(max_length=50, choices=OPERATOR_TYPE, default='1')
+    # operator = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
+    operator = models.IntegerField()
+    operator_type = models.CharField(max_length=50, choices=OperatorType.choices, default=OperatorType.USER)
     datetime = models.CharField(max_length=50)
 
     def operator_type_verbose(self):
-        return dict(OPERATOR_TYPE)[self.operator_type]
+        return OperatorType(self.operator_type).label
+
+    class Meta:
+        # managed = False
+        pass

@@ -8,7 +8,7 @@
 
 {% block content %}
     <div class="block-content">
-        <form method="post" id="login-form" class="myform login-form" action="{% url 'myapp:login' %}">
+        <form method="post" id="login-form" class="myform small-form" action="{% url 'myapp:login' %}">
             {% csrf_token %}
 
             {% for hidden in login_form.hidden_fields %}
