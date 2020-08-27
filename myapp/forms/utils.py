@@ -1,6 +1,8 @@
 from django import forms
 from myapp.models import *
 from django.forms import Form, ModelForm
+from myapp.client import *
+
 import datetime
 
 # DateInput = partial(forms.DateInput, {'class': 'datepicker'})

@@ -33,7 +33,9 @@ class MyNewTransactionView(APIView):
     def get(self, request, format=None):
         national_code = request.GET.get('user', '')
         bank_account_id = request.GET.get('account', '')
+        # user = load_user(national_code)
         user = get_user(national_code)
+        # owner = load_owner(bank_account_id)
         owner = get_owner(bank_account_id)
         new_transaction_form = forms.NewTransactionForm(owner=owner, operator=user.national_code)
 
@@ -47,12 +49,12 @@ class MyNewTransactionView(APIView):
         national_code = request.query_params['user']
         bank_account_id = request.query_params['account']
 
-        user = get_user(national_code)
-        owner = get_owner(bank_account_id)
+        user = load_user(national_code)
+        owner = load_owner(bank_account_id)
 
         if format == 'html':
             new_transaction_form = forms.NewTransactionForm(data=data,
-                                                            owner=get_owner(data['owner']),
+                                                            owner=load_owner(data['owner']),
                                                             operator=data['operator'])
             if new_transaction_form.is_valid():
                 new_transaction = new_transaction_form.save(commit=False)
@@ -84,27 +86,27 @@ class MyTransactionDetailView(APIView):
         role = request.GET.get('role', '')
         national_code = request.GET.get('user', '')
         bank_account_id = request.GET.get('account', '')
-        user = get_user(pk=national_code)
-        owner = get_owner(pk=bank_account_id)
-        transaction = get_transaction(pk)
+        user = load_user(pk=national_code)
+        owner = load_owner(path_variable=bank_account_id)
+        transaction = load_transaction(pk)
         transaction_detail_form = forms.TransactionDetailForm(instance=transaction)
 
-        transaction_detail_form.fields['otherside_owner'].label = "hello"
+        transaction_detail_form.fields['dst_owner_bank_account_id'].label = "hello"
 
         if owner.owner_type != OWNER_TYPE.EXCHANGER:
-            transaction_detail_form.fields['otherside_owner'].label = 'شماره حساب صراف'
+            transaction_detail_form.fields['dst_owner_bank_account_id'].label = 'شماره حساب صراف'
             if owner.owner_type == OwnerType.IMPORTER:
                 transaction_detail_form.fields['transaction_type'].initial = '1'
             else:
                 transaction_detail_form.fields['transaction_type'].initial = '2'
         else:
-            if owner.bank_account_id == transaction.owner:
-                transaction_detail_form.fields['otherside_owner'].label = 'شماره حساب صادرکننده'
-                transaction_detail_form.initial['otherside_owner'] = transaction.otherside_owner
+            if owner.bank_account_id == transaction.src_owner:
+                transaction_detail_form.fields['dst_owner_bank_account_id'].label = 'شماره حساب صادرکننده'
+                transaction_detail_form.initial['otherside_owner'] = transaction.dst_owner_bank_account_id
                 transaction_detail_form.fields['transaction_type'].initial = '1'
             else:
-                transaction_detail_form.fields['otherside_owner'].label = 'شماره حساب وارد کننده'
-                transaction_detail_form.initial['otherside_owner'] = transaction.owner
+                transaction_detail_form.fields['dst_owner_bank_account_id'].label = 'شماره حساب وارد کننده'
+                transaction_detail_form.initial['otherside_owner'] = transaction.src_owner
                 transaction_detail_form.fields['transaction_type'].initial = '2'
 
         context = {

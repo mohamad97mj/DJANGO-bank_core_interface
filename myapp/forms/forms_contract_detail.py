@@ -3,12 +3,12 @@ from .utils import *
 
 class ContractDetailForm(ModelForm):
     field_order = ['id',
-                   'src_owner',
-                   'dst_owner',
+                   'src_owner_bank_account_id',
+                   'dst_owner_bank_account_id',
                    'value_in_rial',
                    'remittance_currency',
                    'judge_name',
-                   'judge',
+                   'judge_national_id',
                    'judge_vote',
                    'remittance_value',
                    'settlement_type',
@@ -43,28 +43,28 @@ class ContractDetailForm(ModelForm):
                                                     required=False,
                                                     label="نام داور",
                                                     disabled=True,
-                                                    initial=self.instance.judge.name)
+                                                    initial=self.instance.judge_name)
 
         self.fields['judge_national_id'] = forms.CharField(max_length=100,
                                                            required=False,
                                                            label="شناسه ملی داور",
                                                            disabled=True,
-                                                           initial=self.instance.judge)
+                                                           initial=self.instance.judge_national_id)
 
     def add_src_owner_field(self):
-        self.fields['src_owner'] = forms.CharField(max_length=50,
-                                                   required=False,
-                                                   label="شماره حساب واردکننده",
-                                                   disabled=True,
-                                                   initial=self.instance.src_owner)
+        self.fields['src_owner_bank_account_id'] = forms.CharField(max_length=50,
+                                                                   required=False,
+                                                                   label="شماره حساب واردکننده",
+                                                                   disabled=True,
+                                                                   initial=self.instance.src_owner)
         self.order_fields(field_order=self.field_order)
 
     def add_dst_owner_fields(self):
-        self.fields['dst_owner'] = forms.CharField(max_length=50,
-                                                   required=False,
-                                                   label="شماره حساب صراف",
-                                                   disabled=True,
-                                                   initial=self.instance.dst_owner)
+        self.fields['dst_owner_bank_account_id'] = forms.CharField(max_length=50,
+                                                                   required=False,
+                                                                   label="شماره حساب صراف",
+                                                                   disabled=True,
+                                                                   initial=self.instance.dst_owner_bank_account_id)
 
     def perform_importer_point_of_view(self):
         self.add_judge_information_fields()

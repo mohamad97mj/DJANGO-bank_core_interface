@@ -6,39 +6,34 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mydjango.settings")
 
 # def run():
 user = UserProfile(
-    '1111',
+    '11',
     'محمد',
     'مجاهد'
 )
 
-user.save()
 
 owner1 = Owner(
     123,
     OwnerType.IMPORTER
 )
-owner1.save()
 
 owner2 = Owner(
     bank_account_id=456,
     owner_type=OwnerType.EXCHANGER
 )
 
-owner2.save()
 
 owner3 = Owner(
     789,
     OwnerType.EXPORTER
 )
 
-owner3.save()
 
 judge = JudgeProfile(
     '2222',
     'پرداخت نوین'
 )
 
-judge.save()
 
 normalcontract = NormalContract(
     src_owner=owner1.bank_account_id,
@@ -55,7 +50,6 @@ normalcontract = NormalContract(
     status=ContractStatus.WAITING_FOR_EXCHANGER,
 )
 
-normalcontract.save()
 
 subcontract = Subcontract(
     parent=normalcontract.id,
@@ -68,7 +62,6 @@ subcontract = Subcontract(
     status=ContractStatus.WAITING_FOR_EXPORTER,
 )
 
-subcontract.save()
 transaction = Transaction(
     owner=owner1.bank_account_id,
     otherside_owner=owner2.bank_account_id,
@@ -77,6 +70,13 @@ transaction = Transaction(
     operator_type=OperatorType.USER,
 )
 
+user.save()
+owner1.save()
+owner2.save()
+owner3.save()
+judge.save()
+normalcontract.save()
+subcontract.save()
 transaction.save()
 
 # user.owners.add(owner1)

@@ -22,6 +22,8 @@ class ContractStatus(models.TextChoices):
     CONFIRMED_BY_EXPORTER = 'CONFIRMED_BY_EXPORTER', _('تایید شده و درحال انجام توسط صادرکننده')
     DENIED_BY_EXCHANGER = 'DENIED_BY_EXCHANGER', _('رد شده توسط صراف')
     DENIED_BY_EXPORTER = 'DENIED_BY_EXPORTER', _('رد شده توسط صادرکننده')
+    PAYED_BY_IMPORTER = 'PAYED_BY_IMPORTER', _('پرداخت معامله توسط وارد کننده، در انتظار تایید واردکننده')
+    PAYED_BY_EXCHANGER = 'PAYED_BY_EXCHANGER', _('پرداخت معامله توسط صراف')
     ENDED_BY_EXCHANGER = 'ENDED_BY_EXCHANGER', _('پایان معامله توسط صراف، در انتظار تایید واردکننده')
     ENDED_BY_EXPORTER = 'ENDED_BY_EXPORTER', _('پایان معامله توسط صادرکننده')
     ENDED_BY_IMPORTER = 'CONFIRMED_BY_IMPORTER', _('تایید شده توسط واردکننده')
@@ -33,6 +35,7 @@ class JudgeVote(models.TextChoices):
     NOT_JUDGED = "NOT_JUDGED", _('هنوز داوری نشده است')
     DONE = "DONE", _('معامله انجام شده است')
     NOT_DONE = "NOT_DONE", _('معامله انجام نشده است')
+    SEMI_DONE = "SEMI_DONE", _('معامله ناقص انجام شده است')
 
 
 class SettlementType(models.TextChoices):
@@ -108,6 +111,14 @@ class Owner(models.Model):
     bank_account_id = models.IntegerField(primary_key=True)
     owner_type = models.CharField(max_length=50, choices=OwnerType.choices, default=OwnerType.IMPORTER)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for dictionary in args:
+            for key in dictionary:
+                setattr(self, key, dictionary[key])
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
+
     def owner_type_verbose(self):
         return OwnerType(self.owner_type).label
 
@@ -126,7 +137,15 @@ class UserProfile(models.Model):
 
     # owners = models.ManyToManyField(Owner)
 
-    def __str__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for dictionary in args:
+            for key in dictionary:
+                setattr(self, key, dictionary[key])
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
+
+    def __repr__(self):
         return self.national_code
 
     class Meta:
@@ -137,6 +156,14 @@ class UserProfile(models.Model):
 class JudgeProfile(models.Model):
     national_id = models.CharField(max_length=50, primary_key=True)
     name = models.CharField(max_length=255)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for dictionary in args:
+            for key in dictionary:
+                setattr(self, key, dictionary[key])
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
 
     def __str__(self):
         return self.national_id
@@ -150,12 +177,13 @@ class Contract(models.Model):
     # dst_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
     #                               , related_name="%(app_label)s_%(class)s_dst_owner"
     #                               , related_query_name="%(app_label)s_%(class)ss")
-    dst_owner = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
+    dst_owner_bank_account_id = models.IntegerField()
 
     value_in_rial = models.IntegerField()
     remittance_value = models.IntegerField()
     judge_vote = models.CharField(max_length=50, choices=JudgeVote.choices)
-    expire_date = models.CharField(max_length=50)
+    expire_date = models.BigIntegerField()
     description = models.CharField(max_length=255)
     status = models.CharField(max_length=50, choices=ContractStatus.choices)
 
@@ -177,13 +205,21 @@ class NormalContract(Contract):
     # src_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
     #                               , related_name="%(app_label)s_%(class)s_src_owner"
     #                               , related_query_name="%(app_label)s_%(class)ss")
-    src_owner = models.IntegerField()
+    src_owner_bank_account_id = models.IntegerField()
 
     remittance_currency = models.CharField(max_length=40)
     settlement_type = models.CharField(max_length=50, choices=SettlementType.choices, default=SettlementType.SINGLE)
     # judge = models.ForeignKey(JudgeProfile, on_delete=models.SET_NULL, null=True)
     judge_national_id = models.IntegerField()
     judge_name = models.CharField(max_length=255)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for dictionary in args:
+            for key in dictionary:
+                setattr(self, key, dictionary[key])
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
 
     def settlement_type_verbose(self):
         return SettlementType(self.settlement_type).label
@@ -195,7 +231,15 @@ class NormalContract(Contract):
 
 class Subcontract(Contract):
     # parent = models.ForeignKey(NormalContract, on_delete=models.CASCADE)
-    parent = models.IntegerField()
+    parent_id = models.IntegerField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for dictionary in args:
+            for key in dictionary:
+                setattr(self, key, dictionary[key])
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
 
     class Meta:
         # managed = False
@@ -204,12 +248,12 @@ class Subcontract(Contract):
 
 class Transaction(models.Model):
     # owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="owner")
-    owner = models.IntegerField()
+    src_owner_bank_account_id = models.IntegerField()
     # otherside_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="otherside_owner")
-    otherside_owner = models.IntegerField()
+    dst_owner_bank_account_id = models.IntegerField()
     value = models.IntegerField()
     # operator = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
-    operator = models.IntegerField()
+    operator_national_code = models.IntegerField()
     operator_type = models.CharField(max_length=50, choices=OperatorType.choices, default=OperatorType.USER)
     datetime = models.CharField(max_length=50)
 

@@ -37,21 +37,30 @@
         <br/>
 
 
-        {% if owner_type == 'IMPORTER' and status == "ENDED_BY_EXCHANGER" %}
-            <form class="myform small-form" style="margin-top: -75px;" method="post"
-                  action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=end">
-                <div style="margin-top: 20px">
-                    <button class="btn btn-block another-mybutton"
-                            type="submit"><span>{{ sat }}پایان معامله</span></button>
+        {% if owner_type == 'IMPORTER' %}
+            {% if status == "ENDED_BY_EXCHANGER" %}
+                <form class="myform small-form" style="margin-top: -75px;" method="post"
+                      action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=end">
+                    <div style="margin-top: 20px">
+                        <button class="btn btn-block another-mybutton"
+                                type="submit"><span>{{ sat }}پایان معامله</span></button>
+                    </div>
+                </form>
+                <form class="myform small-form" style="margin-top: -25px;" method="post"
+                      action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=claim">
+                    <div style="margin-top: 20px">
+                        <button class="btn btn-block mybutton "
+                                type="submit"><span>{{ sat }}درخواست داوری</span></button>
+                    </div>
+                </form>
+            {% elif status == "CONFIRMED_BY_EXCHANGER" %}
+                <div class="text-center">
+                    <a class="btn another-mybutton btn-block"
+                       href="{% url 'myapp:my_new_transaction' %}?role=user&user={{ user }}&account={{ owner }}"><span
+                            class="color-white">پرداخت</span></a>
                 </div>
-            </form>
-            <form class="myform small-form" style="margin-top: -25px;" method="post"
-                  action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=claim">
-                <div style="margin-top: 20px">
-                    <button class="btn btn-block mybutton "
-                            type="submit"><span>{{ sat }}درخواست داوری</span></button>
-                </div>
-            </form>
+            {% endif %}
+
         {% else %}
             {% if status == 'CONFIRMED_BY_EXCHANGER' or status == 'CONFIRMED_BY_EXPORTER' %}
                 <form style="margin-top: -75px; margin-bottom: 25px;" method="post" class="myform small-form"
@@ -63,6 +72,84 @@
                 </form>
             {% endif %}
         {% endif %}
+
+
+
+
+        {#            <div class="block-content">#}
+        {##}
+        {#                <h4>لیست تراکنش ها</h4>#}
+        {#                <h5>(جهت مشاهده جزپیات بیشتر روی شناسه تراکنش کلیک کنید)</h5>#}
+        {##}
+        {#                <form method="post" id="" class="myform user-transaction-list-form" action="">#}
+        {#                    {% csrf_token %}#}
+        {##}
+        {#                    <div class="table-responsive">#}
+        {#                        <table style="margin: auto" class="center table table-striped">#}
+        {#                            <thead>#}
+        {#                            <tr>#}
+        {#                                <th scope="col">شناسه</th>#}
+        {#                                {% if owner_type == 'EXCHANGER' %}#}
+        {#                                    <th scope="col">نوع حساب طرف دیگر تراکنش</th>#}
+        {#                                    <th scope="col">شماره حساب طرف دیگر تراکنش</th>#}
+        {#                                {% else %}#}
+        {#                                    <th scope="col">شماره حساب صراف</th>#}
+        {#                                {% endif %}#}
+        {#                                <th scope="col">نوع تراکنش</th>#}
+        {#                                <th scope="col">مبلغ به ریال</th>#}
+        {#                                <th scope="col">نوع اپراتور</th>#}
+        {#                                <th scope="col">کد ملی اپراتور</th>#}
+        {#                            </tr>#}
+        {#                            </thead>#}
+        {#                            <tbody>#}
+        {#                            {% for transaction in transactions %}#}
+        {#                                <tr>#}
+        {#                                    <th scope="row"><a#}
+        {#                                            href="{% url 'myapp:my_transaction_detail' transaction.id %}?role=user&user={{ user }}&account={{ owner }}"><u>{{ transaction.id }}</u></a>#}
+        {#                                    </th>#}
+        {#                                    {% if owner == transaction.src_owner %}#}
+        {#                                        {% if owner_type == 'EXCHANGER' %}#}
+        {#                                            <td>صادرکننده</td>#}
+        {#                                        {% endif %}#}
+        {#                                        <td>{{ transaction.dst_owner }}</td>#}
+        {#                                    {% else %}#}
+        {#                                        {% if owner_type == 'EXCHANGER' %}#}
+        {#                                            <td>وارد کننده</td>#}
+        {#                                        {% endif %}#}
+        {#                                        <td>{{ transaction.src_owner }}</td>#}
+        {#                                    {% endif %}#}
+        {##}
+        {#                                    {% if owner_type == 'IMPORTER' %}#}
+        {#                                        <td>پرداختی</td>#}
+        {#                                    {% elif owner_type == 'EXCHANGER' %}#}
+        {#                                        {% if owner == transaction.src_owner %}#}
+        {#                                            <td>پرداختی</td>#}
+        {#                                        {% else %}#}
+        {#                                            <td>واریزی</td>#}
+        {#                                        {% endif %}#}
+        {#                                    {% else %}#}
+        {#                                        <td>واریزی</td>#}
+        {#                                    {% endif %}#}
+        {##}
+        {#                                    <td>{{ transaction.value }}</td>#}
+        {#                                    <td>{{ transaction.operator_type_verbose }}</td>#}
+        {#                                    <td>{{ transaction.operator_national_code }}</td>#}
+        {#                                </tr>#}
+        {#                            {% endfor %}#}
+        {#                            </tbody>#}
+        {#                        </table>#}
+        {#                    </div>#}
+        {##}
+        {#                </form>#}
+        {##}
+        {#                {% if  owner_type == 'IMPORTER' %}#}
+        {#                    <div class="text-center" style="padding:10px ">#}
+        {#                        <a class="btn mybutton"#}
+        {#                           href="{% url 'myapp:my_new_transaction' %}?role=user&user={{ user }}&account={{ owner }}"><span#}
+        {#                                class="color-white">انجام تراکنش جدید</span></a>#}
+        {#                    </div>#}
+        {#                {% endif %}#}
+        {#            </div>#}
 
         {% if status == 'WAITING_FOR_EXCHANGER' or status == 'WAITING_FOR_EXPORTER' %}
             {% if owner_type != "IMPORTER" %}
@@ -119,7 +206,7 @@
                 <div class="text-center" style="padding:10px ">
                     <a class="btn mybutton"
                        href="{% url 'myapp:my_new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><span
-                            class="color-white">ثبت قرار داد مربوطه جدید</span></a>
+                            class="color-white">ثبت قرارداد مربوطه جدید</span></a>
                 </div>
             {% endif %}
         {% endif %}

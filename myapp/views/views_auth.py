@@ -1,3 +1,3 @@
-# from myapp.utils import *
+# from myapp.client import *
 # from myapp import forms
 

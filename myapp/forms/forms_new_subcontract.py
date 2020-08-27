@@ -8,7 +8,7 @@ class NewSubcontractForm(ModelForm):
         super().__init__(*args, **kwargs)
         # self.fields['parent'].widget = forms.HiddenInput()
         # self.fields['parent'].required = False
-        self.fields['dst_owner'].required = False
+        self.fields['dst_owner_bank_account_id'].required = False
         self.fields['value_in_rial'].required = False
         self.fields['remittance_value'].required = False
         self.fields['expire_date'].required = False
@@ -17,14 +17,14 @@ class NewSubcontractForm(ModelForm):
 
     def save(self, commit=True):
         m = super(NewSubcontractForm, self).save(commit=False)
-        m.judge_vote = JudgeVote.NOT_JUDGED
-        m.status = ContractStatus.WAITING_FOR_EXPORTER
+        # m.judge_vote = JudgeVote.NOT_JUDGED
+        # m.status = ContractStatus.WAITING_FOR_EXPORTER
         if commit:
             m.save()
         return m
 
     def clean_dst_owner(self):
-        dst_owner_bank_account_id = self.cleaned_data['dst_owner']
+        dst_owner_bank_account_id = self.cleaned_data['dst_owner_bank_account_id']
         empty_field_validator(dst_owner_bank_account_id)
 
         try:
@@ -60,7 +60,7 @@ class NewSubcontractForm(ModelForm):
         model = Subcontract
         fields = [
             # 'parent',
-            'dst_owner',
+            'dst_owner_bank_account_id',
             'value_in_rial',
             'remittance_value',
             'expire_date',
@@ -72,8 +72,8 @@ class NewSubcontractForm(ModelForm):
             'value_in_rial': 'مبلغ به ریال',
             'remittance_value': 'مبلغ حواله',
             'description': 'توضیحات',
-            'src_owner': 'شماره حساب صراف',
-            'dst_owner': 'شماره حساب صادرکننده',
+            'src_owner_bank_account_id': 'شماره حساب صراف',
+            'dst_owner_bank_account_id': 'شماره حساب صادرکننده',
         }
         help_texts = {
             'expire_date': 'با فرمت YYYY/MM/DD',

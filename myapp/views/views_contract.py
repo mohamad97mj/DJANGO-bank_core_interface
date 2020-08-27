@@ -32,7 +32,9 @@ class MyNewContractView(APIView):
     def get(self, request, format=None):
         national_code = request.GET.get('user', '')
         bank_account_id = request.GET.get('account', '')
+        # user = load_user(national_code)
         user = get_user(national_code)
+        # owner = load_owner(bank_account_id)
         owner = get_owner(bank_account_id)
         new_contract_form = forms.NewContractForm(src_owner=owner)
 
@@ -45,7 +47,9 @@ class MyNewContractView(APIView):
         national_code = request.query_params['user']
         bank_account_id = request.query_params['account']
 
+        # user = load_user(national_code)
         user = get_user(national_code)
+        # owner = load_owner(bank_account_id)
         owner = get_owner(bank_account_id)
 
         if format == 'html':
@@ -63,7 +67,7 @@ class MyNewContractView(APIView):
                 return render(request, 'myapp/new-contract.html', context)
             # return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:  # TODO test later
-            serializer = serializers.ContractSerializer(data=data)
+            serializer = NormalContractSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -91,7 +95,7 @@ class MyContractListView(APIView):
         role = request.GET.get('role', '')
         if role == 'judge':
             judge_national_id = request.GET.get('judge', '')
-            judge_profile = get_judge(pk=judge_national_id)
+            judge_profile = load_judge(pk=judge_national_id)
             # contracts = judge_profile.contract_set.all()
             not_judged_contracts = judge_profile.normalcontract_set.filter(Q(status=ContractStatus.CLAIMED_BY_IMPORTER))
             judged_contracts = judge_profile.normalcontract_set.filter(Q(status=ContractStatus.JUDGED))
@@ -102,9 +106,9 @@ class MyContractListView(APIView):
 
         elif role == 'user':
             user_national_code = request.GET.get('user', '')
-            user_profile = get_user(pk=user_national_code)
+            user_profile = load_user(pk=user_national_code)
             contracts = self.get_user_list_of_contracts(user_profile)
-            serializer = serializers.ContractSerializer(contracts, many=True)
+            serializer = NormalContractSerializer(contracts, many=True)
             data = serializer.data
             if format == 'json':
                 return Response(data)
@@ -122,11 +126,15 @@ class MyContractDetailView(APIView):
             national_code = request.GET.get('user', '')
             bank_account_id = request.GET.get('account', '')
 
-            user = get_user(pk=national_code)
-            owner = get_owner(pk=bank_account_id)
+            # user = load_user(pk=national_code)
+            user = get_user(national_code)
+            # owner = load_owner(pk=bank_account_id)
+            owner = get_owner(bank_account_id)
+
             # TODO check if the account is for this user
 
             if owner.owner_type == OwnerType.EXPORTER:
+                # contract = load_subcontract(pk)
                 contract = get_subcontract(pk)
                 if format == 'html':
                     contract_detail_form = forms.SubcontractDetailForm(instance=contract)
@@ -135,7 +143,8 @@ class MyContractDetailView(APIView):
                     contract_detail_form.perform_exporter_point_of_view()
 
             else:
-                contract = get_contract(pk)
+                # contract = load_contract(pk)
+                contract = get_normal_contract(pk)
                 if format == 'html':
                     contract_detail_form = forms.ContractDetailForm(instance=contract)
                     if contract.status == ContractStatus.WAITING_FOR_EXCHANGER:
@@ -159,14 +168,14 @@ class MyContractDetailView(APIView):
             if format == 'html':
                 return Response(context, template_name='myapp/contract-detail.html')
 
-            serializer = serializers.ContractSerializer(contract)
+            serializer = NormalContractSerializer(contract)
             data = serializer.data
             return Response(data)
 
         else:
             national_id = request.GET.get('judge', '')
-            judge = get_judge(national_id)
-            contract = get_contract(pk)
+            judge = load_judge(national_id)
+            contract = load_contract(pk)
 
             judged_subcontracts = contract.subcontract_set.filter(Q(status=ContractStatus.JUDGED))
             not_judged_subcontracts = contract.subcontract_set.filter(Q(status=ContractStatus.CLAIMED_BY_IMPORTER))
@@ -182,7 +191,7 @@ class MyContractDetailView(APIView):
                 return Response(context, template_name='myapp/judge-contract-detail.html')
 
             elif to == 'view':
-                serializer = serializers.ContractSerializer(contract)
+                serializer = NormalContractSerializer(contract)
                 data = serializer.data
                 return Response(data)
 
@@ -195,11 +204,11 @@ class MyContractDetailView(APIView):
             bank_account_id = request.GET.get('account', '')
             action = request.GET.get('action')
 
-            user = get_user(pk=national_code)
-            owner = get_owner(pk=bank_account_id)
+            user = load_user(pk=national_code)
+            owner = load_owner(path_variable=bank_account_id)
 
             if owner.owner_type == OwnerType.IMPORTER:
-                contract = get_contract(pk)
+                contract = load_contract(pk)
                 if action == ContractAction.END.value:
                     contract.status = ContractStatus.ENDED_BY_IMPORTER
                 elif action == ContractAction.CLAIM.value:
@@ -210,7 +219,7 @@ class MyContractDetailView(APIView):
                     contract_detail_form = forms.ContractDetailForm(instance=contract)
 
             elif owner.owner_type == OwnerType.EXCHANGER:
-                contract = get_contract(pk)
+                contract = load_contract(pk)
                 if action == 'confirm':
                     contract.status = ContractStatus.CONFIRMED_BY_EXCHANGER
                 elif action == 'deny':
@@ -223,7 +232,7 @@ class MyContractDetailView(APIView):
                     contract_detail_form = forms.ContractDetailForm(instance=contract)
 
             else:
-                contract = get_subcontract(pk)
+                contract = load_subcontract(pk)
                 if action == 'confirm':
                     contract.status = ContractStatus.CONFIRMED_BY_EXPORTER
                 elif action == 'deny':
@@ -249,7 +258,7 @@ class MyContractDetailView(APIView):
 
                 return Response(context, template_name='myapp/contract-detail.html')
 
-            serializer = serializers.ContractSerializer(contract)
+            serializer = NormalContractSerializer(contract)
             data = serializer.data
             return Response(data)
 

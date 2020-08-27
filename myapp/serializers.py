@@ -46,11 +46,12 @@ class JudgeSerializer(serializers.ModelSerializer):
         fields = ['national_id', 'name']
 
 
-class ContractSerializer(serializers.ModelSerializer):
+class NormalContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = NormalContract
         fields = ['id', 'expire_date', 'settlement_type', 'value_in_rial', 'remittance_currency', 'remittance_value',
-                  'judge', 'src_owner', 'dst_owner', 'status', 'description', 'judge_vote']
+                  'judge_name', 'judge_national_id', 'src_owner_bank_account_id', 'dst_owner_bank_account_id', 'status',
+                  'description', 'judge_vote']
 
 
 class SubcontractSerializer(serializers.ModelSerializer):

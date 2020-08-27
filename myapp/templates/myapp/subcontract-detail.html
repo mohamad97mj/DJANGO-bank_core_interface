@@ -32,7 +32,7 @@
             <form style="margin-top: -50px" method="post"
                   action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}">
                 <div class="form-check form-check-inline">
-                    <label for="{{ field.id_for_label }}">آیا قرار داد را تایید می کنید؟</label>
+                    <label for="{{ field.id_for_label }}">آیا قرارداد را تایید می کنید؟</label>
                     {{ field|add_class:'form-control' }}
                     <label class="form-check-label" for="id_radio1">بله</label>
                     <input style="display: inline" class="form-check-input" type="radio" name="isconfirmed"

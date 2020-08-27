@@ -39,16 +39,16 @@ class SubcontractDetailForm(ModelForm):
     #     self.fields['status'].widget = forms.TextInput()
 
     def add_judge_information_fields(self):
-        self.fields['judge'] = forms.CharField(max_length=50,
-                                               label="شناسه ملی داور",
-                                               disabled=True,
-                                               initial=self.instance.parent.judge)
+        self.fields['judge_national_id'] = forms.CharField(max_length=50,
+                                                           label="شناسه ملی داور",
+                                                           disabled=True,
+                                                           initial=self.instance.parent_id.judge_national_id)
 
         self.fields['judge_name'] = forms.CharField(max_length=100,
                                                     required=False,
                                                     label="نام داور",
                                                     disabled=True,
-                                                    initial=self.instance.parent.judge.name)
+                                                    initial=self.instance.parent_id.judge_national_id.name)
 
         self.order_fields(self.field_order)
 
@@ -56,20 +56,20 @@ class SubcontractDetailForm(ModelForm):
         self.fields['remittance_currency'] = forms.CharField(max_length=40,
                                                              label='ارز حواله',
                                                              disabled=True,
-                                                             initial=self.instance.parent.remittance_currency)
+                                                             initial=self.instance.parent_id.remittance_currency)
         self.order_fields(self.field_order)
 
     def add_src_owner_field(self):
-        self.fields['src_owner'] = forms.CharField(max_length=50,
-                                                   label="شماره حساب صراف",
-                                                   disabled=True,
-                                                   initial=self.instance.parent.dst_owner)
+        self.fields['src_owner_bank_account_id'] = forms.CharField(max_length=50,
+                                                                   label="شماره حساب صراف",
+                                                                   disabled=True,
+                                                                   initial=self.instance.parent_id.dst_owner_bank_account_id)
 
     def add_dst_owner_field(self):
-        self.fields['dst_owner'] = forms.CharField(max_length=50,
-                                                   label="شماره حساب صادرکننده",
-                                                   disabled=True,
-                                                   initial=self.instance.dst_owner)
+        self.fields['dst_owner_bank_account_id'] = forms.CharField(max_length=50,
+                                                                   label="شماره حساب صادرکننده",
+                                                                   disabled=True,
+                                                                   initial=self.instance.dst_owner_bank_account_id)
 
     def perform_exchanger_point_of_view(self):
         self.add_dst_owner_field()

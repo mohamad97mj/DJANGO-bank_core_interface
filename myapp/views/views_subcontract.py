@@ -4,7 +4,7 @@ from myapp import forms
 
 class SubcontractListView(generics.ListAPIView):
     queryset = Subcontract.objects.all()
-    serializer_class = serializers.SubcontractSerializer
+    serializer_class = SubcontractSerializer
     pass
 
 
@@ -15,9 +15,9 @@ class MyNewSubcontractView(APIView):
         national_code = request.GET.get('user', '')
         bank_account_id = request.GET.get('account', '')
         contract_id = request.GET.get('contract', '')
-        user = get_user(national_code)
-        owner = get_owner(bank_account_id)
-        contract = get_contract(contract_id)
+        user = load_user(national_code)
+        owner = load_owner(bank_account_id)
+        contract = load_contract(contract_id)
         new_subcontract_form = forms.NewSubcontractForm()
         context = {'new_subcontract_form': new_subcontract_form, 'user': user.national_code,
                    'owner': owner.bank_account_id, 'contract': contract.id}
@@ -32,15 +32,15 @@ class MyNewSubcontractView(APIView):
         bank_account_id = request.query_params['account']
         contract_id = request.query_params['contract']
 
-        user = get_user(national_code)
-        owner = get_owner(bank_account_id)
-        contract = get_contract(contract_id)
+        user = load_user(national_code)
+        owner = load_owner(bank_account_id)
+        contract = load_contract(contract_id)
 
         if format == 'html':
             new_subcontract_form = forms.NewSubcontractForm(data=data)
             if new_subcontract_form.is_valid():
                 new_subcontract = new_subcontract_form.save(commit=False)
-                new_subcontract.parent = contract
+                new_subcontract.parent_id = contract
                 new_subcontract.save()
                 query_param = '?' + 'role=user' + '&' + 'user=' + user.national_code + '&' + 'account=' \
                               + str(owner.bank_account_id) + "&" + 'contract=' + str(contract.id)
@@ -52,7 +52,7 @@ class MyNewSubcontractView(APIView):
                 return render(request, 'myapp/new-subcontract.html', context)
             # return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:  # TODO test later
-            serializer = serializers.ContractSerializer(data=data)
+            serializer = NormalContractSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -69,9 +69,9 @@ class MySubcontractDetailView(APIView):
     def get(self, request, pk, format=None):
         role = request.GET.get('role', '')
         contract_id = request.GET.get('contract', '')
-        subcontract = get_subcontract(pk)
+        subcontract = load_subcontract(pk)
         subcontract_detail_form = forms.SubcontractDetailForm(instance=subcontract)
-        contract = get_contract(contract_id)
+        contract = load_contract(contract_id)
 
         format = request.accepted_renderer.format
 
@@ -79,8 +79,8 @@ class MySubcontractDetailView(APIView):
             if format == 'html':
                 national_code = request.GET.get('user', '')
                 bank_account_id = request.GET.get('account', '')
-                user = get_user(national_code)
-                owner = get_owner(bank_account_id)
+                user = load_user(national_code)
+                owner = load_owner(bank_account_id)
                 if owner.owner_type == OwnerType.EXCHANGER:  # not necessary
                     subcontract_detail_form.perform_exchanger_point_of_view()
 
@@ -95,7 +95,7 @@ class MySubcontractDetailView(APIView):
         elif role == 'judge':
             national_id = request.GET.get('judge', '')
             to = request.GET.get('to', '')
-            judge = get_judge(national_id)
+            judge = load_judge(national_id)
             if format == 'html':
                 subcontract_detail_form.perform_judge_point_of_view()
                 context = {'judge': judge.national_id, 'contract': contract.id, 'subcontract': subcontract.id,
@@ -109,15 +109,15 @@ class MySubcontractDetailView(APIView):
 
     def post(self, request, pk, format=None):
         role = request.GET.get('role', '')
-        subcontract = get_subcontract(pk)
+        subcontract = load_subcontract(pk)
         contract_id = request.GET.get('contract', '')
-        contract = get_contract(contract_id)
+        contract = load_contract(contract_id)
         data = request.data
         format = request.accepted_renderer.format
 
         if role == 'judge':
             national_id = request.GET.get('judge', '')
-            judge = get_judge(national_id)
+            judge = load_judge(national_id)
             # to = request.GET.get('to', '')
             vote = data['vote']
             subcontract.status = ContractStatus.JUDGED
