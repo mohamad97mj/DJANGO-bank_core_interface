@@ -30,9 +30,9 @@ class SubcontractDetailForm(ModelForm):
 
     # this method is called just for exporter point of view
 
-    def hide_judge_vote_and_status(self):
+    def hide_judge_vote(self):
         self.fields['judge_vote'].widget = forms.HiddenInput()
-        self.fields['status'].widget = forms.HiddenInput()
+        # self.fields['status'].widget = forms.HiddenInput()
 
     # def display_judge_vote_and_status(self):
     #     self.fields['judge_vote'].widget = forms.TextInput()

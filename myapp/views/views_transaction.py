@@ -11,7 +11,7 @@ from myapp import forms
 #         queryset = Transaction.objects.none()
 #         for owner in instance.owners.all():
 #             queryset = queryset | Transaction.objects.filter(
-#                 Q(owner=owner.bank_account_id) | Q(otherside_owner=owner.bank_account_id))
+#                 Q(owner=owner.owner_bank_account_id) | Q(otherside_owner=owner.owner_bank_account_id))
 #
 #         return queryset
 #
@@ -35,7 +35,7 @@ class MyNewTransactionView(APIView):
         bank_account_id = request.GET.get('account', '')
         # user = load_user(national_code)
         user = get_user(national_code)
-        # owner = load_owner(bank_account_id)
+        # owner = load_owner(owner_bank_account_id)
         owner = get_owner(bank_account_id)
         new_transaction_form = forms.NewTransactionForm(owner=owner, operator=user.national_code)
 
@@ -49,8 +49,10 @@ class MyNewTransactionView(APIView):
         national_code = request.query_params['user']
         bank_account_id = request.query_params['account']
 
-        user = load_user(national_code)
-        owner = load_owner(bank_account_id)
+        # user = load_user(national_code)
+        user = get_user(national_code)
+        # owner = load_owner(owner_bank_account_id)
+        owner = get_owner(bank_account_id)
 
         if format == 'html':
             new_transaction_form = forms.NewTransactionForm(data=data,
@@ -86,16 +88,18 @@ class MyTransactionDetailView(APIView):
         role = request.GET.get('role', '')
         national_code = request.GET.get('user', '')
         bank_account_id = request.GET.get('account', '')
-        user = load_user(pk=national_code)
-        owner = load_owner(path_variable=bank_account_id)
+        # user = load_user(pk=national_code)
+        user = get_user(national_code)
+        # owner = load_owner(owner_bank_account_id)
+        owner = get_owner(bank_account_id)
         transaction = load_transaction(pk)
         transaction_detail_form = forms.TransactionDetailForm(instance=transaction)
 
         transaction_detail_form.fields['dst_owner_bank_account_id'].label = "hello"
 
-        if owner.owner_type != OWNER_TYPE.EXCHANGER:
+        if owner.type != OWNER_TYPE.EXCHANGER:
             transaction_detail_form.fields['dst_owner_bank_account_id'].label = 'شماره حساب صراف'
-            if owner.owner_type == OwnerType.IMPORTER:
+            if owner.type == OwnerType.IMPORTER:
                 transaction_detail_form.fields['transaction_type'].initial = '1'
             else:
                 transaction_detail_form.fields['transaction_type'].initial = '2'

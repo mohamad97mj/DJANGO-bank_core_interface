@@ -13,12 +13,20 @@ class LoginForm(Form):
         username = self.cleaned_data.get('username')
         role = self.cleaned_data['role']
         if role == 'user':
-            try:
-                return UserProfile.objects.get(pk=username).national_code
-            except UserProfile.DoesNotExist:
+            user = get_user(username)
+            if user:
+                return user.national_code
+            # try:
+            #     return UserProfile.objects.get(pk=username).national_code
+            # except UserProfile.DoesNotExist:
+            else:
                 raise forms.ValidationError("خطا: کاربر با این مشخصات در سامانه ثبت نشده است!")
         else:
-            try:
-                return JudgeProfile.objects.get(pk=username).national_id
-            except JudgeProfile.DoesNotExist:
+            judge = get_judge(username)
+            if judge:
+                return judge.national_id
+            # try:
+            #     return JudgeProfile.objects.get(pk=username).national_id
+            # except JudgeProfile.DoesNotExist:
+            else:
                 raise forms.ValidationError("خطا: داور با این مشخصات در سامانه ثبت نشده است!")

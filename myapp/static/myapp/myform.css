@@ -1,7 +1,7 @@
 
 .myform {
     text-align: right;
-    margin: 40px auto;
+    margin: 40px auto 0 auto;
 }
 
 #bootstrap-overwrite .error-message {
@@ -22,21 +22,25 @@
     width: 250px;
 }
 
+.margin-auto {
+    margin: auto;
+}
+
 .user-profile-form {
     width: 250px;
 }
 
 
-.user-accounts-list-form {
+.user-accounts-list-table {
     width: 250px;
 }
 
 
-.user-contracts-list-form {
+.user-contracts-list-table {
     width: 90%;
 }
 
-.user-transaction-list-form {
+.user-transaction-list-table {
     width: 90%;
 }
 
@@ -52,18 +56,23 @@
     border-radius: 0;
 }
 
-.another-mybutton{
+.another-mybutton {
     background-color: #66f866;
     color: white;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
-.mybutton:hover .another-mybutton:hover {
-    background-color: #5d2f77;
-    color: white;
+#bootstrap-overwrite .mybutton:hover {
+    /*color: white;*/
+    background-color: black;
 }
 
-.color-white{
+#bootstrap-overwrite .another-mybutton:hover {
+    /*color: white;*/
+    background-color: black;
+}
+
+.color-white {
     color: white;
 }
 

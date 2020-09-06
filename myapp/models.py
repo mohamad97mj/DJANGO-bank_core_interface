@@ -9,33 +9,40 @@ from enum import Enum
 
 
 class ContractAction(Enum):
-    CONFIRM = "confirm"
+    CHARGE = "charge"
+    PAY = "pay"
+    ACCEPT = "accept"
     REJECT = "reject"
-    END = 'end'
+    CONFIRM = "confirm"
+    DENY = "deny"
     CLAIM = 'claim'
+    END = 'end'
 
 
 class ContractStatus(models.TextChoices):
-    WAITING_FOR_EXCHANGER = 'WAITING_FOR_EXCHANGER', _('در انتظار تایید صراف')
-    WAITING_FOR_EXPORTER = 'WAITING_FOR_EXPORTER', _('در انتظار تایید صادرکننده')
-    CONFIRMED_BY_EXCHANGER = 'CONFIRMED_BY_EXCHANGER', _('تایید شده و در حال انجام توسط صراف')
-    CONFIRMED_BY_EXPORTER = 'CONFIRMED_BY_EXPORTER', _('تایید شده و درحال انجام توسط صادرکننده')
+    NONE = 'NONE', _('ایجاد نشده')
+    WAITING_FOR_EXCHANGER_ACCEPTANCE = 'WAITING_FOR_EXCHANGER_ACCEPTANCE', _('در انتظار پذیرش صراف')
+    WAITING_FOR_EXPORTER_ACCEPTANCE = 'WAITING_FOR_EXPORTER_ACCEPTANCE', _('در انتظار پدیرش صادرکننده')
+    WAITING_FOR_IMPORTER_PAYMENT = 'WAITING_FOR_IMPORTER_PAYMENT', _('پذیرفته شده توسط صراف، در انتظار پرداخت واردکننده')
+    WAITING_FOR_EXCHANGER_PAYMENT = 'WAITING_FOR_EXCHANGER_PAYMENT', _('پذیرفته شده توسط صادرکننده، در انتظار پرداخت صراف')
+    REJECTED_BY_EXCHANGER = 'REJECTED_BY_EXCHANGER', _('رد شده توسط صراف')
+    REJECTED_BY_EXPORTER = 'REJECTED_BY_EXPORTER', _('رد شده توسط صادرکننده')
+    DOING_BY_EXCHANGER = 'DOING_BY_EXCHANGER', _('پرداخت شده توسط وارد کننده، در حال انجام توسط صراف')
+    DOING_BY_EXPORTER = 'DOING_BY_EXPORTER', _('پرداخت شده توسط صراف، در حال انجام توسط صادرکننده')
+    WAITING_FOR_IMPORTER_CONFIRMATION = 'WAITING_FOR_IMPORTER_CONFIRMATION', _('پایان قرارداد توسط صراف، در انتظار تایید واردکننده')
+    WAITING_FOR_EXCHANGER_CONFIRMATION = 'WAITING_FOR_EXCHANGER_CONFIRMATION', _('پایان قرارداد توسط صادرکننده، در انتظار تایید صراف')
+    CONFIRMED_BY_EXCHANGER = 'CONFIRMED_BY_EXCHANGER', _('تایید شده توسط صراف')
     DENIED_BY_EXCHANGER = 'DENIED_BY_EXCHANGER', _('رد شده توسط صراف')
-    DENIED_BY_EXPORTER = 'DENIED_BY_EXPORTER', _('رد شده توسط صادرکننده')
-    PAYED_BY_IMPORTER = 'PAYED_BY_IMPORTER', _('پرداخت معامله توسط وارد کننده، در انتظار تایید واردکننده')
-    PAYED_BY_EXCHANGER = 'PAYED_BY_EXCHANGER', _('پرداخت معامله توسط صراف')
-    ENDED_BY_EXCHANGER = 'ENDED_BY_EXCHANGER', _('پایان معامله توسط صراف، در انتظار تایید واردکننده')
-    ENDED_BY_EXPORTER = 'ENDED_BY_EXPORTER', _('پایان معامله توسط صادرکننده')
-    ENDED_BY_IMPORTER = 'CONFIRMED_BY_IMPORTER', _('تایید شده توسط واردکننده')
+    CONFIRMED_BY_IMPORTER = 'CONFIRMED_BY_IMPORTER', _('تایید شده توسط واردکننده')
     CLAIMED_BY_IMPORTER = 'CLAIMED_BY_IMPORTER', _('رد شده توسط واردکننده، در انتظار داوری')
     JUDGED = 'JUDGED', _('داوری شده است')
 
 
 class JudgeVote(models.TextChoices):
     NOT_JUDGED = "NOT_JUDGED", _('هنوز داوری نشده است')
-    DONE = "DONE", _('معامله انجام شده است')
-    NOT_DONE = "NOT_DONE", _('معامله انجام نشده است')
-    SEMI_DONE = "SEMI_DONE", _('معامله ناقص انجام شده است')
+    DONE = "DONE", _('قرارداد انجام شده است')
+    NOT_DONE = "NOT_DONE", _('قرارداد انجام نشده است')
+    SEMI_DONE = "SEMI_DONE", _('قرارداد ناقص انجام شده است')
 
 
 class SettlementType(models.TextChoices):
@@ -108,8 +115,8 @@ class AuthProfile(AbstractBaseUser, PermissionsMixin):
 
 
 class Owner(models.Model):
-    bank_account_id = models.IntegerField(primary_key=True)
-    owner_type = models.CharField(max_length=50, choices=OwnerType.choices, default=OwnerType.IMPORTER)
+    bank_account_id = models.CharField(max_length=255, primary_key=True)
+    type = models.CharField(max_length=255, choices=OwnerType.choices, default=OwnerType.IMPORTER)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -120,7 +127,7 @@ class Owner(models.Model):
             setattr(self, key, kwargs[key])
 
     def owner_type_verbose(self):
-        return OwnerType(self.owner_type).label
+        return OwnerType(self.type).label
 
     def __str__(self):
         return str(self.bank_account_id)
@@ -154,7 +161,7 @@ class UserProfile(models.Model):
 
 
 class JudgeProfile(models.Model):
-    national_id = models.CharField(max_length=50, primary_key=True)
+    national_id = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)
 
     def __init__(self, *args, **kwargs):
@@ -164,6 +171,9 @@ class JudgeProfile(models.Model):
                 setattr(self, key, dictionary[key])
         for key in kwargs:
             setattr(self, key, kwargs[key])
+
+    def __repr__(self):
+        return self.national_id
 
     def __str__(self):
         return self.national_id
@@ -178,14 +188,14 @@ class Contract(models.Model):
     #                               , related_name="%(app_label)s_%(class)s_dst_owner"
     #                               , related_query_name="%(app_label)s_%(class)ss")
     id = models.IntegerField(primary_key=True)
-    dst_owner_bank_account_id = models.IntegerField()
+    dst_owner_bank_account_id = models.CharField(max_length=255)
 
     value_in_rial = models.IntegerField()
     remittance_value = models.IntegerField()
-    judge_vote = models.CharField(max_length=50, choices=JudgeVote.choices)
+    judge_vote = models.CharField(max_length=255, choices=JudgeVote.choices)
     expire_date = models.BigIntegerField()
     description = models.CharField(max_length=255)
-    status = models.CharField(max_length=50, choices=ContractStatus.choices)
+    status = models.CharField(max_length=255, choices=ContractStatus.choices)
 
     def judge_vote_verbose(self):
         return JudgeVote(self.judge_vote).label
@@ -205,12 +215,12 @@ class NormalContract(Contract):
     # src_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
     #                               , related_name="%(app_label)s_%(class)s_src_owner"
     #                               , related_query_name="%(app_label)s_%(class)ss")
-    src_owner_bank_account_id = models.IntegerField()
+    src_owner_bank_account_id = models.CharField(max_length=255)
 
-    remittance_currency = models.CharField(max_length=40)
-    settlement_type = models.CharField(max_length=50, choices=SettlementType.choices, default=SettlementType.SINGLE)
+    remittance_currency = models.CharField(max_length=255)
+    settlement_type = models.CharField(max_length=255, choices=SettlementType.choices, default=SettlementType.SINGLE)
     # judge = models.ForeignKey(JudgeProfile, on_delete=models.SET_NULL, null=True)
-    judge_national_id = models.IntegerField()
+    judge_national_id = models.CharField(max_length=255)
     judge_name = models.CharField(max_length=255)
 
     def __init__(self, *args, **kwargs):
@@ -248,14 +258,15 @@ class Subcontract(Contract):
 
 class Transaction(models.Model):
     # owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="owner")
-    src_owner_bank_account_id = models.IntegerField()
+    src_owner_bank_account_id = models.CharField(max_length=255)
     # otherside_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="otherside_owner")
-    dst_owner_bank_account_id = models.IntegerField()
+    dst_owner_bank_account_id = models.CharField(max_length=255)
     value = models.IntegerField()
     # operator = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
-    operator_national_code = models.IntegerField()
-    operator_type = models.CharField(max_length=50, choices=OperatorType.choices, default=OperatorType.USER)
-    datetime = models.CharField(max_length=50)
+    operator_national_code = models.CharField(max_length=255)
+    operator_type = models.CharField(max_length=255, choices=OperatorType.choices, default=OperatorType.USER)
+    datetime = models.CharField(max_length=255)
+    contract_id = models.IntegerField()
 
     def operator_type_verbose(self):
         return OperatorType(self.operator_type).label

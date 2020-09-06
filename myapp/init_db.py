@@ -5,12 +5,17 @@ from myapp.models import *
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mydjango.settings")
 
 # def run():
+# user = UserProfile({
+#     'national_code': '11',
+#     'first_name': 'محمد',
+#     'last_name': "مجاهد",
+# })
+
 user = UserProfile(
     '11',
     'محمد',
-    'مجاهد'
+    "مجاهد",
 )
-
 
 owner1 = Owner(
     123,
@@ -22,18 +27,15 @@ owner2 = Owner(
     owner_type=OwnerType.EXCHANGER
 )
 
-
 owner3 = Owner(
     789,
     OwnerType.EXPORTER
 )
 
-
 judge = JudgeProfile(
     '2222',
     'پرداخت نوین'
 )
-
 
 normalcontract = NormalContract(
     src_owner=owner1.bank_account_id,
@@ -46,10 +48,9 @@ normalcontract = NormalContract(
     judge_name="پرداخت نوین",
     judge_vote=JudgeVote.NOT_JUDGED,
     expire_date='1400/05/11',
-    description='یک معامله برای تست',
+    description='یک قرارداد برای تست',
     status=ContractStatus.WAITING_FOR_EXCHANGER,
 )
-
 
 subcontract = Subcontract(
     parent=normalcontract.id,
@@ -58,7 +59,7 @@ subcontract = Subcontract(
     remittance_value='20',
     judge_vote=JudgeVote.NOT_JUDGED,
     expire_date=datetime.datetime.now(),
-    description='یک زیر معامله برای تست',
+    description='یک زیر قرارداد برای تست',
     status=ContractStatus.WAITING_FOR_EXPORTER,
 )
 

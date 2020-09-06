@@ -15,9 +15,12 @@ class MyNewSubcontractView(APIView):
         national_code = request.GET.get('user', '')
         bank_account_id = request.GET.get('account', '')
         contract_id = request.GET.get('contract', '')
-        user = load_user(national_code)
-        owner = load_owner(bank_account_id)
-        contract = load_contract(contract_id)
+        # user = load_user(national_code)
+        user = get_user(national_code)
+        # owner = load_owner(owner_bank_account_id)
+        owner = get_owner(bank_account_id)
+        # contract = load_contract(normal_contract_id)
+        contract = get_contract(contract_id)
         new_subcontract_form = forms.NewSubcontractForm()
         context = {'new_subcontract_form': new_subcontract_form, 'user': user.national_code,
                    'owner': owner.bank_account_id, 'contract': contract.id}
@@ -32,8 +35,10 @@ class MyNewSubcontractView(APIView):
         bank_account_id = request.query_params['account']
         contract_id = request.query_params['contract']
 
-        user = load_user(national_code)
-        owner = load_owner(bank_account_id)
+        # user = load_user(national_code)
+        user = get_user(national_code)
+        # owner = load_owner(owner_bank_account_id)
+        owner = get_owner(bank_account_id)
         contract = load_contract(contract_id)
 
         if format == 'html':
@@ -79,9 +84,11 @@ class MySubcontractDetailView(APIView):
             if format == 'html':
                 national_code = request.GET.get('user', '')
                 bank_account_id = request.GET.get('account', '')
-                user = load_user(national_code)
-                owner = load_owner(bank_account_id)
-                if owner.owner_type == OwnerType.EXCHANGER:  # not necessary
+                user = get_user(national_code)
+                # user = load_user(national_code)
+                owner = get_owner(bank_account_id)
+                # owner = load_owner(owner_bank_account_id)
+                if owner.type == OwnerType.EXCHANGER:  # not necessary
                     subcontract_detail_form.perform_exchanger_point_of_view()
 
                 context = {'user': user.national_code, 'owner': owner.bank_account_id, 'contract': contract.id,
@@ -95,7 +102,8 @@ class MySubcontractDetailView(APIView):
         elif role == 'judge':
             national_id = request.GET.get('judge', '')
             to = request.GET.get('to', '')
-            judge = load_judge(national_id)
+            # judge = load_judge(national_id)
+            judge = get_judge(national_id)
             if format == 'html':
                 subcontract_detail_form.perform_judge_point_of_view()
                 context = {'judge': judge.national_id, 'contract': contract.id, 'subcontract': subcontract.id,
@@ -109,15 +117,18 @@ class MySubcontractDetailView(APIView):
 
     def post(self, request, pk, format=None):
         role = request.GET.get('role', '')
-        subcontract = load_subcontract(pk)
+        # subcontract = load_subcontract(pk)
+        subcontract = Get_subcontract(pk)
         contract_id = request.GET.get('contract', '')
-        contract = load_contract(contract_id)
+        # contract = load_contract(normal_contract_id)
+        contract = get_contract(contract_id)
         data = request.data
         format = request.accepted_renderer.format
 
         if role == 'judge':
             national_id = request.GET.get('judge', '')
-            judge = load_judge(national_id)
+            # judge = load_judge(national_id)
+            judge = get_judge(national_id)
             # to = request.GET.get('to', '')
             vote = data['vote']
             subcontract.status = ContractStatus.JUDGED

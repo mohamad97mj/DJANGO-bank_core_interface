@@ -1,3 +1,7 @@
+from myapp.models import *
+from django.http import Http404
+
+
 def load_owner(pk):
     try:
         return Owner.objects.get(pk=pk)

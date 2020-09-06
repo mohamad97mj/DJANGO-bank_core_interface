@@ -11,7 +11,7 @@ class NewTransactionForm(ModelForm):
         self.fields['operator_national_code'].widget = forms.HiddenInput()
         self.fields['operator_national_code'].initial = operator
         self.fields['dst_owner_bank_account_id'].required = False
-        if owner.owner_type == OwnerType.IMPORTER:
+        if owner.type == OwnerType.IMPORTER:
             self.fields['dst_owner_bank_account_id'].label = "شماره حساب صراف"
         else:
             self.fields['dst_owner_bank_account_id'].label = "شماره حساب صادرکننده"
@@ -24,19 +24,19 @@ class NewTransactionForm(ModelForm):
 
         try:
             dst_owner = Owner.objects.get(pk=dst_owner_bank_account_id)
-            if self.src_owner.owner_type == OwnerType.IMPORTER:
-                if dst_owner.owner_type == OwnerType.EXCHANGER:
+            if self.src_owner.type == OwnerType.IMPORTER:
+                if dst_owner.type == OwnerType.EXCHANGER:
                     return dst_owner.bank_account_id
                 else:
                     raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
-            elif self.src_owner.owner_type == OwnerType.EXCHANGER:
-                if dst_owner.owner_type == OwnerType.EXPORTER:
+            elif self.src_owner.type == OwnerType.EXCHANGER:
+                if dst_owner.type == OwnerType.EXPORTER:
                     return dst_owner.bank_account_id
                 else:
                     raise forms.ValidationError("خطا: صادرکننده با این مشخصات در سامانه ثبت نشده است!")
 
         except Owner.DoesNotExist:
-            if self.src_owner.owner_type == OwnerType.IMPORTER:
+            if self.src_owner.type == OwnerType.IMPORTER:
                 raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
             else:
                 raise forms.ValidationError("خطا: صادرکننده با این مشخصات در سامانه ثبت نشده است!")
@@ -48,7 +48,7 @@ class NewTransactionForm(ModelForm):
 
     def save(self, commit=True):
         m = super(NewTransactionForm, self).save(commit=False)
-        m.owner_type = OwnerType.EXCHANGER
+        m.type = OwnerType.EXCHANGER
         m.operator_type = OperatorType.USER
         if commit:
             m.save()

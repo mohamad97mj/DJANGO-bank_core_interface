@@ -2,10 +2,27 @@ from .utils import *
 
 
 class NewContractForm(ModelForm):
+    expire_date = forms.CharField(required=False,
+                                  label="تاریخ اعتبار",
+                                  widget=forms.TextInput(attrs={'placeholder': '1400/05/11'}))
+
+    field_order = ['dst_owner_bank_account_id',
+                   'value_in_rial',
+                   'remittance_currency',
+                   'remittance_value',
+                   'settlement_type',
+                   'judge_name',
+                   'judge_national_id',
+                   'expire_date',
+                   'status',
+                   'description',
+                   ]
 
     def __init__(self, src_owner=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.src_owner_bank_account_id = src_owner
+        self.fields['id'].widget = forms.HiddenInput()
+        self.fields['id'].initial = 0
         self.fields['src_owner_bank_account_id'].widget = forms.HiddenInput()
         self.fields['src_owner_bank_account_id'].initial = src_owner
         self.fields['dst_owner_bank_account_id'].required = False
@@ -14,14 +31,13 @@ class NewContractForm(ModelForm):
         self.fields['remittance_value'].required = False
         self.fields['judge_name'].required = False
         self.fields['judge_national_id'].required = False
-        self.fields['expire_date'].widget.attrs['placeholder'] = "1400/05/11"
-        self.fields['expire_date'].required = False
         self.fields['description'].required = False
+        self.order_fields(field_order=self.field_order)
 
     def save(self, commit=True):
         m = super(NewContractForm, self).save(commit=False)
         # m.judge_vote = JudgeVote.NOT_JUDGED
-        # m.status = ContractStatus.WAITING_FOR_EXCHANGER
+        m.status = ContractStatus.NONE
         if commit:
             m.save()
         return m
@@ -34,7 +50,7 @@ class NewContractForm(ModelForm):
         # try:
         # dst_owner = Owner.objects.get(pk=dst_owner_bank_account_id)
         dst_owner = get_owner(dst_owner_bank_account_id)
-        if dst_owner and dst_owner.owner_type == OwnerType.EXCHANGER:
+        if dst_owner and dst_owner.type == OwnerType.EXCHANGER:
             return dst_owner.bank_account_id
         else:
             raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
@@ -60,27 +76,35 @@ class NewContractForm(ModelForm):
     def clean_judge_name(self):
         judge_name = self.cleaned_data['judge_name']
         empty_field_validator(judge_name)
+        return judge_name
 
     def clean_judge_national_id(self):
         judge_national_id = self.cleaned_data['judge_national_id']
         empty_field_validator(judge_national_id)
         # try:
-        # judge = get
-        #     return JudgeProfile.objects.get(pk=judge_national_id)
-        # except JudgeProfile.DoesNotExist:
-        #     raise forms.ValidationError('خطا: داور با این مشخصات در سامانه ثبت نشده است!')
+        judge = get_judge(judge_national_id)
+        # judge = load_judge(judge_national_id)
+        if judge:
+            return judge.national_id
+        else:
+            raise forms.ValidationError('خطا: داور با این مشخصات در سامانه ثبت نشده است!')
+
+    #     return JudgeProfile.objects.get(pk=judge_national_id)
+    #     except JudgeProfile.DoesNotExist:
+    #     raise forms.ValidationError('خطا: داور با این مشخصات در سامانه ثبت نشده است!')
 
     def clean_expire_date(self):
         expire_date = self.cleaned_data['expire_date']
         empty_field_validator(expire_date)
         try:
-            return datetime.datetime.strptime(expire_date, "%Y/%m/%d").date().strftime('%Y/%m/%d')
+            return datetime.datetime.strptime(expire_date, "%Y/%m/%d").timestamp()
         except ValueError as err:
             raise forms.ValidationError("خطا: تاریخ وارد شده صحیح نمی باشد!")
 
     class Meta:
         model = NormalContract
         fields = [
+            'id',
             'src_owner_bank_account_id',
             'dst_owner_bank_account_id',
             'value_in_rial',
@@ -101,7 +125,6 @@ class NewContractForm(ModelForm):
             'settlement_type': 'نوع تسویه',
             'judge_name': 'نام داور',
             'judge_national_id': 'شناسه ملی داور',
-            'expire_date': 'تاریخ اعتبار',
             'description': 'توضیحات',
         }
         help_texts = {

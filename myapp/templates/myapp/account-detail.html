@@ -15,11 +15,11 @@
         <h4>لیست قرارداد ها</h4>
         <h5>(جهت مشاهده جزپیات بیشتر روی شناسه قرارداد کلیک کنید)</h5>
 
-        <form method="post" id="" class="myform user-contracts-list-form" action="">
+        <form method="post" id="" class="myform user-contracts-list-table" action="">
             {% csrf_token %}
 
             {% if owner_type == 'EXPORTER' %}
-                <form method="post" id="login-form" class="myform user-contracts-list-form" action="">
+                <form method="post" id="login-form" class="myform user-contracts-list-table" action="">
                     {% csrf_token %}
 
                     <div class="table-responsive">
@@ -40,7 +40,7 @@
                             {% for subcontract in contracts %}
                                 <tr>
                                     <th scope="row">
-                                        <a href="{% url 'myapp:my_contract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner|addstr:"&format=html" }}"><u>{{ subcontract.id }}</u></a>
+                                        <a href="{% url 'myapp:my_contract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}"><u>{{ subcontract.id }}</u></a>
                                     </th>
 
                                     <td>{{ subcontract.parent.dst_owner_bank }}</td>
@@ -82,7 +82,7 @@
                         {% for contract in contracts %}
                             <tr>
                                 <th scope="row"><a
-                                        href="{% url 'myapp:my_contract_detail' contract.id %}?role=user&user={{ user }}&account={{ owner|addstr:"&format=html" }}"><u>{{ contract.id }}</u></a>
+                                        href="{% url 'myapp:my_contract_detail' contract.id %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}"><u>{{ contract.id }}</u></a>
                                 </th>
 
                                 {% if owner == contract.src_owner_bank_account_id %}
@@ -108,7 +108,7 @@
             {% if  owner_type == 'IMPORTER' %}
                 <div class="text-center" style="padding:10px ">
                     <a class="btn mybutton"
-                       href="{% url 'myapp:my_new_contract' %}?role=user&user={{ user }}&account={{ owner }}"><span
+                       href="{% url 'myapp:my_new_contract' %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}"><span
                             class="color-white">ثبت قرارداد جدید</span></a>
                 </div>
             {% endif %}
@@ -119,69 +119,69 @@
         <br/>
         <br/>
 
-{#        <h4>لیست تراکنش ها</h4>#}
-{#        <h5>(جهت مشاهده جزپیات بیشتر روی شناسه تراکنش کلیک کنید)</h5>#}
-{##}
-{#        <form method="post" id="" class="myform user-transaction-list-form" action="">#}
-{#            {% csrf_token %}#}
-{##}
-{#            <div class="table-responsive">#}
-{#                <table style="margin: auto" class="center table table-striped">#}
-{#                    <thead>#}
-{#                    <tr>#}
-{#                        <th scope="col">شناسه</th>#}
-{#                        {% if owner_type == 'EXCHANGER' %}#}
-{#                            <th scope="col">نوع حساب طرف دیگر تراکنش</th>#}
-{#                            <th scope="col">شماره حساب طرف دیگر تراکنش</th>#}
-{#                        {% else %}#}
-{#                            <th scope="col">شماره حساب صراف</th>#}
-{#                        {% endif %}#}
-{#                        <th scope="col">نوع تراکنش</th>#}
-{#                        <th scope="col">مبلغ به ریال</th>#}
-{#                        <th scope="col">نوع اپراتور</th>#}
-{#                        <th scope="col">کد ملی اپراتور</th>#}
-{#                    </tr>#}
-{#                    </thead>#}
-{#                    <tbody>#}
-{#                    {% for transaction in transactions %}#}
-{#                        <tr>#}
-{#                            <th scope="row"><a#}
-{#                                    href="{% url 'myapp:my_transaction_detail' transaction.id %}?role=user&user={{ user }}&account={{ owner }}"><u>{{ transaction.id }}</u></a>#}
-{#                            </th>#}
-{#                            {% if owner == transaction.owner %}#}
-{#                                {% if owner_type == 'EXCHANGER' %}#}
-{#                                    <td>صادرکننده</td>#}
-{#                                {% endif %}#}
-{#                                <td>{{ transaction.otherside_owner }}</td>#}
-{#                            {% else %}#}
-{#                                {% if owner_type == 'EXCHANGER' %}#}
-{#                                    <td>وارد کننده</td>#}
-{#                                {% endif %}#}
-{#                                <td>{{ transaction.owner }}</td>#}
-{#                            {% endif %}#}
-{##}
-{#                            {% if owner_type == 'IMPORTER' %}#}
-{#                                <td>پرداختی</td>#}
-{#                            {% elif owner_type == 'EXCHANGER' %}#}
-{#                                {% if owner == transaction.owner %}#}
-{#                                    <td>پرداختی</td>#}
-{#                                {% else %}#}
-{#                                    <td>واریزی</td>#}
-{#                                {% endif %}#}
-{#                            {% else %}#}
-{#                                <td>واریزی</td>#}
-{#                            {% endif %}#}
-{##}
-{#                            <td>{{ transaction.value }}</td>#}
-{#                            <td>{{ transaction.operator_type_verbose }}</td>#}
-{#                            <td>{{ transaction.operator }}</td>#}
-{#                        </tr>#}
-{#                    {% endfor %}#}
-{#                    </tbody>#}
-{#                </table>#}
-{#            </div>#}
-{##}
-{#        </form>#}
+        {#        <h4>لیست تراکنش ها</h4>#}
+        {#        <h5>(جهت مشاهده جزپیات بیشتر روی شناسه تراکنش کلیک کنید)</h5>#}
+        {##}
+        {#        <form method="post" id="" class="myform user-transaction-list-form" action="">#}
+        {#            {% csrf_token %}#}
+        {##}
+        {#            <div class="table-responsive">#}
+        {#                <table style="margin: auto" class="center table table-striped">#}
+        {#                    <thead>#}
+        {#                    <tr>#}
+        {#                        <th scope="col">شناسه</th>#}
+        {#                        {% if type == 'EXCHANGER' %}#}
+        {#                            <th scope="col">نوع حساب طرف دیگر تراکنش</th>#}
+        {#                            <th scope="col">شماره حساب طرف دیگر تراکنش</th>#}
+        {#                        {% else %}#}
+        {#                            <th scope="col">شماره حساب صراف</th>#}
+        {#                        {% endif %}#}
+        {#                        <th scope="col">نوع تراکنش</th>#}
+        {#                        <th scope="col">مبلغ به ریال</th>#}
+        {#                        <th scope="col">نوع اپراتور</th>#}
+        {#                        <th scope="col">کد ملی اپراتور</th>#}
+        {#                    </tr>#}
+        {#                    </thead>#}
+        {#                    <tbody>#}
+        {#                    {% for transaction in transactions %}#}
+        {#                        <tr>#}
+        {#                            <th scope="row"><a#}
+        {#                                    href="{% url 'myapp:my_transaction_detail' transaction.id %}?role=user&user={{ user }}&account={{ owner }}"><u>{{ transaction.id }}</u></a>#}
+        {#                            </th>#}
+        {#                            {% if owner == transaction.owner %}#}
+        {#                                {% if type == 'EXCHANGER' %}#}
+        {#                                    <td>صادرکننده</td>#}
+        {#                                {% endif %}#}
+        {#                                <td>{{ transaction.otherside_owner }}</td>#}
+        {#                            {% else %}#}
+        {#                                {% if type == 'EXCHANGER' %}#}
+        {#                                    <td>وارد کننده</td>#}
+        {#                                {% endif %}#}
+        {#                                <td>{{ transaction.owner }}</td>#}
+        {#                            {% endif %}#}
+        {##}
+        {#                            {% if type == 'IMPORTER' %}#}
+        {#                                <td>پرداختی</td>#}
+        {#                            {% elif type == 'EXCHANGER' %}#}
+        {#                                {% if owner == transaction.owner %}#}
+        {#                                    <td>پرداختی</td>#}
+        {#                                {% else %}#}
+        {#                                    <td>واریزی</td>#}
+        {#                                {% endif %}#}
+        {#                            {% else %}#}
+        {#                                <td>واریزی</td>#}
+        {#                            {% endif %}#}
+        {##}
+        {#                            <td>{{ transaction.value }}</td>#}
+        {#                            <td>{{ transaction.operator_type_verbose }}</td>#}
+        {#                            <td>{{ transaction.operator }}</td>#}
+        {#                        </tr>#}
+        {#                    {% endfor %}#}
+        {#                    </tbody>#}
+        {#                </table>#}
+        {#            </div>#}
+        {##}
+        {#        </form>#}
 
         <script>
         </script>

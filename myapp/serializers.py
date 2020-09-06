@@ -37,7 +37,7 @@ class UserSerializer(serializers.ModelSerializer):
 class OwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Owner
-        fields = ['bank_account_id', 'owner_type']
+        fields = ['bank_account_id', 'type']
 
 
 class JudgeSerializer(serializers.ModelSerializer):
@@ -49,19 +49,47 @@ class JudgeSerializer(serializers.ModelSerializer):
 class NormalContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = NormalContract
-        fields = ['id', 'expire_date', 'settlement_type', 'value_in_rial', 'remittance_currency', 'remittance_value',
-                  'judge_name', 'judge_national_id', 'src_owner_bank_account_id', 'dst_owner_bank_account_id', 'status',
-                  'description', 'judge_vote']
+        fields = [
+            'id',
+            'src_owner_bank_account_id',
+            'dst_owner_bank_account_id',
+            'value_in_rial',
+            'remittance_currency',
+            'remittance_value',
+            'settlement_type',
+            'judge_name',
+            'judge_national_id',
+            # 'judge_vote',
+            'expire_date',
+            'status',
+            'description',
+        ]
 
 
 class SubcontractSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcontract
-        fields = ['id', 'expire_date', 'value_in_rial', 'remittance_value', 'status', 'description', 'dst_owner',
-                  'parent', 'judge_vote']
+        fields = [
+            'id',
+            'parent_id',
+            'dst_owner',
+            'value_in_rial',
+            'remittance_value',
+            'status',
+            'expire_date',
+            'judge_vote',
+            'description',
+        ]
 
 
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields = ['id', 'transaction_type', 'otherside_owner', 'value', 'operator_type', 'operator']
+        fields = [
+            'id',
+            'otherside_owner',
+            'transaction_type',
+            'value',
+            'operator_type',
+            'operator'
+        ]

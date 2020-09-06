@@ -7,6 +7,7 @@ from . import views
 app_name = 'myapp'
 
 urlpatterns = [
+    # path('auth', views.AuthView.as_view(), name='auth'),
     path('login', views.LoginView.as_view(), name='login'),
     path('users', views.UserListView.as_view(), name='my_users_list'),
     path('users/<slug:pk>', views.UserDetailView.as_view(), name='my_user_detail'),
@@ -25,7 +26,7 @@ urlpatterns = [
     path('subcontracts/<int:pk>', views.MySubcontractDetailView.as_view(), name='my_subcontract_detail'),
 
     path('contract', views.MyNewContractView.as_view(), name='my_new_contract'),
-    path('contracts', views.MyContractListView.as_view(), name='my_contracts_list'),
+    # path('contracts', views.MyContractListView.as_view(), name='my_contracts_list'),
     path('contracts/<int:pk>', views.MyContractDetailView.as_view(), name='my_contract_detail'),
 
     path('transaction', views.MyNewTransactionView.as_view(), name='my_new_transaction'),

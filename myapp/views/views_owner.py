@@ -46,44 +46,48 @@ class MyOwnerDetailView(APIView):
     renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer,)
 
     # def get_normal_contracts_list(self, instance):
-    #     if instance.owner_type == OwnerType.IMPORTER:
+    #     if instance.type == OwnerType.IMPORTER:
     #         queryset = NormalContract.objects.filter(
-    #             Q(src_owner=instance.bank_account_id))
+    #             Q(src_owner=instance.owner_bank_account_id))
     #     else:
     #         queryset = NormalContract.objects.filter(
-    #             Q(dst_owner=instance.bank_account_id))
+    #             Q(dst_owner=instance.owner_bank_account_id))
     #
     #     return queryset
 
     # def get_subcontracts_list(self, instance):
     #     queryset = Subcontract.objects.filter(
-    #         Q(dst_owner=instance.bank_account_id))
+    #         Q(dst_owner=instance.owner_bank_account_id))
     #     return queryset
 
     # def get_transactions_list(self, instance):
     #     queryset = Transaction.objects.filter(
-    #         Q(owner=instance.bank_account_id) | Q(otherside_owner=instance.bank_account_id))
+    #         Q(owner=instance.owner_bank_account_id) | Q(otherside_owner=instance.owner_bank_account_id))
     #     return queryset
 
     def get(self, request, pk, format=None):
 
-        role = request.GET.get('login-as', )
+        role = request.GET.get('role', )
+        owner_type = request.GET.get('type')
         national_code = request.GET.get('user', )
         # owner = load_owner(pk)
-        owner = get_owner(pk)
-        if owner.owner_type == OwnerType.EXPORTER:
-            # contracts = self.get_subcontracts_list(owner)
-            contracts = get_owner_subcontracts(owner.bank_account_id)
-        else:
-            # contracts = self.get_normal_contracts_list(owner)
-            contracts = get_owner_normal_contracts(owner.bank_account_id)
+        if owner_type == OwnerType.IMPORTER:
+            contracts = get_user_owner_out_normal_contracts(national_code, pk, raise_error=True)
+        elif owner_type == OwnerType.EXCHANGER:
+            contracts = get_user_owner_in_normal_contracts(national_code, pk, raise_error=True)
+        elif owner_type == OwnerType.EXPORTER:
+            contracts = get_user_owner_in_subcontracts(national_code, pk)
 
         for contract in contracts:
             print(contract.id)
 
         if request.accepted_renderer.format == 'html':
-            context = {'user': national_code, 'owner_type': owner.owner_type, 'owner': owner.bank_account_id,
-                       "contracts": contracts}
+            context = {
+                'user': national_code,
+                'owner_type': owner_type,
+                'owner': pk,
+                "contracts": contracts
+            }
             return Response(context, template_name='myapp/account-detail.html')
 
         serializer = NormalContractSerializer(contracts, many=True)

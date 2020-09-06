@@ -29,7 +29,7 @@ class NewSubcontractForm(ModelForm):
 
         try:
             dst_owner = Owner.objects.get(pk=dst_owner_bank_account_id)
-            if dst_owner.owner_type == OwnerType.EXPORTER:
+            if dst_owner.type == OwnerType.EXPORTER:
                 return dst_owner
             else:
                 raise forms.ValidationError("خطا: صادرکننده با این مشخصات در سامانه ثبت نشده است!")

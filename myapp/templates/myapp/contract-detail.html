@@ -11,69 +11,126 @@
 {% block content %}
     <div class="block-content">
         <h4>اطلاعات قرارداد</h4>
-        <form method="post" id="login-form" class="myform user-profile-form" action="">
-            {% csrf_token %}
+        <div method="post" id="login-form" class="" action="">
+            <form class="myform user-profile-form">
+                {% csrf_token %}
 
-            {% for hidden in contract_detail_form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
+                {% for hidden in contract_detail_form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
 
-            {% for field in contract_detail_form.visible_fields %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field|add_class:'form-control' }}
-                    <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
-                    {% for error in field.errors %}
-                        <span class="help- error-message">{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-
-
-        </form>
-
-        <br/>
-        <br/>
-        <br/>
-
-
-        {% if owner_type == 'IMPORTER' %}
-            {% if status == "ENDED_BY_EXCHANGER" %}
-                <form class="myform small-form" style="margin-top: -75px;" method="post"
-                      action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=end">
-                    <div style="margin-top: 20px">
-                        <button class="btn btn-block another-mybutton"
-                                type="submit"><span>{{ sat }}پایان معامله</span></button>
+                {% for field in contract_detail_form.visible_fields %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field|add_class:'form-control' }}
+                        <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
+                        {% for error in field.errors %}
+                            <span class="help- error-message">{{ error }}</span>
+                        {% endfor %}
                     </div>
-                </form>
-                <form class="myform small-form" style="margin-top: -25px;" method="post"
-                      action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=claim">
-                    <div style="margin-top: 20px">
-                        <button class="btn btn-block mybutton "
-                                type="submit"><span>{{ sat }}درخواست داوری</span></button>
+                {% endfor %}
+            </form>
+
+            {% if owner_type == 'IMPORTER' %}
+                {% if status == "WAITING_FOR_IMPORTER_PAYMENT" %}
+                    <div class="text-center">
+                        <a class="btn another-mybutton btn-block"
+                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=charge"><span
+                                class="color-white">پرداخت</span></a>
                     </div>
-                </form>
-            {% elif status == "CONFIRMED_BY_EXCHANGER" %}
-                <div class="text-center">
+
+                {% elif status == "WAITING_FOR_IMPORTER_CONFIRMATION" %}
                     <a class="btn another-mybutton btn-block"
-                       href="{% url 'myapp:my_new_transaction' %}?role=user&user={{ user }}&account={{ owner }}"><span
-                            class="color-white">پرداخت</span></a>
-                </div>
-            {% endif %}
+                       href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=confirm"
+                       type="submit"><span>{{ sat }}تایید قرارداد</span></a>
+                    <a class="btn btn-block mybutton"
+                       href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=claim"
+                       type="submit"><span>{{ sat }}عدم تایید قرارداد(درخواست داوری)</span></a>
+                {% endif %}
 
-        {% else %}
-            {% if status == 'CONFIRMED_BY_EXCHANGER' or status == 'CONFIRMED_BY_EXPORTER' %}
-                <form style="margin-top: -75px; margin-bottom: 25px;" method="post" class="myform small-form"
-                      action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=end">
-                    <div style="margin-top: 20px" class="myform small-form">
-                        <button class="btn mybutton btn-block"
-                                type="submit"><span>{{ sat }}پایان معامله</span></button>
+            {% elif owner_type == "EXCHANGER" %}
+                {% if status == "WAITING_FOR_EXCHANGER_ACCEPTANCE" %}
+                    <div class="small-form margin-auto">
+                        <a class="btn another-mybutton btn-block"
+                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=accept"
+                           type="submit"><span>{{ sat }}پذیرش قرارداد</span></a>
+                        <a class="btn btn-block mybutton"
+                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=reject"
+                           type="submit"><span>{{ sat }}رد قرارداد</span></a>
                     </div>
-                </form>
+                {% elif status == 'WAITING_FOR_EXCHANGER_CONFIRMATION' %}
+                    <div class="small-form margin-auto">
+
+                        <a class="btn another-mybutton btn-block"
+                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=confirm"
+                           type="submit"><span>{{ sat }}تایید قرارداد</span></a>
+                        <a class="btn btn-block mybutton"
+                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=deny"
+                           type="submit"><span>{{ sat }}عدم تایید قرارداد</span></a>
+                    </div>
+                {% elif status == "DOING_BY_EXCHANGER" or status == "WAITING_FOR_IMPORTER_CONFIRMATION" or status == "CONFIRMED_BY_IMPORTER" %}
+                    <h4>لیست قرارداد های مربوطه</h4>
+                    <h5>(جهت مشاهده جزپیات بیشتر روی شناسه قرارداد مربوطه کلیک کنید)</h5>
+
+                    <div class="table-responsive">
+                        <table style="margin: auto;" class="center table table-striped user-contracts-list-table">
+                            <thead>
+                            <tr>
+                                <th scope="col">شناسه</th>
+                                <th scope="col">شماره حساب صادرکننده</th>
+                                <th scope="col">مبلغ به ریال</th>
+                                <th scope="col">مبلغ حواله</th>
+                                <th scope="col">رای داور</th>
+                                <th scope="col">تاریخ اعتبار</th>
+                                <th scope="col">وضعیت</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for subcontract in subcontracts %}
+                                <tr>
+                                    <th scope="row">
+                                        <a href="{% url 'myapp:my_subcontract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&contract={{ contract }}"><u>{{ subcontract.id }}</u></a>
+                                    </th>
+                                    <td>{{ subcontract.dst_owner }}</td>
+                                    <td>{{ subcontract.value_in_rial }}</td>
+                                    <td>{{ subcontract.remittance_value }}</td>
+                                    <td>{{ subcontract.judge_vote_verbose }}</td>
+                                    <td>{{ subcontract.expire_date }}</td>
+                                    <td>{{ subcontract.status_verbose }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if status == "DOING_BY_EXCHANGER" %}
+                        <div class="small-form margin-auto">
+                            <a class="btn mybutton"
+                               href="{% url 'myapp:my_new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&contract={{ contract }}"><span
+                                    class="color-white">ثبت قرارداد مربوطه جدید</span></a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+            {% elif owner_type == "EXPORTER" %}
+                {% if status == "WAITING_FOR_EXPORTER_ACCEPTANCE" %}
+                    <div class="small-form margin-auto">
+
+                        <a class="btn another-mybutton btn-block"
+                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=accept"
+                           type="submit"><span>{{ sat }}پذیرش قرارداد</span></a>
+                        <a class="btn btn-block mybutton"
+                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=reject"
+                           type="submit"><span>{{ sat }}رد قرارداد</span></a>
+                    </div>
+                {% endif %}
+
             {% endif %}
-        {% endif %}
 
+        </div>
 
+        <br/>
+        <br/>
+        <br/>
 
 
         {#            <div class="block-content">#}
@@ -89,7 +146,7 @@
         {#                            <thead>#}
         {#                            <tr>#}
         {#                                <th scope="col">شناسه</th>#}
-        {#                                {% if owner_type == 'EXCHANGER' %}#}
+        {#                                {% if type == 'EXCHANGER' %}#}
         {#                                    <th scope="col">نوع حساب طرف دیگر تراکنش</th>#}
         {#                                    <th scope="col">شماره حساب طرف دیگر تراکنش</th>#}
         {#                                {% else %}#}
@@ -105,23 +162,23 @@
         {#                            {% for transaction in transactions %}#}
         {#                                <tr>#}
         {#                                    <th scope="row"><a#}
-        {#                                            href="{% url 'myapp:my_transaction_detail' transaction.id %}?role=user&user={{ user }}&account={{ owner }}"><u>{{ transaction.id }}</u></a>#}
+        {#                                            href="{% url 'myapp:my_transaction_detail' transaction.id %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}"><u>{{ transaction.id }}</u></a>#}
         {#                                    </th>#}
         {#                                    {% if owner == transaction.src_owner %}#}
-        {#                                        {% if owner_type == 'EXCHANGER' %}#}
+        {#                                        {% if type == 'EXCHANGER' %}#}
         {#                                            <td>صادرکننده</td>#}
         {#                                        {% endif %}#}
         {#                                        <td>{{ transaction.dst_owner }}</td>#}
         {#                                    {% else %}#}
-        {#                                        {% if owner_type == 'EXCHANGER' %}#}
+        {#                                        {% if type == 'EXCHANGER' %}#}
         {#                                            <td>وارد کننده</td>#}
         {#                                        {% endif %}#}
         {#                                        <td>{{ transaction.src_owner }}</td>#}
         {#                                    {% endif %}#}
         {##}
-        {#                                    {% if owner_type == 'IMPORTER' %}#}
+        {#                                    {% if type == 'IMPORTER' %}#}
         {#                                        <td>پرداختی</td>#}
-        {#                                    {% elif owner_type == 'EXCHANGER' %}#}
+        {#                                    {% elif type == 'EXCHANGER' %}#}
         {#                                        {% if owner == transaction.src_owner %}#}
         {#                                            <td>پرداختی</td>#}
         {#                                        {% else %}#}
@@ -142,74 +199,14 @@
         {##}
         {#                </form>#}
         {##}
-        {#                {% if  owner_type == 'IMPORTER' %}#}
+        {#                {% if  type == 'IMPORTER' %}#}
         {#                    <div class="text-center" style="padding:10px ">#}
         {#                        <a class="btn mybutton"#}
-        {#                           href="{% url 'myapp:my_new_transaction' %}?role=user&user={{ user }}&account={{ owner }}"><span#}
+        {#                           href="{% url 'myapp:my_new_transaction' %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}"><span#}
         {#                                class="color-white">انجام تراکنش جدید</span></a>#}
         {#                    </div>#}
         {#                {% endif %}#}
         {#            </div>#}
-
-        {% if status == 'WAITING_FOR_EXCHANGER' or status == 'WAITING_FOR_EXPORTER' %}
-            {% if owner_type != "IMPORTER" %}
-                <form style="margin-top: -50px" method="post" class="myform small-form ano"
-                      action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=confirm">
-                    <button class="btn another-mybutton btn-block"
-                            type="submit"><span>{{ sat }}تایید قرارداد</span></button>
-                </form>
-                <form style="margin-top: -25px" method="post" class="myform small-form"
-                      action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&action=deny">
-                    <button class="btn btn-block mybutton" style="border-radius: 0"
-                            type="submit"><span>{{ sat }}رد قرارداد</span></button>
-                </form>
-            {% endif %}
-        {% elif owner_type == 'EXCHANGER' and status != 'DENIED_BY_EXCHANGER' %}
-            <h4>لیست قرارداد های مربوطه</h4>
-            <h5>(جهت مشاهده جزپیات بیشتر روی شناسه قرارداد مربوطه کلیک کنید)</h5>
-
-            <form method="post" id="login-form" class="myform user-contracts-list-form" action="">
-                {% csrf_token %}
-
-                <div class="table-responsive">
-                    <table style="margin: auto" class="center table table-striped">
-                        <thead>
-                        <tr>
-                            <th scope="col">شناسه</th>
-                            <th scope="col">شماره حساب صادرکننده</th>
-                            <th scope="col">مبلغ به ریال</th>
-                            <th scope="col">مبلغ حواله</th>
-                            <th scope="col">رای داور</th>
-                            <th scope="col">تاریخ اعتبار</th>
-                            <th scope="col">وضعیت</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for subcontract in subcontracts %}
-                            <tr>
-                                <th scope="row">
-                                    <a href="{% url 'myapp:my_subcontract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><u>{{ subcontract.id }}</u></a>
-                                </th>
-                                <td>{{ subcontract.dst_owner }}</td>
-                                <td>{{ subcontract.value_in_rial }}</td>
-                                <td>{{ subcontract.remittance_value }}</td>
-                                <td>{{ subcontract.judge_vote_verbose }}</td>
-                                <td>{{ subcontract.expire_date }}</td>
-                                <td>{{ subcontract.status_verbose }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </form>
-            {% if status == 'CONFIRMED_BY_EXCHANGER' %}
-                <div class="text-center" style="padding:10px ">
-                    <a class="btn mybutton"
-                       href="{% url 'myapp:my_new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&contract={{ contract }}"><span
-                            class="color-white">ثبت قرارداد مربوطه جدید</span></a>
-                </div>
-            {% endif %}
-        {% endif %}
 
         <script>
         </script>
