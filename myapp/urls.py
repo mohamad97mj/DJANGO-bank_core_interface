@@ -3,39 +3,35 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 
 from . import views
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 app_name = 'myapp'
 
 urlpatterns = [
-    # path('auth', views.AuthView.as_view(), name='auth'),
+
     path('login', views.LoginView.as_view(), name='login'),
-    path('users', views.UserListView.as_view(), name='my_users_list'),
-    path('users/<slug:pk>', views.UserDetailView.as_view(), name='my_user_detail'),
-    # path('users/<slug:pk>/accounts', views.UserOwnersListView.as_view(), name='owners_list'),
-    # path('users/<slug:pk>/contracts', views.UserContractsListView.as_view(), name='contracts_list'),
-    # path('users/<slug:pk>/transactions', views.UserTransactionsListView.as_view(), name='transactions_list'),
+    path('special-login', views.SpecialLoginView.as_view(), name='special-login'),
 
-    path('judges', views.JudgeListView.as_view(), name='my_judges_list'),
-    path('judges/<int:pk>', views.JudgeDetailView.as_view(), name='my_judge_detail'),
+    path('users/<slug:pk>', views.UserDetailView.as_view(), name='user_detail'),
+    path('judges/<slug:pk>', views.JudgeDetailView.as_view(), name='judge_detail'),
+    path('reporters/<slug:pk>', views.ReporterDetailView.as_view(), name='reporter_detail'),
 
-    path('accounts', views.MyOwnerListView.as_view(), name='my_accounts_list'),
-    path('accounts/<int:pk>', views.MyOwnerDetailView.as_view(), name='my_owner_detail'),
+    path('accounts', views.OwnerListView.as_view(), name='owners_list'),
+    path('accounts/<int:pk>', views.OwnerDetailView.as_view(), name='owner_detail'),
 
-    path('subcontract', views.MyNewSubcontractView.as_view(), name='my_new_subcontract'),
-    path('subcontracts', views.MySubcontractListView.as_view(), name='my_subcontracts_list'),
-    path('subcontracts/<int:pk>', views.MySubcontractDetailView.as_view(), name='my_subcontract_detail'),
+    path('subcontract', views.NewSubcontractView.as_view(), name='new_subcontract'),
+    path('subcontracts/<int:pk>', views.SubcontractDetailView.as_view(), name='subcontract_detail'),
 
-    path('contract', views.MyNewContractView.as_view(), name='my_new_contract'),
-    # path('contracts', views.MyContractListView.as_view(), name='my_contracts_list'),
-    path('contracts/<int:pk>', views.MyContractDetailView.as_view(), name='my_contract_detail'),
+    path('contract', views.NewContractView.as_view(), name='new_contract'),
+    path('contracts', views.ContractListView.as_view(), name='contracts_list'),
+    path('contracts/<int:pk>', views.ContractDetailView.as_view(), name='contract_detail'),
 
-    path('transaction', views.MyNewTransactionView.as_view(), name='my_new_transaction'),
-    path('transactions', views.MyTransactionListView.as_view(), name='my_transactions_list'),
-    path('transactions/<int:pk>', views.MyTransactionDetailView.as_view(), name='my_transaction_detail'),
+    path('transaction', views.NewTransactionView.as_view(), name='new_transaction'),
+    path('transactions/<int:pk>', views.TransactionDetailView.as_view(), name='transaction_detail'),
 
-    # path('contracts', views.ContractListView.as_view(), name='contracts_list'),
-    # path('subcontracts', views.SubcontractListView.as_view(), name='subcontracts_list'),
-    # path('transactions', views.TransactionListView.as_view(), name='transactions_list'),
+    path('report', views.ReportView.as_view(), name='report'),
+    path('ajax/get_judge_name', views.get_judge_name, name='get_judge_name'),
+
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'html'])

@@ -6,17 +6,18 @@ class NewContractForm(ModelForm):
                                   label="تاریخ اعتبار",
                                   widget=forms.TextInput(attrs={'placeholder': '1400/05/11'}))
 
-    field_order = ['dst_owner_bank_account_id',
-                   'value_in_rial',
-                   'remittance_currency',
-                   'remittance_value',
-                   'settlement_type',
-                   'judge_name',
-                   'judge_national_id',
-                   'expire_date',
-                   'status',
-                   'description',
-                   ]
+    field_order = [
+        'dst_owner_bank_account_id',
+        'value_in_rial',
+        'remittance_currency',
+        'remittance_value',
+        'settlement_type',
+        'judge_national_id',
+        'judge_name',
+        'expire_date',
+        'status',
+        'description',
+    ]
 
     def __init__(self, src_owner=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,14 +30,14 @@ class NewContractForm(ModelForm):
         self.fields['value_in_rial'].required = False
         self.fields['remittance_currency'].required = False
         self.fields['remittance_value'].required = False
-        self.fields['judge_name'].required = False
         self.fields['judge_national_id'].required = False
+        self.fields['judge_name'].required = False
+        self.fields['judge_name'].widget.attrs['disabled'] = True
         self.fields['description'].required = False
         self.order_fields(field_order=self.field_order)
 
     def save(self, commit=True):
         m = super(NewContractForm, self).save(commit=False)
-        # m.judge_vote = JudgeVote.NOT_JUDGED
         m.status = ContractStatus.NONE
         if commit:
             m.save()
@@ -47,10 +48,9 @@ class NewContractForm(ModelForm):
         dst_owner_bank_account_id = self.cleaned_data['dst_owner_bank_account_id']
         empty_field_validator(dst_owner_bank_account_id)
 
-        # try:
         # dst_owner = Owner.objects.get(pk=dst_owner_bank_account_id)
-        dst_owner = get_owner(dst_owner_bank_account_id)
-        if dst_owner and dst_owner.type == OwnerType.EXCHANGER:
+        dst_owner = get_public_owner(dst_owner_bank_account_id)
+        if dst_owner and dst_owner.owner_type == OwnerType.EXCHANGER:
             return dst_owner.bank_account_id
         else:
             raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
@@ -61,6 +61,8 @@ class NewContractForm(ModelForm):
     def clean_value_in_rial(self):
         value_in_rial = self.cleaned_data['value_in_rial']
         empty_field_validator(value_in_rial)
+        if value_in_rial <= 0:
+            raise forms.ValidationError("خطا: مبلغ قرار داد باید بیشتر از صفر باشد!")
         return value_in_rial
 
     def clean_remittance_currency(self):
@@ -87,17 +89,13 @@ class NewContractForm(ModelForm):
         if judge:
             return judge.national_id
         else:
-            raise forms.ValidationError('خطا: داور با این مشخصات در سامانه ثبت نشده است!')
-
-    #     return JudgeProfile.objects.get(pk=judge_national_id)
-    #     except JudgeProfile.DoesNotExist:
-    #     raise forms.ValidationError('خطا: داور با این مشخصات در سامانه ثبت نشده است!')
+            raise forms.ValidationError('خطا: داور با این شناسه ملی در سامانه ثبت نشده است!')
 
     def clean_expire_date(self):
         expire_date = self.cleaned_data['expire_date']
         empty_field_validator(expire_date)
         try:
-            return datetime.datetime.strptime(expire_date, "%Y/%m/%d").timestamp()
+            return jdate2timestamp(expire_date)
         except ValueError as err:
             raise forms.ValidationError("خطا: تاریخ وارد شده صحیح نمی باشد!")
 
@@ -111,20 +109,20 @@ class NewContractForm(ModelForm):
             'remittance_currency',
             'remittance_value',
             'settlement_type',
-            'judge_name',
             'judge_national_id',
+            'judge_name',
             'expire_date',
             'description'
         ]
         labels = {
-            'src_owner_bank_account_id': "شماره حساب وارد کننده",
+            'src_owner_bank_account_id': "شماره حساب واردکننده",
             'dst_owner_bank_account_id': "شماره حساب صراف",
             'value_in_rial': 'مبلغ به ریال',
             'remittance_currency': 'ارز حواله',
             'remittance_value': 'مبلغ حواله',
             'settlement_type': 'نوع تسویه',
-            'judge_name': 'نام داور',
             'judge_national_id': 'شناسه ملی داور',
+            'judge_name': 'نام داور',
             'description': 'توضیحات',
         }
         help_texts = {

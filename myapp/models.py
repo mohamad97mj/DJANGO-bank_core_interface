@@ -3,34 +3,24 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import gettext_lazy as _
-import datetime
+import jdatetime
 import uuid
 from enum import Enum
-
-
-class ContractAction(Enum):
-    CHARGE = "charge"
-    PAY = "pay"
-    ACCEPT = "accept"
-    REJECT = "reject"
-    CONFIRM = "confirm"
-    DENY = "deny"
-    CLAIM = 'claim'
-    END = 'end'
 
 
 class ContractStatus(models.TextChoices):
     NONE = 'NONE', _('ایجاد نشده')
     WAITING_FOR_EXCHANGER_ACCEPTANCE = 'WAITING_FOR_EXCHANGER_ACCEPTANCE', _('در انتظار پذیرش صراف')
-    WAITING_FOR_EXPORTER_ACCEPTANCE = 'WAITING_FOR_EXPORTER_ACCEPTANCE', _('در انتظار پدیرش صادرکننده')
-    WAITING_FOR_IMPORTER_PAYMENT = 'WAITING_FOR_IMPORTER_PAYMENT', _('پذیرفته شده توسط صراف، در انتظار پرداخت واردکننده')
-    WAITING_FOR_EXCHANGER_PAYMENT = 'WAITING_FOR_EXCHANGER_PAYMENT', _('پذیرفته شده توسط صادرکننده، در انتظار پرداخت صراف')
+    WAITING_FOR_EXPORTER_ACCEPTANCE = 'WAITING_FOR_EXPORTER_ACCEPTANCE', _('در انتظار پذیرش صادرکننده')
+    WAITING_FOR_IMPORTER_PAYMENT = 'WAITING_FOR_IMPORTER_PAYMENT', _('در انتظار پرداخت واردکننده')
+    WAITING_FOR_EXCHANGER_PAYMENT = 'WAITING_FOR_EXCHANGER_PAYMENT', _('در انتظار پرداخت صراف')
     REJECTED_BY_EXCHANGER = 'REJECTED_BY_EXCHANGER', _('رد شده توسط صراف')
     REJECTED_BY_EXPORTER = 'REJECTED_BY_EXPORTER', _('رد شده توسط صادرکننده')
-    DOING_BY_EXCHANGER = 'DOING_BY_EXCHANGER', _('پرداخت شده توسط وارد کننده، در حال انجام توسط صراف')
-    DOING_BY_EXPORTER = 'DOING_BY_EXPORTER', _('پرداخت شده توسط صراف، در حال انجام توسط صادرکننده')
-    WAITING_FOR_IMPORTER_CONFIRMATION = 'WAITING_FOR_IMPORTER_CONFIRMATION', _('پایان قرارداد توسط صراف، در انتظار تایید واردکننده')
-    WAITING_FOR_EXCHANGER_CONFIRMATION = 'WAITING_FOR_EXCHANGER_CONFIRMATION', _('پایان قرارداد توسط صادرکننده، در انتظار تایید صراف')
+    DOING_BY_EXCHANGER = 'DOING_BY_EXCHANGER', _('در حال انجام توسط صراف')
+    DOING_BY_EXPORTER = 'DOING_BY_EXPORTER', _('در حال انجام توسط صادرکننده')
+    WAITING_FOR_IMPORTER_CONFIRMATION = 'WAITING_FOR_IMPORTER_CONFIRMATION', _('در انتظار تایید واردکننده')
+    WAITING_FOR_EXCHANGER_CONFIRMATION = 'WAITING_FOR_EXCHANGER_CONFIRMATION', _('در انتظار تایید صراف')
+    WAITING_FOR_PARENT = 'WAITING_FOR_PARENT', _('در انتظار پایان معامله وارد کننده و صراف')
     CONFIRMED_BY_EXCHANGER = 'CONFIRMED_BY_EXCHANGER', _('تایید شده توسط صراف')
     DENIED_BY_EXCHANGER = 'DENIED_BY_EXCHANGER', _('رد شده توسط صراف')
     CONFIRMED_BY_IMPORTER = 'CONFIRMED_BY_IMPORTER', _('تایید شده توسط واردکننده')
@@ -39,6 +29,7 @@ class ContractStatus(models.TextChoices):
 
 
 class JudgeVote(models.TextChoices):
+    NOT_CLAIMED = "NOT_CLAIMED", _('هنوز درخواست داوری نشده است')
     NOT_JUDGED = "NOT_JUDGED", _('هنوز داوری نشده است')
     DONE = "DONE", _('قرارداد انجام شده است')
     NOT_DONE = "NOT_DONE", _('قرارداد انجام نشده است')
@@ -51,7 +42,7 @@ class SettlementType(models.TextChoices):
 
 
 class OperatorType(models.TextChoices):
-    USER = 'USER', _('کاربر')
+    NORMAL_USER = 'NORMAL_USER', _('کاربر')
     ADMIN = 'ADMIN', _('سیستم')
 
 
@@ -59,6 +50,25 @@ class OwnerType(models.TextChoices):
     IMPORTER = 'IMPORTER', _('واردکننده')
     EXCHANGER = 'EXCHANGER', _('صراف')
     EXPORTER = 'EXPORTER', _('صادرکننده')
+    RETURN = 'RETURN', _('RETURN')
+    CLAIM = 'CLAIM', _('CLAIM')
+
+
+class TransactionType(models.TextChoices):
+    CHARGE = 'CHARGE', _('شاٰرژ اولیه')
+    PAYMENT = 'PAYMENT', _('پرداخت')
+    CLAIM = 'CLAIM', _('درخواست داوری')
+    RETURN_REMAINING = 'RETURN_REMAINING', _('از حساب صراف به حساب RETURN')
+    JUDGEMENT_NOT_DONE = 'JUDGEMENT_NOT_DONE', _('از حساب CLAIM به حساب RETURN')
+    JUDGEMENT_DONE = 'JUDGEMENT_DONE', _('از حساب CLAIM به حساب صادرکننده')
+
+
+def init_from_json(self, args, kwargs):
+    for dictionary in args:
+        for key in dictionary:
+            setattr(self, key, dictionary[key])
+    for key in kwargs:
+        setattr(self, key, kwargs[key])
 
 
 # Create your models here.
@@ -66,19 +76,19 @@ class OwnerType(models.TextChoices):
 
 class AuthProfileManager(BaseUserManager):
 
-    def create_user(self, email, full_name, password=None):
-        if not email:
-            raise ValueError('User must have an email address')
+    def create_user(self, username, role, password=None):
+        if not username:
+            raise ValueError('User must have an username address')
 
-        email = self.normalize_email(email)
-        user = self.model(email=email, full_name=full_name)
+        user = self.model(username=username)
+        user.role = role
         user.set_password(password)
         user.save(using=self._db)
 
         return user
 
-    def create_superuser(self, email, full_name, password):
-        user = self.create_user(email, full_name, password)
+    def create_superuser(self, username, password):
+        user = self.create_user(username, password)
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
@@ -87,54 +97,31 @@ class AuthProfileManager(BaseUserManager):
 
 
 class AuthProfile(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(max_length=255, unique=True)
-    # should be changed by national code
-
-    full_name = models.CharField(max_length=255)
+    username = models.CharField(max_length=255, unique=True)
+    role = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
-    # is this field required ?
 
     is_staff = models.BooleanField(default=False)
-
     objects = AuthProfileManager()
-
-    USERNAME_FIELD = 'email'
-
-    REQUIRED_FIELDS = ['full_name']
-
-    # Email is required by default because it is USERNAME_FIELD
-
-    def get_full_name(self):
-        return self.full_name
-
-    def get_short_name(self):
-        return self.full_name
+    USERNAME_FIELD = 'username'
 
     def __str__(self):
-        return self.email
+        return self.username
 
 
 class Owner(models.Model):
     bank_account_id = models.CharField(max_length=255, primary_key=True)
-    type = models.CharField(max_length=255, choices=OwnerType.choices, default=OwnerType.IMPORTER)
+    owner_type = models.CharField(max_length=255, choices=OwnerType.choices, default=OwnerType.IMPORTER)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for dictionary in args:
-            for key in dictionary:
-                setattr(self, key, dictionary[key])
-        for key in kwargs:
-            setattr(self, key, kwargs[key])
+        init_from_json(self, args, kwargs)
 
     def owner_type_verbose(self):
-        return OwnerType(self.type).label
+        return OwnerType(self.owner_type).label
 
     def __str__(self):
         return str(self.bank_account_id)
-
-    class Meta:
-        # managed = False
-        pass
 
 
 class UserProfile(models.Model):
@@ -142,21 +129,14 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
 
-    # owners = models.ManyToManyField(Owner)
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for dictionary in args:
-            for key in dictionary:
-                setattr(self, key, dictionary[key])
-        for key in kwargs:
-            setattr(self, key, kwargs[key])
+        init_from_json(self, args, kwargs)
 
     def __repr__(self):
         return self.national_code
 
     class Meta:
-        # managed = False
         pass
 
 
@@ -166,11 +146,7 @@ class JudgeProfile(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for dictionary in args:
-            for key in dictionary:
-                setattr(self, key, dictionary[key])
-        for key in kwargs:
-            setattr(self, key, kwargs[key])
+        init_from_json(self, args, kwargs)
 
     def __repr__(self):
         return self.national_id
@@ -178,23 +154,25 @@ class JudgeProfile(models.Model):
     def __str__(self):
         return self.national_id
 
-    class Meta:
-        # managed = False
-        pass
+
+class ReporterProfile(models.Model):
+    username = models.CharField(max_length=255, primary_key=True)
+    full_name = models.CharField(max_length=255)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        init_from_json(self, args, kwargs)
 
 
 class Contract(models.Model):
-    # dst_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
-    #                               , related_name="%(app_label)s_%(class)s_dst_owner"
-    #                               , related_query_name="%(app_label)s_%(class)ss")
     id = models.IntegerField(primary_key=True)
     dst_owner_bank_account_id = models.CharField(max_length=255)
 
     value_in_rial = models.IntegerField()
     remittance_value = models.IntegerField()
-    judge_vote = models.CharField(max_length=255, choices=JudgeVote.choices)
+    judge_vote = models.CharField(max_length=255, choices=JudgeVote.choices, default=JudgeVote.NOT_CLAIMED)
     expire_date = models.BigIntegerField()
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True)
     status = models.CharField(max_length=255, choices=ContractStatus.choices)
 
     def judge_vote_verbose(self):
@@ -203,74 +181,64 @@ class Contract(models.Model):
     def status_verbose(self):
         return ContractStatus(self.status).label
 
+    def expire_date_verbose(self):
+        return str(jdatetime.datetime.fromtimestamp(self.expire_date).strftime("%Y/%m/%d"))
+
     class Meta:
         abstract = True
-        # managed = False
-
-
-#     just for git
 
 
 class NormalContract(Contract):
-    # src_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True
-    #                               , related_name="%(app_label)s_%(class)s_src_owner"
-    #                               , related_query_name="%(app_label)s_%(class)ss")
     src_owner_bank_account_id = models.CharField(max_length=255)
 
     remittance_currency = models.CharField(max_length=255)
     settlement_type = models.CharField(max_length=255, choices=SettlementType.choices, default=SettlementType.SINGLE)
-    # judge = models.ForeignKey(JudgeProfile, on_delete=models.SET_NULL, null=True)
     judge_national_id = models.CharField(max_length=255)
     judge_name = models.CharField(max_length=255)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for dictionary in args:
-            for key in dictionary:
-                setattr(self, key, dictionary[key])
-        for key in kwargs:
-            setattr(self, key, kwargs[key])
+        init_from_json(self, args, kwargs)
 
     def settlement_type_verbose(self):
         return SettlementType(self.settlement_type).label
 
-    class Meta:
-        # managed = False
-        pass
-
 
 class Subcontract(Contract):
-    # parent = models.ForeignKey(NormalContract, on_delete=models.CASCADE)
     parent_id = models.IntegerField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for dictionary in args:
-            for key in dictionary:
-                setattr(self, key, dictionary[key])
-        for key in kwargs:
-            setattr(self, key, kwargs[key])
-
-    class Meta:
-        # managed = False
-        pass
+        init_from_json(self, args, kwargs)
 
 
 class Transaction(models.Model):
-    # owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="owner")
+    transaction_type = models.CharField(max_length=255, choices=TransactionType.choices, default='')
+    relevant_contract_id = models.IntegerField()
     src_owner_bank_account_id = models.CharField(max_length=255)
-    # otherside_owner = models.ForeignKey(Owner, on_delete=models.SET_NULL, null=True, related_name="otherside_owner")
+    src_owner_type = models.CharField(max_length=255, choices=OwnerType.choices, default='')
     dst_owner_bank_account_id = models.CharField(max_length=255)
-    value = models.IntegerField()
-    # operator = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
-    operator_national_code = models.CharField(max_length=255)
-    operator_type = models.CharField(max_length=255, choices=OperatorType.choices, default=OperatorType.USER)
-    datetime = models.CharField(max_length=255)
-    contract_id = models.IntegerField()
+    dst_owner_type = models.CharField(max_length=255, choices=OwnerType.choices, default='')
+    amount = models.IntegerField()
+    operator_type = models.CharField(max_length=255, choices=OperatorType.choices, default=OperatorType.NORMAL_USER)
+    operator_id = models.CharField(max_length=255)
+    date = models.CharField(max_length=255)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        init_from_json(self, args, kwargs)
+
+    def transaction_type_verbose(self):
+        return TransactionType(self.transaction_type).label
+
+    def src_owner_type_verbose(self):
+        return OwnerType(self.src_owner_type).label
+
+    def dst_owner_type_verbose(self):
+        return OwnerType(self.dst_owner_type).label
 
     def operator_type_verbose(self):
         return OperatorType(self.operator_type).label
 
-    class Meta:
-        # managed = False
-        pass
+    def date_verbose(self):
+        return str(jdatetime.datetime.fromtimestamp(1602163718283 / 1000).strftime("%Y/%m/%d-%H:%M:%S"))

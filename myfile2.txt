@@ -1,0 +1,739 @@
+[{
+    'sISOCode': 'AX',
+    'sName': 'Åland Islands'
+}, {
+    'sISOCode': 'AF',
+    'sName': 'Afghanistan'
+}, {
+    'sISOCode': 'AL',
+    'sName': 'Albania'
+}, {
+    'sISOCode': 'DZ',
+    'sName': 'Algeria'
+}, {
+    'sISOCode': 'AS',
+    'sName': 'American Samoa'
+}, {
+    'sISOCode': 'AD',
+    'sName': 'Andorra'
+}, {
+    'sISOCode': 'AO',
+    'sName': 'Angola'
+}, {
+    'sISOCode': 'AI',
+    'sName': 'Anguilla'
+}, {
+    'sISOCode': 'AQ',
+    'sName': 'Antarctica'
+}, {
+    'sISOCode': 'AG',
+    'sName': 'Antigua & Barbuda'
+}, {
+    'sISOCode': 'AR',
+    'sName': 'Argentina'
+}, {
+    'sISOCode': 'AM',
+    'sName': 'Armenia'
+}, {
+    'sISOCode': 'AW',
+    'sName': 'Aruba'
+}, {
+    'sISOCode': 'AU',
+    'sName': 'Australia'
+}, {
+    'sISOCode': 'AT',
+    'sName': 'Austria'
+}, {
+    'sISOCode': 'AZ',
+    'sName': 'Azerbaijan'
+}, {
+    'sISOCode': 'BS',
+    'sName': 'Bahamas'
+}, {
+    'sISOCode': 'BH',
+    'sName': 'Bahrain'
+}, {
+    'sISOCode': 'BD',
+    'sName': 'Bangladesh'
+}, {
+    'sISOCode': 'BB',
+    'sName': 'Barbados'
+}, {
+    'sISOCode': 'BY',
+    'sName': 'Belarus'
+}, {
+    'sISOCode': 'BE',
+    'sName': 'Belgium'
+}, {
+    'sISOCode': 'BZ',
+    'sName': 'Belize'
+}, {
+    'sISOCode': 'BJ',
+    'sName': 'Benin'
+}, {
+    'sISOCode': 'BM',
+    'sName': 'Bermuda'
+}, {
+    'sISOCode': 'BT',
+    'sName': 'Bhutan'
+}, {
+    'sISOCode': 'BO',
+    'sName': 'Bolivia'
+}, {
+    'sISOCode': 'BQ',
+    'sName': 'Bonaire, Sint Eustatius and Saba'
+}, {
+    'sISOCode': 'BA',
+    'sName': 'Bosnia & Herzegovina'
+}, {
+    'sISOCode': 'BW',
+    'sName': 'Botswana'
+}, {
+    'sISOCode': 'BV',
+    'sName': 'Bouvet Island'
+}, {
+    'sISOCode': 'BR',
+    'sName': 'Brazil'
+}, {
+    'sISOCode': 'IO',
+    'sName': 'British Indian Ocean Territory'
+}, {
+    'sISOCode': 'BN',
+    'sName': 'Brunei-Darussalam'
+}, {
+    'sISOCode': 'BG',
+    'sName': 'Bulgaria'
+}, {
+    'sISOCode': 'BF',
+    'sName': 'Burkina Faso'
+}, {
+    'sISOCode': 'BI',
+    'sName': 'Burundi'
+}, {
+    'sISOCode': 'CI',
+    'sName': "Côte D'Ivoire (Ivory Coast)"
+}, {
+    'sISOCode': 'KH',
+    'sName': 'Cambodia'
+}, {
+    'sISOCode': 'CM',
+    'sName': 'Cameroon'
+}, {
+    'sISOCode': 'CA',
+    'sName': 'Canada'
+}, {
+    'sISOCode': 'CV',
+    'sName': 'Cape Verde'
+}, {
+    'sISOCode': 'KY',
+    'sName': 'Cayman Islands'
+}, {
+    'sISOCode': 'CF',
+    'sName': 'Central African Republic'
+}, {
+    'sISOCode': 'TD',
+    'sName': 'Chad'
+}, {
+    'sISOCode': 'CL',
+    'sName': 'Chile'
+}, {
+    'sISOCode': 'CN',
+    'sName': 'China'
+}, {
+    'sISOCode': 'CX',
+    'sName': 'Chrismas Island'
+}, {
+    'sISOCode': 'CC',
+    'sName': 'Cocos (Keeling) Islands'
+}, {
+    'sISOCode': 'MF',
+    'sName': 'Collectivity of Saint Martin'
+}, {
+    'sISOCode': 'CO',
+    'sName': 'Colombia'
+}, {
+    'sISOCode': 'KM',
+    'sName': 'Comoros'
+}, {
+    'sISOCode': 'CG',
+    'sName': 'Congo'
+}, {
+    'sISOCode': 'CD',
+    'sName': 'Congo, Democratic Republic'
+}, {
+    'sISOCode': 'CK',
+    'sName': 'Cook Islands'
+}, {
+    'sISOCode': 'CR',
+    'sName': 'Costa Rica'
+}, {
+    'sISOCode': 'HR',
+    'sName': 'Croatia'
+}, {
+    'sISOCode': 'CU',
+    'sName': 'Cuba'
+}, {
+    'sISOCode': 'CW',
+    'sName': 'Curaçao'
+}, {
+    'sISOCode': 'CY',
+    'sName': 'Cyprus'
+}, {
+    'sISOCode': 'CZ',
+    'sName': 'Czech Republic'
+}, {
+    'sISOCode': 'DK',
+    'sName': 'Denmark'
+}, {
+    'sISOCode': 'DJ',
+    'sName': 'Djibouti'
+}, {
+    'sISOCode': 'DM',
+    'sName': 'Dominica'
+}, {
+    'sISOCode': 'DO',
+    'sName': 'Dominican Republic'
+}, {
+    'sISOCode': 'EC',
+    'sName': 'Ecuador'
+}, {
+    'sISOCode': 'EG',
+    'sName': 'Egypt'
+}, {
+    'sISOCode': 'SV',
+    'sName': 'El Salvador'
+}, {
+    'sISOCode': 'GQ',
+    'sName': 'Equatorial Guinea'
+}, {
+    'sISOCode': 'ER',
+    'sName': 'Eritrea'
+}, {
+    'sISOCode': 'EE',
+    'sName': 'Estonia'
+}, {
+    'sISOCode': 'ET',
+    'sName': 'Ethiopia'
+}, {
+    'sISOCode': 'FK',
+    'sName': 'Falkand Islands (Malvinas)'
+}, {
+    'sISOCode': 'FO',
+    'sName': 'Faroe Islands'
+}, {
+    'sISOCode': 'FJ',
+    'sName': 'Fiji'
+}, {
+    'sISOCode': 'FI',
+    'sName': 'Finland'
+}, {
+    'sISOCode': 'FR',
+    'sName': 'France'
+}, {
+    'sISOCode': 'GF',
+    'sName': 'French Guiana'
+}, {
+    'sISOCode': 'PF',
+    'sName': 'French Polynesia'
+}, {
+    'sISOCode': 'TF',
+    'sName': 'French Southern Territories'
+}, {
+    'sISOCode': 'GA',
+    'sName': 'Gabon'
+}, {
+    'sISOCode': 'GM',
+    'sName': 'Gambia'
+}, {
+    'sISOCode': 'GE',
+    'sName': 'Georgia'
+}, {
+    'sISOCode': 'DE',
+    'sName': 'Germany'
+}, {
+    'sISOCode': 'GH',
+    'sName': 'Ghana'
+}, {
+    'sISOCode': 'GI',
+    'sName': 'Gibraltar'
+}, {
+    'sISOCode': 'GR',
+    'sName': 'Greece'
+}, {
+    'sISOCode': 'GL',
+    'sName': 'Greenland'
+}, {
+    'sISOCode': 'GD',
+    'sName': 'Grenada'
+}, {
+    'sISOCode': 'GP',
+    'sName': 'Guadeloupe'
+}, {
+    'sISOCode': 'GU',
+    'sName': 'Guam'
+}, {
+    'sISOCode': 'GT',
+    'sName': 'Guatemala'
+}, {
+    'sISOCode': 'GN',
+    'sName': 'Guinea'
+}, {
+    'sISOCode': 'GW',
+    'sName': 'Guinea-Bissau'
+}, {
+    'sISOCode': 'GY',
+    'sName': 'Guyana'
+}, {
+    'sISOCode': 'HT',
+    'sName': 'Haiti'
+}, {
+    'sISOCode': 'HM',
+    'sName': 'Heard Island And McDonald Islands'
+}, {
+    'sISOCode': 'HN',
+    'sName': 'Honduras'
+}, {
+    'sISOCode': 'HK',
+    'sName': 'Hong Kong'
+}, {
+    'sISOCode': 'HU',
+    'sName': 'Hungary'
+}, {
+    'sISOCode': 'IS',
+    'sName': 'Iceland'
+}, {
+    'sISOCode': 'IN',
+    'sName': 'India'
+}, {
+    'sISOCode': 'ID',
+    'sName': 'Indonesia'
+}, {
+    'sISOCode': 'IR',
+    'sName': 'Iran'
+}, {
+    'sISOCode': 'IQ',
+    'sName': 'Iraq'
+}, {
+    'sISOCode': 'IE',
+    'sName': 'Ireland'
+}, {
+    'sISOCode': 'IL',
+    'sName': 'Israel'
+}, {
+    'sISOCode': 'IT',
+    'sName': 'Italy'
+}, {
+    'sISOCode': 'JM',
+    'sName': 'Jamaica'
+}, {
+    'sISOCode': 'JP',
+    'sName': 'Japan'
+}, {
+    'sISOCode': 'JO',
+    'sName': 'Jordan'
+}, {
+    'sISOCode': 'KZ',
+    'sName': 'Kazakhstan'
+}, {
+    'sISOCode': 'KE',
+    'sName': 'Kenya'
+}, {
+    'sISOCode': 'KI',
+    'sName': 'Kiribati'
+}, {
+    'sISOCode': 'KW',
+    'sName': 'Kuwait'
+}, {
+    'sISOCode': 'KG',
+    'sName': 'Kyrgyzstan'
+}, {
+    'sISOCode': 'LA',
+    'sName': 'Laos'
+}, {
+    'sISOCode': 'LV',
+    'sName': 'Latvia'
+}, {
+    'sISOCode': 'LB',
+    'sName': 'Lebanon'
+}, {
+    'sISOCode': 'LS',
+    'sName': 'Lesotho'
+}, {
+    'sISOCode': 'LR',
+    'sName': 'Liberia'
+}, {
+    'sISOCode': 'LY',
+    'sName': 'Libyan Arab Jamahiriya'
+}, {
+    'sISOCode': 'LI',
+    'sName': 'Liechtenstein'
+}, {
+    'sISOCode': 'LT',
+    'sName': 'Lithuania'
+}, {
+    'sISOCode': 'LU',
+    'sName': 'Luxembourg'
+}, {
+    'sISOCode': 'MO',
+    'sName': 'Macao'
+}, {
+    'sISOCode': 'MK',
+    'sName': 'Macedonia  (former YR)'
+}, {
+    'sISOCode': 'MG',
+    'sName': 'Madagascar'
+}, {
+    'sISOCode': 'MW',
+    'sName': 'Malawi'
+}, {
+    'sISOCode': 'MY',
+    'sName': 'Malaysia'
+}, {
+    'sISOCode': 'MV',
+    'sName': 'Maldives (Maladive Ilands)'
+}, {
+    'sISOCode': 'ML',
+    'sName': 'Mali'
+}, {
+    'sISOCode': 'MT',
+    'sName': 'Malta'
+}, {
+    'sISOCode': 'MH',
+    'sName': 'Marshall Islands'
+}, {
+    'sISOCode': 'MQ',
+    'sName': 'Martinique'
+}, {
+    'sISOCode': 'MR',
+    'sName': 'Mauritania'
+}, {
+    'sISOCode': 'MU',
+    'sName': 'Mauritius'
+}, {
+    'sISOCode': 'YT',
+    'sName': 'Mayotte'
+}, {
+    'sISOCode': 'MX',
+    'sName': 'Mexico'
+}, {
+    'sISOCode': 'FM',
+    'sName': 'Micronesia  (Federa States of)'
+}, {
+    'sISOCode': 'MD',
+    'sName': 'Moldova, Republic of'
+}, {
+    'sISOCode': 'MC',
+    'sName': 'Monaco'
+}, {
+    'sISOCode': 'MN',
+    'sName': 'Mongolia'
+}, {
+    'sISOCode': 'ME',
+    'sName': 'Montenegro'
+}, {
+    'sISOCode': 'MS',
+    'sName': 'Montserrat'
+}, {
+    'sISOCode': 'MA',
+    'sName': 'Morocco'
+}, {
+    'sISOCode': 'MZ',
+    'sName': 'Mozambique'
+}, {
+    'sISOCode': 'MM',
+    'sName': 'Myanmar (Burma)'
+}, {
+    'sISOCode': 'NA',
+    'sName': 'Namibia'
+}, {
+    'sISOCode': 'NR',
+    'sName': 'Nauru'
+}, {
+    'sISOCode': 'NP',
+    'sName': 'Nepal'
+}, {
+    'sISOCode': 'NL',
+    'sName': 'Netherlands'
+}, {
+    'sISOCode': 'AN',
+    'sName': 'Netherlands Antilles'
+}, {
+    'sISOCode': 'NC',
+    'sName': 'New Caledonia'
+}, {
+    'sISOCode': 'NZ',
+    'sName': 'New Zealand'
+}, {
+    'sISOCode': 'NI',
+    'sName': 'Nicaragua'
+}, {
+    'sISOCode': 'NE',
+    'sName': 'Niger'
+}, {
+    'sISOCode': 'NG',
+    'sName': 'Nigeria'
+}, {
+    'sISOCode': 'NU',
+    'sName': 'Niue'
+}, {
+    'sISOCode': 'NF',
+    'sName': 'Norfolk Island'
+}, {
+    'sISOCode': 'KP',
+    'sName': 'North Korea'
+}, {
+    'sISOCode': 'MP',
+    'sName': 'Northern Mariana Islands'
+}, {
+    'sISOCode': 'NO',
+    'sName': 'Norway'
+}, {
+    'sISOCode': 'OM',
+    'sName': 'Oman'
+}, {
+    'sISOCode': 'PK',
+    'sName': 'Pakistan'
+}, {
+    'sISOCode': 'PW',
+    'sName': 'Palau'
+}, {
+    'sISOCode': 'PS',
+    'sName': 'Palestinian Territory, Occupied'
+}, {
+    'sISOCode': 'PA',
+    'sName': 'Panama'
+}, {
+    'sISOCode': 'PG',
+    'sName': 'Papua-New Guinea'
+}, {
+    'sISOCode': 'PY',
+    'sName': 'Paraguay'
+}, {
+    'sISOCode': 'PE',
+    'sName': 'Peru'
+}, {
+    'sISOCode': 'PH',
+    'sName': 'Philippines'
+}, {
+    'sISOCode': 'PN',
+    'sName': 'Pitcairn'
+}, {
+    'sISOCode': 'PL',
+    'sName': 'Poland'
+}, {
+    'sISOCode': 'PT',
+    'sName': 'Portugal'
+}, {
+    'sISOCode': 'PR',
+    'sName': 'Puerto Rico'
+}, {
+    'sISOCode': 'QA',
+    'sName': 'Quatar'
+}, {
+    'sISOCode': 'RE',
+    'sName': 'Reunion'
+}, {
+    'sISOCode': 'RO',
+    'sName': 'Romania'
+}, {
+    'sISOCode': 'RU',
+    'sName': 'Russian Federation'
+}, {
+    'sISOCode': 'RW',
+    'sName': 'Rwanda'
+}, {
+    'sISOCode': 'BL',
+    'sName': 'Saint Barthélemy'
+}, {
+    'sISOCode': 'SH',
+    'sName': 'Saint Helena, Ascension and Tristan da Cunha'
+}, {
+    'sISOCode': 'PM',
+    'sName': 'Saint Pierre And Micquelon'
+}, {
+    'sISOCode': 'SM',
+    'sName': 'San Marino'
+}, {
+    'sISOCode': 'ST',
+    'sName': 'Sao Tome & Principe'
+}, {
+    'sISOCode': 'SA',
+    'sName': 'Saudi Arabia'
+}, {
+    'sISOCode': 'SN',
+    'sName': 'Senegal'
+}, {
+    'sISOCode': 'RS',
+    'sName': 'Serbia'
+}, {
+    'sISOCode': 'SC',
+    'sName': 'Seychelles'
+}, {
+    'sISOCode': 'SL',
+    'sName': 'Sierra Leone'
+}, {
+    'sISOCode': 'SG',
+    'sName': 'Singapore'
+}, {
+    'sISOCode': 'SX',
+    'sName': 'Sint-Maarten'
+}, {
+    'sISOCode': 'SK',
+    'sName': 'Slovakia'
+}, {
+    'sISOCode': 'SI',
+    'sName': 'Slovenia'
+}, {
+    'sISOCode': 'SB',
+    'sName': 'Solomon Islands'
+}, {
+    'sISOCode': 'SO',
+    'sName': 'Somalia'
+}, {
+    'sISOCode': 'ZA',
+    'sName': 'South Africa'
+}, {
+    'sISOCode': 'GS',
+    'sName': 'South Georgia & South Sandwich Islands'
+}, {
+    'sISOCode': 'KR',
+    'sName': 'South Korea'
+}, {
+    'sISOCode': 'ES',
+    'sName': 'Spain'
+}, {
+    'sISOCode': 'LK',
+    'sName': 'Sri Lanka'
+}, {
+    'sISOCode': 'KN',
+    'sName': 'St. Kitts & Nevis'
+}, {
+    'sISOCode': 'LC',
+    'sName': 'St. Lucia'
+}, {
+    'sISOCode': 'VC',
+    'sName': 'St. Vincent & Grenadines'
+}, {
+    'sISOCode': 'SD',
+    'sName': 'Sudan'
+}, {
+    'sISOCode': 'SR',
+    'sName': 'Suriname'
+}, {
+    'sISOCode': 'SJ',
+    'sName': 'Svalbard And Jan Mayen'
+}, {
+    'sISOCode': 'SZ',
+    'sName': 'Swaziland'
+}, {
+    'sISOCode': 'SE',
+    'sName': 'Sweden'
+}, {
+    'sISOCode': 'CH',
+    'sName': 'Switzerland'
+}, {
+    'sISOCode': 'SY',
+    'sName': 'Syrian Arab Republic'
+}, {
+    'sISOCode': 'TW',
+    'sName': 'Taiwan'
+}, {
+    'sISOCode': 'TJ',
+    'sName': 'Tajikistan'
+}, {
+    'sISOCode': 'TZ',
+    'sName': 'Tanzania'
+}, {
+    'sISOCode': 'TH',
+    'sName': 'Thailand'
+}, {
+    'sISOCode': 'TL',
+    'sName': 'Timor-Leste'
+}, {
+    'sISOCode': 'TG',
+    'sName': 'Togo'
+}, {
+    'sISOCode': 'TK',
+    'sName': 'Tokelau'
+}, {
+    'sISOCode': 'TO',
+    'sName': 'Tonga'
+}, {
+    'sISOCode': 'TT',
+    'sName': 'Trinidad & Tobago'
+}, {
+    'sISOCode': 'TN',
+    'sName': 'Tunisia'
+}, {
+    'sISOCode': 'TR',
+    'sName': 'Turkey'
+}, {
+    'sISOCode': 'TM',
+    'sName': 'Turkmenistan'
+}, {
+    'sISOCode': 'TC',
+    'sName': 'Turks And Caicos Islands'
+}, {
+    'sISOCode': 'TV',
+    'sName': 'Tuvalu'
+}, {
+    'sISOCode': 'UG',
+    'sName': 'Uganda'
+}, {
+    'sISOCode': 'UA',
+    'sName': 'Ukraine'
+}, {
+    'sISOCode': 'AE',
+    'sName': 'United Arab Emirates'
+}, {
+    'sISOCode': 'GB',
+    'sName': 'United Kingdom'
+}, {
+    'sISOCode': 'US',
+    'sName': 'United States'
+}, {
+    'sISOCode': 'UM',
+    'sName': 'United States Minor Outlying Islands'
+}, {
+    'sISOCode': 'UY',
+    'sName': 'Uruguay'
+}, {
+    'sISOCode': 'UZ',
+    'sName': 'Uzbekistan'
+}, {
+    'sISOCode': 'VU',
+    'sName': 'Vanuatu'
+}, {
+    'sISOCode': 'VA',
+    'sName': 'Vatican City'
+}, {
+    'sISOCode': 'VE',
+    'sName': 'Venezuela'
+}, {
+    'sISOCode': 'VN',
+    'sName': 'Vietnam'
+}, {
+    'sISOCode': 'VG',
+    'sName': 'Virgin Islands, British'
+}, {
+    'sISOCode': 'VI',
+    'sName': 'Virgin Islands, U.S.'
+}, {
+    'sISOCode': 'WF',
+    'sName': 'Wallis And Futuna'
+}, {
+    'sISOCode': 'EH',
+    'sName': 'Western Sahara'
+}, {
+    'sISOCode': 'WS',
+    'sName': 'Western Samoa'
+}, {
+    'sISOCode': 'YE',
+    'sName': 'Yemen'
+}, {
+    'sISOCode': 'ZM',
+    'sName': 'Zambia'
+}, {
+    'sISOCode': 'ZW',
+    'sName': 'Zimbabwe'
+}]

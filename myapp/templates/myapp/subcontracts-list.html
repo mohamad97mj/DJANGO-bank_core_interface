@@ -18,7 +18,7 @@
                     <thead>
                     <tr>
                         <th scope="col">شناسه</th>
-                        {% if owner_type == 'IMPORTER' %}
+                        {% if type == 'IMPORTER' %}
                             <th scope="col">شماره حساب صادرکننده</th>
                         {% else %}
 
@@ -40,7 +40,7 @@
                             <td>{{ contract.value_in_rial }}</td>
                             <td>{{ contract.remittance_value }}</td>
                             <td>{{ contract.judge_vote_verbose }}</td>
-                            <td>{{ contract.expire_date }}</td>
+                            <td>{{ contract.expire_date_verbose }}</td>
                             <td>{{ contract.description }}</td>
                             <td>{{ contract.status }}</td>
                         </tr>

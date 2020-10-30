@@ -8,20 +8,26 @@ class TransactionDetailForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['dst_owner_bank_account_id'].widget.attrs['disabled'] = True
-        self.fields['value'].widget.attrs['disabled'] = True
+        self.fields['amount'].widget.attrs['disabled'] = True
         self.fields['operator_type'].widget.attrs['disabled'] = True
-        self.fields['operator_national_code'].widget.attrs['disabled'] = True
-        self.fields['myid'].widget.attrs['disabled'] = True
-        self.fields['myid'].initial = self.instance.id
-        self.fields['myid'].label = 'شناسه'
+        self.fields['operator_id'].widget.attrs['disabled'] = True
+        self.fields['id'].widget.attrs['disabled'] = True
+        self.fields['id'].initial = self.instance.id
+        self.fields['id'].label = 'شناسه'
 
     class Meta:
         model = Transaction
-        fields = ['myid', 'transaction_type', 'dst_owner_bank_account_id', 'value', 'operator_type',
-                  'operator_national_code']
+        fields = [
+            'myid',
+            'transaction_type',
+            'dst_owner_bank_account_id',
+            'amount', 'operator_type',
+            'operator_id',
+        ]
+
         labels = {
             'dst_owner_bank_account_id': 'حساب طرف دیگر تراکنش',
-            'value': 'مبلغ',
+            'amount': 'مبلغ',
             'operator_type': 'نوع اپراتور',
-            'operator_national_code': 'کد ملی اپراتور',
+            'operator_id': 'کد ملی اپراتور',
         }

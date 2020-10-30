@@ -8,7 +8,7 @@
 {% block content %}
     <div class="block-content">
         <h4>اطلاعات قرارداد مربوطه</h4>
-        <form method="post" id="login-form" class="myform user-profile-form" action="">
+        <form method="post" id="login-form" class="myform general-form" action="">
             {% csrf_token %}
 
             {% for hidden in subcontract_detail_form.hidden_fields %}
@@ -30,21 +30,17 @@
             {% endfor %}
         </form>
 
-        <form class="myform user-profile-form" style="margin-top: -20px" method="post" action="{% url 'myapp:my_subcontract_detail' subcontract %}?role=judge&judge={{ judge }}&contract={{ contract }}">
-            {% if to == 'judge' %}
-
-                <label for="vote">رای شما به عنوان داور</label>
-                <select class="form-control" name="vote" id="vote">
-                    <option value="no">قرارداد انجام نشده است</option>
-                    <option value="yes">قرارداد انجام شده است</option>
-                </select>
-                <div style="margin-top: 10px">
-                    <button class="btn mybutton btn-block btn-success">
-                        ثبت رای
-                    </button>
-                </div>
-            {% endif %}
-        </form>
+        {% if status == 'CLAIMED_BY_IMPORTER' %}
+            <div class="small-form margin-auto">
+{#            <label for="vote">داوری کنید</label>#}
+            <a class="btn another-mybutton btn-block"
+               href="{% url 'myapp:subcontract_detail' subcontract %}?role=judge&judge={{ judge }}&contract={{ contract }}&action=confirm"
+               type="submit"><span>معامله انجام شده است</span></a>
+            <a class="btn btn-block mybutton"
+               href="{% url 'myapp:subcontract_detail' subcontract %}?role=judge&judge={{ judge }}&contract={{ contract }}&action=deny"
+               type="submit"><span>معامله انجام نشده است</span></a>
+        {% endif %}
+        </div>
 
         <script>
         </script>

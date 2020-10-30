@@ -9,7 +9,8 @@
 {% block content %}
     <div class="block-content">
         <h4>اطلاعات قرارداد جدید را وارد کنید</h4>
-        <form method="post" id="login-form" class="myform user-profile-form" action="{% url 'myapp:my_new_contract' %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}">
+        <form method="post" id="new-contract-form" class="myform general-form"
+              action="{% url 'myapp:new_contract' %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}">
             {% csrf_token %}
 
             {% for hidden in new_contract_form.hidden_fields %}
@@ -22,20 +23,125 @@
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     {{ field|add_class:'form-control' }}
                     <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
-                    {% for error in field.errors %}
-                        <span class="help- error-message">{{ error }}</span>
-                    {% endfor %}
+                    <span class="help- error-message" id="{{ field.auto_id }}_error_messages">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
                 </div>
             {% endfor %}
             <div class="form-group text-center">
-                <button type="submit" class="btn mybutton">
+                <button type="button" name="btn" value="Submit" id="submitBtn" data-toggle="modal"
+                        data-target="#confirm-submit" class="btn mybutton btn-block">
                     ثبت
                 </button>
             </div>
 
         </form>
+
+
+        <div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content"
+                     style="width: 350px; margin-left: auto; margin-right: auto; margin-top: 125px">
+                    <div class="modal-header">
+                        آیا درستی اطلاعات وارد شده را تایید می کنید؟
+                    </div>
+                    <div class="modal-body ">
+                        <div style="text-align: right; padding-right: 25px;">
+                            {% for field in new_contract_form.visible_fields %}
+                                <div style="margin-bottom: 10px">
+                                    <input id="{{ field.auto_id }}_check" type="checkbox"/>
+                                    <span style="color: #9655D4;">{{ field.label }}:</span>
+                                    <span style="color: black" id="{{ field.auto_id }}_value"></span>
+                                    {#                                {% if field.label != 'توضیحات' %}#}
+                                    {#                                    <hr style="margin: 10px"/>#}
+                                    {#                                {% endif %}#}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">ویرایش</button>
+                        <button id="submit" class="btn modal_success_btn">تایید</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <script>
+            $(document).ready(function () {
+                $('#id_judge_national_id').on('input', judge_name_check);
+            });
+
+            function judge_name_check() {
+                const judge_national_id = $(this).val();
+                if (judge_national_id === '') {
+                    $("#id_judge_national_id_error_messages").text("")
+                }
+
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'myapp:get_judge_name' %}",
+                    data: {"judge_national_id": judge_national_id},
+                    success: function (response) {
+                        // if not valid user, alert the user
+                        if (!response["valid"]) {
+                            $("#id_judge_name").val("")
+                            $("#id_judge_national_id_error_messages").text("داور با این شناسه ملی در سامانه ثبت نشده است!")
+                        } else {
+                            $("#id_judge_name").val(response['judge_name'])
+                            $("#id_judge_national_id_error_messages").text("")
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                })
+            }
+
         </script>
+
+        <script>
+
+            $('#submitBtn').click(function () {
+                {% for field in new_contract_form.visible_fields %}
+                    var field_id = "{{ field.auto_id }}"
+                    var field_value = $('#' + field_id).val()
+                    var modal_field_id = "{{ field.auto_id }}" + '_value'
+                    $('#' + modal_field_id).text(field_value)
+                {% endfor %}
+                $('#id_settlement_type_value').text($("#id_settlement_type option:selected").text())
+
+            });
+
+        </script>
+
+        <script>
+            $("#submit").click(function () {
+                var allChecked = true
+                {% for field in new_contract_form.visible_fields %}
+                    var modal_field_check_id = "{{ field.auto_id }}" + '_check'
+                    var isChecked = $('#' + modal_field_check_id).is(":checked")
+                    if (!isChecked) {
+                        allChecked = false
+                    }
+                {% endfor %}
+                if (allChecked) {
+                    /* when the submit button in the modal is clicked, submit the form */
+                    $(":disabled").each(function (e) {
+                        $(this).removeAttr('disabled');
+                    })
+                    $("#new-contract-form").submit();
+                } else {
+                    alert('لطفا مقدار تمامی فیلد ها را تایید کنید!')
+                }
+            });
+        </script>
+
     </div>
 {% endblock %}
 

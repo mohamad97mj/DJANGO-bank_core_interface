@@ -22,7 +22,7 @@
           content="default-src * data: blob: ws: wss: gap://ready file://*;style-src * &#39;unsafe-inline&#39;; script-src * &#39;unsafe-inline&#39; &#39;unsafe-eval&#39;;connect-src * ws: wss:;"/>
     <link rel="icon" href="https://www.enbank.ir/config/themes/enbankNew/images/fa/favicon.png" type="image/png"/>
     <link rel="shortcut icon" href="https://www.enbank.ir/config/themes/enbank/images/favicon.ico"/>
-    {#    <link rel="stylesheet" type="text/css" href="./data/main.css"/>#}
+    {#    <link rel="stylesheet" owner_type="text/css" href="./data/main.css"/>#}
     <link rel="stylesheet" href="{% static 'myapp/data/main.css' %}">
     <link rel="stylesheet" href="{% static 'myapp/data/style.css' %}">
     <link rel="stylesheet" href="{% static 'myapp/myform.css' %}">
@@ -34,7 +34,10 @@
     <script src="{% static 'myapp/data/d638bbf54a2c34b1d113365a6e4dd943.js' %}" defer=""></script>
     {#    <script src="./data/d638bbf54a2c34b1d113365a6e4dd943.js" defer=""></script>#}
 
-    {#    <link rel="stylesheet" type="text/css" href="./data/style.css">#}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+    {#    <link rel="stylesheet" owner_type="text/css" href="./data/style.css">#}
 </head>
 <body class="sis-general-page sis-general-page-1" id="bootstrap-overwrite">
 {% block navbar %}

@@ -11,8 +11,8 @@
 {% block content %}
     <div class="block-content">
         <h4>اطلاعات قرارداد</h4>
-        <div method="post" id="login-form" class="" action="">
-            <form class="myform user-profile-form">
+        <div id="login-form">
+            <form class="myform general-form">
                 {% csrf_token %}
 
                 {% for hidden in contract_detail_form.hidden_fields %}
@@ -31,97 +31,101 @@
                 {% endfor %}
             </form>
 
-            {% if owner_type == 'IMPORTER' %}
+            {% if type == 'IMPORTER' %}
                 {% if status == "WAITING_FOR_IMPORTER_PAYMENT" %}
-                    <div class="text-center">
-                        <a class="btn another-mybutton btn-block"
-                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=charge"><span
-                                class="color-white">پرداخت</span></a>
+                    <div class="small-form margin-auto">
+                        <button id="im-charge-btn" class="btn another-mybutton btn-block" data-toggle="modal"
+                                data-target="#confirm-submit">
+                            <span class="color-white">پرداخت</span></button>
                     </div>
 
                 {% elif status == "WAITING_FOR_IMPORTER_CONFIRMATION" %}
-                    <a class="btn another-mybutton btn-block"
-                       href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=confirm"
-                       type="submit"><span>{{ sat }}تایید قرارداد</span></a>
-                    <a class="btn btn-block mybutton"
-                       href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=claim"
-                       type="submit"><span>{{ sat }}عدم تایید قرارداد(درخواست داوری)</span></a>
+                    <div class="small-form margin-auto">
+                        <button id="im-confirm-btn" class="btn another-mybutton btn-block" data-toggle="modal"
+                                data-target="#confirm-submit" type="submit"><span>تایید قرارداد</span></button>
+                        <button id="im-claim-btn" class="btn btn-block mybutton" data-toggle="modal"
+                                data-target="#confirm-submit" type="submit">
+                            <span>عدم تایید قرارداد(درخواست داوری)</span></button>
+                    </div>
                 {% endif %}
 
-            {% elif owner_type == "EXCHANGER" %}
+            {% elif type == "EXCHANGER" %}
                 {% if status == "WAITING_FOR_EXCHANGER_ACCEPTANCE" %}
                     <div class="small-form margin-auto">
-                        <a class="btn another-mybutton btn-block"
-                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=accept"
-                           type="submit"><span>{{ sat }}پذیرش قرارداد</span></a>
-                        <a class="btn btn-block mybutton"
-                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=reject"
-                           type="submit"><span>{{ sat }}رد قرارداد</span></a>
+                        <button id="exc-accept-btn" class="btn another-mybutton btn-block" data-toggle="modal"
+                                data-target="#confirm-submit" type="submit"><span>پذیرش قرارداد</span></button>
+                        <button id="exc-reject-btn" class="btn btn-block mybutton" data-toggle="modal"
+                                data-target="#confirm-submit" type="submit"><span>رد قرارداد</span></button>
                     </div>
-                {% elif status == 'WAITING_FOR_EXCHANGER_CONFIRMATION' %}
-                    <div class="small-form margin-auto">
+                {% elif status == "DOING_BY_EXCHANGER" or status == "WAITING_FOR_IMPORTER_CONFIRMATION" or status == "CONFIRMED_BY_IMPORTER" or status == "CLAIMED_BY_IMPORTER" %}
+                    <div style="margin-top: 50px; margin-bottom: 25px;">
+                        <h4>لیست قرارداد های مربوطه</h4>
+                        <h5>(جهت مشاهده جزپیات بیشتر روی شناسه قرارداد مربوطه کلیک کنید)</h5>
 
-                        <a class="btn another-mybutton btn-block"
-                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=confirm"
-                           type="submit"><span>{{ sat }}تایید قرارداد</span></a>
-                        <a class="btn btn-block mybutton"
-                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=deny"
-                           type="submit"><span>{{ sat }}عدم تایید قرارداد</span></a>
-                    </div>
-                {% elif status == "DOING_BY_EXCHANGER" or status == "WAITING_FOR_IMPORTER_CONFIRMATION" or status == "CONFIRMED_BY_IMPORTER" %}
-                    <h4>لیست قرارداد های مربوطه</h4>
-                    <h5>(جهت مشاهده جزپیات بیشتر روی شناسه قرارداد مربوطه کلیک کنید)</h5>
-
-                    <div class="table-responsive">
-                        <table style="margin: auto;" class="center table table-striped user-contracts-list-table">
-                            <thead>
-                            <tr>
-                                <th scope="col">شناسه</th>
-                                <th scope="col">شماره حساب صادرکننده</th>
-                                <th scope="col">مبلغ به ریال</th>
-                                <th scope="col">مبلغ حواله</th>
-                                <th scope="col">رای داور</th>
-                                <th scope="col">تاریخ اعتبار</th>
-                                <th scope="col">وضعیت</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for subcontract in subcontracts %}
+                        <div class="table-responsive">
+                            <table style="margin: auto;" class="center table table-striped user-contracts-list-table">
+                                <thead>
                                 <tr>
-                                    <th scope="row">
-                                        <a href="{% url 'myapp:my_subcontract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&contract={{ contract }}"><u>{{ subcontract.id }}</u></a>
-                                    </th>
-                                    <td>{{ subcontract.dst_owner }}</td>
-                                    <td>{{ subcontract.value_in_rial }}</td>
-                                    <td>{{ subcontract.remittance_value }}</td>
-                                    <td>{{ subcontract.judge_vote_verbose }}</td>
-                                    <td>{{ subcontract.expire_date }}</td>
-                                    <td>{{ subcontract.status_verbose }}</td>
+                                    <th scope="col">شناسه</th>
+                                    <th scope="col">شماره حساب صادرکننده</th>
+                                    <th scope="col">مبلغ به ریال</th>
+                                    <th scope="col">مبلغ حواله</th>
+                                    <th scope="col">رای داور</th>
+                                    <th scope="col">تاریخ اعتبار</th>
+                                    <th scope="col">وضعیت</th>
                                 </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                {% for subcontract in subcontracts %}
+                                    <tr>
+                                        <th scope="row">
+                                            <a href="{% url 'myapp:subcontract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ contract }}"><u>{{ subcontract.id }}</u></a>
+                                        </th>
+                                        <td>{{ subcontract.dst_owner_bank_account_id }}</td>
+                                        <td>{{ subcontract.value_in_rial }}</td>
+                                        <td>{{ subcontract.remittance_value }}</td>
+                                        <td>{{ subcontract.judge_vote_verbose }}</td>
+                                        <td>{{ subcontract.expire_date_verbose }}</td>
+                                        <td>{{ subcontract.status_verbose }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     {% if status == "DOING_BY_EXCHANGER" %}
                         <div class="small-form margin-auto">
-                            <a class="btn mybutton"
-                               href="{% url 'myapp:my_new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&contract={{ contract }}"><span
-                                    class="color-white">ثبت قرارداد مربوطه جدید</span></a>
+                            <a href="{% url 'myapp:new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ contract }}"
+                               class="btn another-mybutton btn-block"> <span
+                                    class="color-white">ثبت قرارداد مربوطه جدید</span>
+                            </a>
+
+                            <button id="exc-end-btn" class="btn mybutton btn-block" data-toggle="modal"
+                                    data-target="#confirm-submit">
+                                <span class="color-white">پایان قرارداد</span>
+                            </button>
+
                         </div>
                     {% endif %}
                 {% endif %}
 
-            {% elif owner_type == "EXPORTER" %}
+            {% elif type == "EXPORTER" %}
                 {% if status == "WAITING_FOR_EXPORTER_ACCEPTANCE" %}
                     <div class="small-form margin-auto">
 
-                        <a class="btn another-mybutton btn-block"
-                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=accept"
-                           type="submit"><span>{{ sat }}پذیرش قرارداد</span></a>
-                        <a class="btn btn-block mybutton"
-                           href="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}&action=reject"
-                           type="submit"><span>{{ sat }}رد قرارداد</span></a>
+                        <button id="ex-accept-btn" class="btn another-mybutton btn-block" data-toggle="modal"
+                                data-target="#confirm-submit" type="submit"><span>پذیرش قرارداد</span></button>
+                        <button id="ex-reject-btn" class="btn btn-block mybutton" data-toggle="modal"
+                                data-target="#confirm-submit" type="submit"><span>رد قرارداد</span></button>
                     </div>
+
+                {% elif status == "DOING_BY_EXPORTER" %}
+                    <div class="small-form margin-auto">
+                        <button id="ex-end-btn" class="btn mybutton btn-block" data-toggle="modal"
+                                data-target="#confirm-submit">
+                            <span class="color-white">پایان قرارداد</span></button>
+                    </div>
+
                 {% endif %}
 
             {% endif %}
@@ -130,85 +134,157 @@
 
         <br/>
         <br/>
-        <br/>
+        <br>
 
+        <div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content"
+                     style="width: 350px; margin-left: auto; margin-right: auto; margin-top: 125px">
+                    <div class="modal-header">
+                        آیا درستی اطلاعات وارد شده را تایید می کنید؟
+                    </div>
+                    <div class="modal-body ">
+                        <div style="text-align: right; padding-right: 25px">
+                            {% for field in contract_detail_form.visible_fields %}
+                                {#                                <input id="{{ field.auto_id }}_check" type="checkbox"/>#}
+                                <div style="margin-bottom: 10px">
+                                    <span style="color: #9655D4;">{{ field.label }}:</span>
+                                    <span style="color: black" id="{{ field.auto_id }}_value"></span>
+                                    {#                                {% if field.label != 'توضیحات' %}#}
+                                    {#                                    <hr style="margin: 10px"/>#}
+                                    {#                                {% endif %}#}
+                                </div>
+                            {% endfor %}
+                            <strong style="color: #9655D4;">عمل مورد نظر:</strong>
+                            <strong style="color: black" id="requested-action"></strong>
+                        </div>
+                    </div>
 
-        {#            <div class="block-content">#}
-        {##}
-        {#                <h4>لیست تراکنش ها</h4>#}
-        {#                <h5>(جهت مشاهده جزپیات بیشتر روی شناسه تراکنش کلیک کنید)</h5>#}
-        {##}
-        {#                <form method="post" id="" class="myform user-transaction-list-form" action="">#}
-        {#                    {% csrf_token %}#}
-        {##}
-        {#                    <div class="table-responsive">#}
-        {#                        <table style="margin: auto" class="center table table-striped">#}
-        {#                            <thead>#}
-        {#                            <tr>#}
-        {#                                <th scope="col">شناسه</th>#}
-        {#                                {% if type == 'EXCHANGER' %}#}
-        {#                                    <th scope="col">نوع حساب طرف دیگر تراکنش</th>#}
-        {#                                    <th scope="col">شماره حساب طرف دیگر تراکنش</th>#}
-        {#                                {% else %}#}
-        {#                                    <th scope="col">شماره حساب صراف</th>#}
-        {#                                {% endif %}#}
-        {#                                <th scope="col">نوع تراکنش</th>#}
-        {#                                <th scope="col">مبلغ به ریال</th>#}
-        {#                                <th scope="col">نوع اپراتور</th>#}
-        {#                                <th scope="col">کد ملی اپراتور</th>#}
-        {#                            </tr>#}
-        {#                            </thead>#}
-        {#                            <tbody>#}
-        {#                            {% for transaction in transactions %}#}
-        {#                                <tr>#}
-        {#                                    <th scope="row"><a#}
-        {#                                            href="{% url 'myapp:my_transaction_detail' transaction.id %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}"><u>{{ transaction.id }}</u></a>#}
-        {#                                    </th>#}
-        {#                                    {% if owner == transaction.src_owner %}#}
-        {#                                        {% if type == 'EXCHANGER' %}#}
-        {#                                            <td>صادرکننده</td>#}
-        {#                                        {% endif %}#}
-        {#                                        <td>{{ transaction.dst_owner }}</td>#}
-        {#                                    {% else %}#}
-        {#                                        {% if type == 'EXCHANGER' %}#}
-        {#                                            <td>وارد کننده</td>#}
-        {#                                        {% endif %}#}
-        {#                                        <td>{{ transaction.src_owner }}</td>#}
-        {#                                    {% endif %}#}
-        {##}
-        {#                                    {% if type == 'IMPORTER' %}#}
-        {#                                        <td>پرداختی</td>#}
-        {#                                    {% elif type == 'EXCHANGER' %}#}
-        {#                                        {% if owner == transaction.src_owner %}#}
-        {#                                            <td>پرداختی</td>#}
-        {#                                        {% else %}#}
-        {#                                            <td>واریزی</td>#}
-        {#                                        {% endif %}#}
-        {#                                    {% else %}#}
-        {#                                        <td>واریزی</td>#}
-        {#                                    {% endif %}#}
-        {##}
-        {#                                    <td>{{ transaction.value }}</td>#}
-        {#                                    <td>{{ transaction.operator_type_verbose }}</td>#}
-        {#                                    <td>{{ transaction.operator_national_code }}</td>#}
-        {#                                </tr>#}
-        {#                            {% endfor %}#}
-        {#                            </tbody>#}
-        {#                        </table>#}
-        {#                    </div>#}
-        {##}
-        {#                </form>#}
-        {##}
-        {#                {% if  type == 'IMPORTER' %}#}
-        {#                    <div class="text-center" style="padding:10px ">#}
-        {#                        <a class="btn mybutton"#}
-        {#                           href="{% url 'myapp:my_new_transaction' %}?role=user&user={{ user }}&account={{ owner }}&type={{ owner_type }}"><span#}
-        {#                                class="color-white">انجام تراکنش جدید</span></a>#}
-        {#                    </div>#}
-        {#                {% endif %}#}
-        {#            </div>#}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">انصراف</button>
+                        <button id="confirm-btn" class="btn modal_success_btn testme">تایید</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script>
+
+            $('#im-charge-btn, #im-confirm-btn, #im-claim-btn, #exc-accept-btn, #exc-reject-btn, #exc-end-btn, #ex-accept-btn, #ex-reject-btn, #ex-end-btn').click(function () {
+                {% for field in contract_detail_form.visible_fields %}
+                    var field_id = "{{ field.auto_id }}"
+                    var field_value = $('#' + field_id).val()
+                    var modal_field_id = "{{ field.auto_id }}" + '_value'
+                    $('#' + modal_field_id).text(field_value)
+                {% endfor %}
+                $('#id_settlement_type_value').text($("#id_settlement_type option:selected").text())
+                $('#id_status_value').text($("#id_status option:selected").text())
+                $('#id_judge_vote_value').text($("#id_judge_vote option:selected").text())
+
+            });
+
+        </script>
+
+        <script>
+            var get = function (url) {
+                var link = document.createElement('a');
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+            }
+        </script>
+
+        <script>
+            function setElementTextById(id, text) {
+                $('#' + id).text(text);
+            }
+        </script>
+
+        <script>
+            function setRequestedAction(text) {
+                setElementTextById('requested-action', text)
+            }
+        </script>
+
+        {#  importer  ...............................................................................................................#}
+        <script>
+            $('#im-charge-btn').click(function () {
+                {#changeConfirmBtnId('im-charge-modal-btn')#}
+                $('#confirm-btn').data('action', 'im-charge');
+                setRequestedAction("پرداخت")
+            })
+            $('#im-confirm-btn').click(function () {
+                $('#confirm-btn').data('action', 'im-confirm');
+                setRequestedAction("تایید قرار داد")
+
+            })
+            $('#im-claim-btn').click(function () {
+                $('#confirm-btn').data('action', 'im-claim');
+                setRequestedAction("عدم تایید قرارداد(درخواست داوری)")
+            })
+            $('#exc-accept-btn').click(function () {
+                $('#confirm-btn').data('action', 'exc-accept');
+                setRequestedAction("پذیرش قرار داد")
+            })
+            $('#exc-reject-btn').click(function () {
+                $('#confirm-btn').data('action', 'exc-reject');
+                setRequestedAction("رد قرار داد")
+            })
+            $('#exc-end-btn').click(function () {
+                $('#confirm-btn').data('action', 'exc-end');
+                setRequestedAction("پایان قرار داد")
+            })
+            $('#ex-accept-btn').click(function () {
+                $('#confirm-btn').data('action', 'ex-accept');
+                setRequestedAction("پذیرش قرار داد")
+            })
+            $('#ex-reject-btn').click(function () {
+                $('#confirm-btn').data('action', 'ex-reject');
+                setRequestedAction("رد قرار داد")
+            })
+            $('#ex-end-btn').click(function () {
+                $('#confirm-btn').data('action', 'ex-end');
+                setRequestedAction("پایان قرار داد")
+            })
+        </script>
+
+        {#  modal .................................................................................................................. #}
+        {#  importer  ...............................................................................................................#}
+        <script>
+            $('#confirm-btn').click(function () {
+                var action = $('#confirm-btn').data('action');
+                alert(action)
+                switch (action) {
+                    case 'im-charge':
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=charge");
+                        break
+                    case 'im-confirm':
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=confirm");
+                        break
+                    case 'im-claim':
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=claim");
+                        break
+                    case 'exc-accept':
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=accept")
+                        break
+                    case 'exc-reject':
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=reject");
+                        break
+                    case 'exc-end':
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=end");
+                        break
+                    case 'ex-accept':
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=accept");
+                        break
+                    case 'ex-reject':
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=reject");
+                        break
+                    case 'ex-end':
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=end");
+                        break
+                }
+            })
         </script>
     </div>
 {% endblock %}

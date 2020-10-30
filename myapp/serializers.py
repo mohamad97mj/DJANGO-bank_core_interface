@@ -37,13 +37,19 @@ class UserSerializer(serializers.ModelSerializer):
 class OwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Owner
-        fields = ['bank_account_id', 'type']
+        fields = ['bank_account_id', 'owner_type']
 
 
 class JudgeSerializer(serializers.ModelSerializer):
     class Meta:
         model = JudgeProfile
         fields = ['national_id', 'name']
+
+
+class ReporterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReporterProfile
+        fields = ['username', 'full_name']
 
 
 class NormalContractSerializer(serializers.ModelSerializer):
@@ -72,12 +78,12 @@ class SubcontractSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'parent_id',
-            'dst_owner',
+            'dst_owner_bank_account_id',
             'value_in_rial',
             'remittance_value',
             'status',
             'expire_date',
-            'judge_vote',
+            # 'judge_vote',
             'description',
         ]
 
@@ -86,10 +92,14 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = [
-            'id',
-            'otherside_owner',
             'transaction_type',
-            'value',
+            'relevant_contract_id',
+            'src_owner_bank_account_id',
+            'src_owner_type',
+            'dst_owner_bank_account_id',
+            'dst_owner_type',
+            'amount',
             'operator_type',
-            'operator'
+            'operator_id',
+            'date',
         ]

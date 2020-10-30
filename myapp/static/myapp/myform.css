@@ -26,7 +26,7 @@
     margin: auto;
 }
 
-.user-profile-form {
+.general-form {
     width: 250px;
 }
 
@@ -62,14 +62,19 @@
     border-radius: 0;
 }
 
+.modal_success_btn {
+    background-color: #66f866;
+    color: white;
+}
+
 #bootstrap-overwrite .mybutton:hover {
     /*color: white;*/
-    background-color: black;
+    background-color: #57317a;
 }
 
 #bootstrap-overwrite .another-mybutton:hover {
     /*color: white;*/
-    background-color: black;
+    background-color: #57317a;
 }
 
 .color-white {

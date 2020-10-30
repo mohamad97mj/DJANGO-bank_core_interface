@@ -29,7 +29,7 @@
                     {% for account in accounts %}
                         <tr>
                             <th scope="row">
-                                <a href="{% url 'myapp:my_owner_detail' account.bank_account_id %}?role=user&user={{ user }}&type={{ account.type }}"><u>{{ account.bank_account_id }}</u></a>
+                                <a href="{% url 'myapp:owner_detail' account.bank_account_id %}?role=user&user={{ user }}&type={{ account.owner_type }}"><u>{{ account.bank_account_id }}</u></a>
                             </th>
                             <td>{{ account.owner_type_verbose }}</td>
                         </tr>

@@ -1,0 +1,1482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://www.adpdigital.com/services/messaging" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://www.adpdigital.com/services/messaging" xmlns:tns1="http://domain.commons.messaging.adpdigital.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+
+
+	  <wsdl:types>
+
+
+		    <schema elementFormDefault="qualified" targetNamespace="http://www.adpdigital.com/services/messaging" xmlns="http://www.w3.org/2001/XMLSchema">
+
+
+
+			      <element name="sendMultiple">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+
+						            <element name="userName" type="xsd:string"/>
+
+
+
+						            <element name="password" type="xsd:string"/>
+
+
+						            <element name="shortNumber" type="xsd:string"/>
+
+
+						            <element name="sourcePort" type="xsd:string"/>
+
+
+						            <element name="destPort" type="xsd:string"/>
+
+
+						            <element name="messageType" type="xsd:short"/>
+
+
+						            <element name="longSupported" type="xsd:boolean"/>
+
+
+						            <element maxOccurs="unbounded" name="messages" type="impl:MultiAddressMessageObject"/>
+
+
+					          </sequence>
+
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <complexType name="MessageObject">
+
+
+				        <sequence>
+
+
+					          <element name="chunk" type="xsd:int"/>
+
+
+					          <element name="clientId" nillable="true" type="xsd:string"/>
+
+
+					          <element name="content" nillable="true" type="xsd:string"/>
+
+
+					          <element name="encoding" type="xsd:short"/>
+
+
+					          <element name="id" type="xsd:long"/>
+
+
+
+					          <element name="phoneNumber" nillable="true" type="xsd:string"/>
+
+
+					          <element name="status" type="xsd:short"/>
+
+
+					          <element name="time" nillable="true" type="xsd:dateTime"/>
+
+
+				        </sequence>
+
+
+			      </complexType>
+
+
+			      <complexType name="MultiAddressMessageObject">
+
+
+				        <sequence>
+
+					          <element name="content" nillable="true" type="xsd:string"/>
+
+					          <element name="encoding" type="xsd:short"/>
+
+					          <element name="phoneNumbers" nillable="true" type="impl:ArrayOf_xsd_string"/>
+
+					          <element name="clientIds" nillable="true" type="impl:ArrayOf_xsd_string"/>
+
+                             <element name="dueTime" type="xsd:dateTime"/>
+
+				        </sequence>
+
+
+			      </complexType>
+
+
+			      <element name="sendMultipleResponse">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+
+						            <element name="sendMultipleReturn" type="impl:SendResult"/>
+
+
+
+					          </sequence>
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <complexType abstract="true" name="Result">
+
+
+				        <sequence>
+
+
+					          <element name="status" type="xsd:short"/>
+
+
+				        </sequence>
+
+
+			      </complexType>
+
+
+			      <complexType name="ArrayOf_xsd_string">
+
+				   	    <sequence>
+
+				   		     <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:string"/>
+
+				   	    </sequence>
+
+			      </complexType>
+
+
+			      <complexType name="ArrayOf_xsd_long">
+
+
+
+				        <sequence>
+
+
+					          <element maxOccurs="unbounded" minOccurs="0" name="id" type="xsd:long"/>
+
+
+				        </sequence>
+
+
+			      </complexType>
+
+
+			      <complexType name="SendResult">
+
+
+				        <complexContent>
+
+
+					          <extension base="impl:Result">
+
+
+						            <sequence>
+
+
+							              <element name="id" nillable="true" type="impl:ArrayOf_xsd_long"/>
+
+
+
+						            </sequence>
+
+
+					          </extension>
+
+
+				        </complexContent>
+
+
+			      </complexType>
+
+
+			      <element name="getBalance">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+
+						            <element name="userName" type="xsd:string"/>
+
+
+						            <element name="password" type="xsd:string"/>
+
+
+
+						            <element name="facilityId" type="xsd:short"/>
+
+
+					          </sequence>
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <element name="getBalanceResponse">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+
+						            <element name="getBalanceReturn" type="impl:BalanceResult"/>
+
+
+					          </sequence>
+
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <complexType name="BalanceResult">
+
+
+				        <complexContent>
+
+
+					          <extension base="impl:Result">
+
+
+						            <sequence>
+
+
+							              <element name="balance" type="xsd:long"/>
+
+
+						            </sequence>
+
+
+					          </extension>
+
+
+
+				        </complexContent>
+
+
+			      </complexType>
+
+
+			      <element name="changePassword">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+
+						            <element name="userName" type="xsd:string"/>
+
+
+						            <element name="currentPassword" type="xsd:string"/>
+
+
+						            <element name="newPassword" type="xsd:string"/>
+
+
+					          </sequence>
+
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <element name="changePasswordResponse">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+
+						            <element name="changePasswordReturn" type="xsd:short"/>
+
+
+					          </sequence>
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+
+			      <element name="getStatus">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+
+						            <element name="messageId" type="xsd:long"/>
+
+
+					          </sequence>
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <element name="getStatusResponse">
+
+
+				        <complexType>
+
+
+
+					          <sequence>
+
+
+						            <element name="getStatusReturn" type="xsd:short"/>
+
+
+					          </sequence>
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <element name="receive">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+
+						            <element name="userName" type="xsd:string"/>
+
+
+						            <element name="password" type="xsd:string"/>
+
+
+						            <element name="shortNumber" type="xsd:string"/>
+
+
+						            <element name="start" type="xsd:long"/>
+
+
+						            <element name="maxSize" type="xsd:int"/>
+
+
+					          </sequence>
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <element name="receiveResponse">
+
+
+				        <complexType>
+
+
+
+					          <sequence>
+
+
+						            <element name="receiveReturn" type="impl:ReceiveResult"/>
+
+
+					          </sequence>
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <complexType name="IncomingMessage">
+
+
+				        <sequence>
+
+
+					          <element name="content" nillable="true" type="xsd:string"/>
+
+
+					          <element name="encoding" type="xsd:short"/>
+
+
+					          <element name="from" nillable="true" type="xsd:string"/>
+
+
+					          <element name="id" type="xsd:long"/>
+
+
+					          <element name="request" nillable="true" type="xsd:anyType"/>
+
+
+					          <element name="status" type="xsd:short"/>
+
+
+					          <element name="time" nillable="true" type="xsd:dateTime"/>
+
+
+					          <element name="to" nillable="true" type="xsd:string"/>
+
+
+					          <element name="type" type="xsd:short"/>
+
+
+				        </sequence>
+
+
+			      </complexType>
+
+
+
+			      <complexType name="ArrayOfIncomingMessage">
+
+
+				        <sequence>
+
+
+					          <element maxOccurs="unbounded" minOccurs="0" name="messages" type="impl:IncomingMessage"/>
+
+
+				        </sequence>
+
+
+			      </complexType>
+
+
+
+                 <complexType name="StatusReport">
+
+
+                        <sequence>
+
+
+                              <element name="id" type="xsd:long"/>
+
+
+                              <element name="status" type="xsd:short"/>
+
+
+                              <element name="clientId" type="xsd:string"/>
+
+
+                        </sequence>
+
+
+                  </complexType>
+
+
+
+                  <complexType name="ArrayOfStatusReport">
+
+
+                        <sequence>
+
+
+                              <element maxOccurs="unbounded" minOccurs="0" name="report" type="impl:StatusReport"/>
+
+
+                        </sequence>
+
+
+                  </complexType>
+
+
+			      <complexType name="ReceiveResult">
+
+
+				        <complexContent>
+
+
+					          <extension base="impl:Result">
+
+
+						            <sequence>
+
+
+
+							              <element name="messages" nillable="true" type="impl:ArrayOfIncomingMessage"/>
+
+
+						            </sequence>
+
+
+					          </extension>
+
+
+				        </complexContent>
+
+
+			      </complexType>
+
+
+			      <element name="send">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+
+						            <element name="userName" type="xsd:string"/>
+
+
+						            <element name="password" type="xsd:string"/>
+
+
+						            <element name="sourceNo" type="xsd:string"/>
+
+
+						            <element maxOccurs="unbounded" name="destNo" type="xsd:string"/>
+
+
+						            <element name="sourcePort" type="xsd:string"/>
+
+
+						            <element name="destPort" type="xsd:string"/>
+
+
+						            <element maxOccurs="unbounded" name="clientId" type="xsd:string"/>
+
+
+						            <element name="messageType" type="xsd:short"/>
+
+
+						            <element name="encoding" type="xsd:short"/>
+
+
+						            <element name="longSupported" type="xsd:boolean"/>
+
+
+						            <element name="dueTime" type="xsd:dateTime"/>
+
+
+						            <element name="content" type="xsd:string"/>
+
+
+					          </sequence>
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <element name="sendResponse">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+
+						            <element name="sendReturn" type="impl:SendResult"/>
+
+
+
+					          </sequence>
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+                 <complexType name="StatusReportResult">
+
+
+                      <complexContent>
+
+
+                           <extension base="impl:Result">
+
+
+                                <sequence>
+
+
+                                     <element name="report" nillable="true" type="impl:ArrayOfStatusReport"/>
+
+
+                                </sequence>
+
+
+                           </extension>
+
+
+                      </complexContent>
+
+
+                 </complexType>
+
+
+                 <element name="statusReport">
+
+
+                      <complexType>
+
+
+                           <sequence>
+
+                                <element name="userName" type="xsd:string"/>
+
+
+                                <element name="password" type="xsd:string"/>
+
+
+                                <element name="shortNumber" type="xsd:string"/>
+
+
+                                <element name="type" type="xsd:string"/>
+
+
+                                <element maxOccurs="unbounded" name="ids" type="xsd:long"/>
+
+
+                                <element maxOccurs="unbounded" name="clientIds" type="xsd:string"/>
+
+
+                           </sequence>
+
+
+                      </complexType>
+
+
+                 </element>
+
+
+                 <element name="statusReportResponse">
+
+
+                      <complexType>
+
+
+                           <sequence>
+
+
+                                <element name="statusReportReturn" type="impl:StatusReportResult"/>
+
+
+                           </sequence>
+
+
+                      </complexType>
+
+
+                 </element>
+
+
+			      <element name="report">
+
+
+				        <complexType>
+
+
+					          <sequence>
+
+						            <element name="userName" type="xsd:string"/>
+
+
+						            <element name="password" type="xsd:string"/>
+
+
+						            <element name="shortNumber" type="xsd:string"/>
+
+
+						            <element name="fromClientId" type="xsd:string"/>
+
+
+						            <element name="clientId" type="xsd:string"/>
+
+
+						            <element name="fromId" type="xsd:string"/>
+
+
+						            <element name="id" type="xsd:string"/>
+
+
+						            <element name="maxSize" type="xsd:int"/>
+
+
+					          </sequence>
+
+
+				        </complexType>
+
+
+			      </element>
+
+
+			      <element name="reportResponse">
+
+
+			   	    <complexType>
+
+
+			   		     <sequence>
+
+
+						         <element name="reportReturn" type="impl:ReportResult"/>
+
+
+			   		     </sequence>
+
+
+			   	    </complexType>
+
+
+			      </element>
+
+
+			      <complexType name="ReportResult">
+
+
+				        <complexContent>
+
+
+					          <extension base="impl:Result">
+
+
+						            <sequence>
+
+
+							              <element name="messages" nillable="true" type="impl:ArrayOfOutgoingMessage"/>
+
+
+						            </sequence>
+
+
+					          </extension>
+
+
+				        </complexContent>
+
+
+			      </complexType>
+
+
+		          <complexType name="ArrayOfOutgoingMessage">
+
+
+				        <sequence>
+
+
+					          <element maxOccurs="unbounded" minOccurs="0" name="messages" type="impl:OutgoingMessage"/>
+
+
+				        </sequence>
+
+
+			      </complexType>
+
+
+			      <complexType name="OutgoingMessage">
+
+
+				        <sequence>
+
+
+					          <element name="id" type="xsd:long"/>
+
+
+					          <element name="clientId" nillable="true" type="xsd:string"/>
+
+
+					          <element name="status" type="xsd:short"/>
+
+
+					          <element name="to" type="xsd:string"/>
+
+
+					          <element name="time" type="xsd:dateTime"/>
+
+
+					          <element name="content" nillable="true" type="xsd:string"/>
+
+
+				        </sequence>
+
+
+			      </complexType>
+
+
+
+		    </schema>
+
+
+	  </wsdl:types>
+
+
+
+	  <wsdl:message name="sendRequest">
+
+
+
+		    <wsdl:part element="impl:send" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="receiveRequest">
+
+
+
+		    <wsdl:part element="impl:receive" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="sendMultipleRequest">
+
+
+
+		    <wsdl:part element="impl:sendMultiple" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="getBalanceResponse">
+
+
+
+		    <wsdl:part element="impl:getBalanceResponse" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="getStatusResponse">
+
+
+
+		    <wsdl:part element="impl:getStatusResponse" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="receiveResponse">
+
+
+
+		    <wsdl:part element="impl:receiveResponse" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="sendMultipleResponse">
+
+
+
+		    <wsdl:part element="impl:sendMultipleResponse" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="getStatusRequest">
+
+
+
+		    <wsdl:part element="impl:getStatus" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="changePasswordRequest">
+
+
+
+		    <wsdl:part element="impl:changePassword" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="getBalanceRequest">
+
+
+
+		    <wsdl:part element="impl:getBalance" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="sendResponse">
+
+
+
+		    <wsdl:part element="impl:sendResponse" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="changePasswordResponse">
+
+
+
+		    <wsdl:part element="impl:changePasswordResponse" name="parameters"/>
+
+
+
+	  </wsdl:message>
+
+
+
+	  <wsdl:message name="reportRequest">
+
+
+	 	  <wsdl:part element="impl:report" name="parameters"/>
+
+
+	  </wsdl:message>
+
+
+	  <wsdl:message name="reportResponse">
+
+
+	 	  <wsdl:part element="impl:reportResponse" name="parameters"/>
+
+
+	  </wsdl:message>
+
+
+     <wsdl:message name="statusReportRequest">
+
+
+          <wsdl:part element="impl:statusReport" name="parameters"/>
+
+
+     </wsdl:message>
+
+
+     <wsdl:message name="statusReportResponse">
+
+
+          <wsdl:part element="impl:statusReportResponse" name="parameters"/>
+
+
+     </wsdl:message>
+
+
+	  <wsdl:portType name="JaxRpcMessagingService">
+
+
+
+		    <wsdl:operation name="sendMultiple">
+
+
+
+			      <wsdl:input message="impl:sendMultipleRequest" name="sendMultipleRequest"/>
+
+
+
+			      <wsdl:output message="impl:sendMultipleResponse" name="sendMultipleResponse"/>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="getBalance">
+
+
+
+			      <wsdl:input message="impl:getBalanceRequest" name="getBalanceRequest"/>
+
+
+
+			      <wsdl:output message="impl:getBalanceResponse" name="getBalanceResponse"/>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="changePassword">
+
+
+
+			      <wsdl:input message="impl:changePasswordRequest" name="changePasswordRequest"/>
+
+
+
+			      <wsdl:output message="impl:changePasswordResponse" name="changePasswordResponse"/>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="getStatus">
+
+
+
+			      <wsdl:input message="impl:getStatusRequest" name="getStatusRequest"/>
+
+
+
+			      <wsdl:output message="impl:getStatusResponse" name="getStatusResponse"/>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="receive">
+
+
+
+			      <wsdl:input message="impl:receiveRequest" name="receiveRequest"/>
+
+
+
+			      <wsdl:output message="impl:receiveResponse" name="receiveResponse"/>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="send">
+
+
+
+			      <wsdl:input message="impl:sendRequest" name="sendRequest"/>
+
+
+
+			      <wsdl:output message="impl:sendResponse" name="sendResponse"/>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="report">
+
+
+		  	   <wsdl:input message="impl:reportRequest"/>
+
+
+		  	   <wsdl:output message="impl:reportResponse"/>
+
+
+		    </wsdl:operation>
+
+
+           <wsdl:operation name="statusReport">
+
+
+                <wsdl:input message="impl:statusReportRequest"/>
+
+
+                <wsdl:output message="impl:statusReportResponse"/>
+
+
+           </wsdl:operation>
+
+
+	  </wsdl:portType>
+
+
+
+	  <wsdl:binding name="MessagingServiceSoapBinding" type="impl:JaxRpcMessagingService">
+
+
+
+		    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+
+
+		    <wsdl:operation name="sendMultiple">
+
+
+
+			      <wsdlsoap:operation soapAction=""/>
+
+
+
+			      <wsdl:input name="sendMultipleRequest">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:input>
+
+
+
+			      <wsdl:output name="sendMultipleResponse">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:output>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="getBalance">
+
+
+
+			      <wsdlsoap:operation soapAction=""/>
+
+
+
+			      <wsdl:input name="getBalanceRequest">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:input>
+
+
+
+			      <wsdl:output name="getBalanceResponse">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:output>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="changePassword">
+
+
+
+			      <wsdlsoap:operation soapAction=""/>
+
+
+
+			      <wsdl:input name="changePasswordRequest">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:input>
+
+
+
+			      <wsdl:output name="changePasswordResponse">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:output>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="getStatus">
+
+
+
+			      <wsdlsoap:operation soapAction=""/>
+
+
+
+			      <wsdl:input name="getStatusRequest">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:input>
+
+
+
+			      <wsdl:output name="getStatusResponse">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:output>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="receive">
+
+
+
+			      <wsdlsoap:operation soapAction=""/>
+
+
+
+			      <wsdl:input name="receiveRequest">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:input>
+
+
+
+			      <wsdl:output name="receiveResponse">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:output>
+
+
+
+		    </wsdl:operation>
+
+
+
+		    <wsdl:operation name="send">
+
+
+
+			      <wsdlsoap:operation soapAction=""/>
+
+
+
+			      <wsdl:input name="sendRequest">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:input>
+
+
+
+			      <wsdl:output name="sendResponse">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:output>
+
+
+
+		    </wsdl:operation>
+
+
+		    <wsdl:operation name="report">
+
+
+
+			      <wsdlsoap:operation soapAction=""/>
+
+
+
+			      <wsdl:input name="reportRequest">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:input>
+
+
+
+			      <wsdl:output name="reportResponse">
+
+
+
+				        <wsdlsoap:body use="literal"/>
+
+
+
+			      </wsdl:output>
+
+
+
+		    </wsdl:operation>
+
+
+           <wsdl:operation name="statusReport">
+
+
+
+                <wsdlsoap:operation soapAction=""/>
+
+
+
+                <wsdl:input name="statusReportRequest">
+
+
+
+                     <wsdlsoap:body use="literal"/>
+
+
+
+                </wsdl:input>
+
+
+
+                <wsdl:output name="statusReportResponse">
+
+
+
+                     <wsdlsoap:body use="literal"/>
+
+
+
+                </wsdl:output>
+
+
+
+           </wsdl:operation>
+
+
+
+
+	  </wsdl:binding>
+
+
+
+	  <wsdl:service name="JaxRpcMessagingServiceService">
+
+
+
+		    <wsdl:port binding="impl:MessagingServiceSoapBinding" name="MessagingService">
+
+
+
+			      <wsdlsoap:address location="http://ws2.adpdigital.com/services/MessagingService"/>
+
+
+
+		    </wsdl:port>
+
+
+
+	  </wsdl:service>
+
+
+
+</wsdl:definitions>

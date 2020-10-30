@@ -34,16 +34,16 @@
                 {% for contract in not_judged_contracts %}
                     <tr>
                         <th scope="row"><a
-                                href="{% url 'myapp:my_contract_detail' contract.id %}?role=judge&judge={{ judge }}&to=judge&format=html"><u>{{ contract.id }}</u></a>
+                                href="{% url 'myapp:contract_detail' contract.id %}?role=judge&judge={{ judge }}&to=judge&format=html"><u>{{ contract.id }}</u></a>
                         </th>
-                        <td>{{ contract.src_owner }}</td>
-                        <td>{{ contract.dst_owner }}</td>
+                        <td>{{ contract.src_owner_bank_account_id }}</td>
+                        <td>{{ contract.dst_owner_bank_account_id }}</td>
                         <td>{{ contract.value_in_rial }}</td>
                         <td>{{ contract.remittance_currency }}</td>
                         <td>{{ contract.remittance_value }}</td>
                         <td>{{ contract.settlement_type_verbose }}</td>
                         <td>{{ contract.judge_vote_verbose }}</td>
-                        <td>{{ contract.expire_date }}</td>
+                        <td>{{ contract.expire_date_verbose }}</td>
                         <td>{{ contract.status_verbose }}</td>
                     </tr>
                 {% endfor %}
@@ -76,16 +76,16 @@
                 {% for contract in judged_contracts %}
                     <tr>
                         <th scope="row"><a
-                                href="{% url 'myapp:my_contract_detail' contract.id %}?role=judge&judge={{ judge }}&to=view&format=html"><u>{{ contract.id }}</u></a>
+                                href="{% url 'myapp:contract_detail' contract.id %}?role=judge&judge={{ judge }}&to=view&format=html"><u>{{ contract.id }}</u></a>
                         </th>
-                        <td>{{ contract.src_owner }}</td>
-                        <td>{{ contract.dst_owner }}</td>
+                        <td>{{ contract.src_owner_bank_account_id }}</td>
+                        <td>{{ contract.dst_owner_bank_account_id }}</td>
                         <td>{{ contract.value_in_rial }}</td>
                         <td>{{ contract.remittance_currency }}</td>
                         <td>{{ contract.remittance_value }}</td>
                         <td>{{ contract.settlement_type_verbose }}</td>
                         <td>{{ contract.judge_vote_verbose }}</td>
-                        <td>{{ contract.expire_date }}</td>
+                        <td>{{ contract.expire_date_verbose }}</td>
                         <td>{{ contract.status_verbose }}</td>
                     </tr>
                 {% endfor %}

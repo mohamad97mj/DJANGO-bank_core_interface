@@ -1,0 +1,24 @@
+{% extends "myapp/nav.html" %}
+{% load myapp_extras %}
+{% load bootstrap4 %}
+{% load static %}
+
+{% block hero %}{% endblock %}
+
+{% block items %}
+    {% with '/api' as pre %}
+        <li><a title="پروفایل"
+               href="{{ pre|addstr:"/reporters/"|addstr:reporter }}">پروفایل</a><span class="arrow"></span>
+        </li>
+
+        <li><a title="گزارش"
+               href="{{ pre|addstr:"/report"|addstr:"?role=reporter&reporter="|addstr:reporter }}">گزارش</a><span class="arrow"></span></li>
+
+        <li class="contact"><a title="خروج"
+                               href="/api/special-login">خروج</a><span
+                class="arrow"></span></li>
+
+    {% endwith %}
+{% endblock items %}
+
+{% block content %}{% endblock %}

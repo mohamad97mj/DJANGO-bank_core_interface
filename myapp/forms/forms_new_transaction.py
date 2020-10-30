@@ -8,15 +8,15 @@ class NewTransactionForm(ModelForm):
         self.src_owner = owner
         self.fields['src_owner_bank_account_id'].widget = forms.HiddenInput()
         self.fields['src_owner_bank_account_id'].initial = owner.bank_account_id
-        self.fields['operator_national_code'].widget = forms.HiddenInput()
-        self.fields['operator_national_code'].initial = operator
+        self.fields['operator_id'].widget = forms.HiddenInput()
+        self.fields['operator_id'].initial = operator
         self.fields['dst_owner_bank_account_id'].required = False
-        if owner.type == OwnerType.IMPORTER:
+        if owner.owner_type == OwnerType.IMPORTER:
             self.fields['dst_owner_bank_account_id'].label = "شماره حساب صراف"
         else:
             self.fields['dst_owner_bank_account_id'].label = "شماره حساب صادرکننده"
 
-        self.fields['value'].required = False
+        self.fields['amount'].required = False
 
     def clean_dst_owner_bank_account_id(self):
         dst_owner_bank_account_id = self.cleaned_data['dst_owner_bank_account_id']
@@ -24,31 +24,31 @@ class NewTransactionForm(ModelForm):
 
         try:
             dst_owner = Owner.objects.get(pk=dst_owner_bank_account_id)
-            if self.src_owner.type == OwnerType.IMPORTER:
-                if dst_owner.type == OwnerType.EXCHANGER:
+            if self.src_owner.owner_type == OwnerType.IMPORTER:
+                if dst_owner.owner_type == OwnerType.EXCHANGER:
                     return dst_owner.bank_account_id
                 else:
                     raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
-            elif self.src_owner.type == OwnerType.EXCHANGER:
-                if dst_owner.type == OwnerType.EXPORTER:
+            elif self.src_owner.owner_type == OwnerType.EXCHANGER:
+                if dst_owner.owner_type == OwnerType.EXPORTER:
                     return dst_owner.bank_account_id
                 else:
                     raise forms.ValidationError("خطا: صادرکننده با این مشخصات در سامانه ثبت نشده است!")
 
         except Owner.DoesNotExist:
-            if self.src_owner.type == OwnerType.IMPORTER:
+            if self.src_owner.owner_type == OwnerType.IMPORTER:
                 raise forms.ValidationError("خطا: صراف با این مشخصات در سامانه ثبت نشده است!")
             else:
                 raise forms.ValidationError("خطا: صادرکننده با این مشخصات در سامانه ثبت نشده است!")
 
     def clean_value(self):
-        value = self.cleaned_data['value']
+        value = self.cleaned_data['amount']
         empty_field_validator(value)
         return value
 
     def save(self, commit=True):
         m = super(NewTransactionForm, self).save(commit=False)
-        m.type = OwnerType.EXCHANGER
+        m.owner_type = OwnerType.EXCHANGER
         m.operator_type = OperatorType.USER
         if commit:
             m.save()
@@ -57,10 +57,10 @@ class NewTransactionForm(ModelForm):
     class Meta:
         model = Transaction
         fields = [
-            'operator_national_code',
+            'operator_id',
             'src_owner_bank_account_id',
             'dst_owner_bank_account_id',
-            'value']
+            'amount']
         labels = {
-            'value': 'مبلغ',
+            'amount': 'مبلغ',
         }

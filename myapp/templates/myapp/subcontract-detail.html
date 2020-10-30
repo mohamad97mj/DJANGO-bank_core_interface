@@ -8,7 +8,7 @@
 {% block content %}
     <div class="block-content">
         <h4>اطلاعات قرارداد مربوطه</h4>
-        <form method="post" id="login-form" class="myform user-profile-form" action="">
+        <form method="post" id="login-form" class="myform general-form" action="">
             {% csrf_token %}
 
             {% for hidden in subcontract_detail_form.hidden_fields %}
@@ -28,35 +28,31 @@
             {% endfor %}
         </form>
 
-        {% if owner_type == 'EXPORTER' and  status == 'WAITING_FOR_EXPORTER' %}
-            <form style="margin-top: -50px" method="post"
-                  action="{% url 'myapp:my_contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}">
-                <div class="form-check form-check-inline">
-                    <label for="{{ field.id_for_label }}">آیا قرارداد را تایید می کنید؟</label>
-                    {{ field|add_class:'form-control' }}
-                    <label class="form-check-label" for="id_radio1">بله</label>
-                    <input style="display: inline" class="form-check-input" type="radio" name="isconfirmed"
-                           id="id_radio1"
-                           value="yes" checked="checked">
-                    <label class="form-check-label" for="id_radio2">خیر</label>
-                    <input style="display: inline" class="form-check-input" type="radio" name="isconfirmed"
-                           id="id_radio2"
-                           value="no">
+        {% if type == 'EXCHANGER' %}
+            {% if status == 'WAITING_FOR_EXCHANGER_PAYMENT' %}
+                <div class="small-form margin-auto">
+                    <a class="btn another-mybutton btn-block"
+                       href="{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=pay"><span
+                            class="color-white">پرداخت</span></a>
                 </div>
-                <div style="margin-top: 20px">
-                    <button class="btn mybutton"
-                            type="submit"
-                    ><span>ثبت</span></button>
+
+            {% elif status == 'WAITING_FOR_EXCHANGER_CONFIRMATION' %}
+                <div class="small-form margin-auto">
+
+                    <a class="btn another-mybutton btn-block"
+                       href="{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=confirm"
+                       type="submit"><span>تایید قرارداد</span></a>
+                    <a class="btn btn-block mybutton"
+                       href="{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=deny"
+                       type="submit"><span>عدم تایید قرارداد</span></a>
                 </div>
-            </form>
+            {% endif %}
         {% endif %}
 
         <script>
         </script>
     </div>
     <script>
-        $('label[for="id_dst_owner"]').text("شماره حساب صادرکننده")
-        <!--$('#id_dst_owner').val({{ subcontract_detail_form.instance.parent.dst_owner }})-->
     </script>
 
 {% endblock %}
