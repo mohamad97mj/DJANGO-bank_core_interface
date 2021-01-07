@@ -1,5 +1,4 @@
 from myapp.views.utils import *
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .views_user import UserDetailView
 from .views_judge import JudgeDetailView
