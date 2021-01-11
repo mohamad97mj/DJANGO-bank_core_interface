@@ -2,7 +2,7 @@ import requests
 from myapp.models import *
 from myapp.serializers import *
 from django.http import HttpResponse, HttpResponseRedirect
-from .exceptions import *
+from myapp.client.exceptions import *
 
 CORE_URL = "http://localhost:8080"
 

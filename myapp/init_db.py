@@ -11,6 +11,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mydjango.settings")
 #     'last_name': "مجاهد",
 # })
 
+# u = AuthProfile.objects.create_user("44", "44")
+
 user = UserProfile(
     '11',
     'محمد',
