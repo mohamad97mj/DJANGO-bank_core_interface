@@ -25,7 +25,7 @@ SECRET_KEY = '0&)9ck&g^z$fapmmit@tx2pu-f3h(o21s#o3%$aj(bn3k31kw8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '45.149.78.131']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '45.149.78.131', '10.0.32.89']
 
 # Application definition
 
