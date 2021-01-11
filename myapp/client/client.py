@@ -4,7 +4,7 @@ from myapp.serializers import *
 from django.http import HttpResponse, HttpResponseRedirect
 from .exceptions import *
 
-CORE_URL = "http://10.0.32.89:80"
+CORE_URL = "http://localhost:8080"
 
 
 def raise_connection_error():
