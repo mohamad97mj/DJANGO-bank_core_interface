@@ -24,6 +24,7 @@ class LoginForm(Form):
         role = self.cleaned_data['role']
         if role == 'user':
             user = get_user(username)
+            print("111111111111", user)
             if not user:
                 self.add_error("username", "خطا: کاربر با این مشخصات در سامانه ثبت نشده است!")
         elif role == 'judge':
@@ -32,6 +33,9 @@ class LoginForm(Form):
                 self.add_error("username", "خطا: داور با این مشخصات در سامانه ثبت نشده است!")
 
         password = cleaned_data.get("password")
+
         user = authenticate(username=username, password=password)
+        print("2222222222", user)
+
         if user is None:
             self.add_error("password", "خطا: نام کاربری یا گذرواژه اشتباه است!")
