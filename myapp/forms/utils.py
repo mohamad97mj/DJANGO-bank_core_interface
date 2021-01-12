@@ -31,6 +31,13 @@ REPORT_OWNER_TYPE = [
     ('EXPORTER', 'EXPORTER'),
 ]
 
+REMITTANCE_CURRENCY_TYPE = [
+    ('RIAL', 'ریال'),
+    ('DOLLAR', 'دلار'),
+    ('EURO', 'یورو'),
+    ('RUBLE', 'روبل'),
+]
+
 
 def empty_field_validator(field_value):
     if not field_value:

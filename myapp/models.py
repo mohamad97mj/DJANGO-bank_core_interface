@@ -41,6 +41,13 @@ class SettlementType(models.TextChoices):
     MULTI = 'MULTI', _('چند حواله ای')
 
 
+class RemittanceCurrencyType(models.TextChoices):
+    RIAL = 'RIAL', _('ریال')
+    DOLLAR = 'DOLLAR', _('دلار')
+    EURO = 'EURO', _('یورو')
+    RUBLE = 'RUBLE', _('روبل')
+
+
 class OperatorType(models.TextChoices):
     NORMAL_USER = 'NORMAL_USER', _('کاربر')
     ADMIN = 'ADMIN', _('سیستم')
@@ -191,7 +198,7 @@ class Contract(models.Model):
 class NormalContract(Contract):
     src_owner_bank_account_id = models.CharField(max_length=255)
 
-    remittance_currency = models.CharField(max_length=255)
+    remittance_currency = models.CharField(max_length=255, choices=RemittanceCurrencyType.choices, default=RemittanceCurrencyType.DOLLAR)
     settlement_type = models.CharField(max_length=255, choices=SettlementType.choices, default=SettlementType.SINGLE)
     judge_national_id = models.CharField(max_length=255)
     judge_name = models.CharField(max_length=255)

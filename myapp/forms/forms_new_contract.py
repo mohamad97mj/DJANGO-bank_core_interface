@@ -28,7 +28,7 @@ class NewContractForm(ModelForm):
         self.fields['src_owner_bank_account_id'].initial = src_owner
         self.fields['dst_owner_bank_account_id'].required = False
         self.fields['value_in_rial'].required = False
-        self.fields['remittance_currency'].required = False
+        # self.fields['remittance_currency'].required = False
         self.fields['remittance_value'].required = False
         self.fields['judge_national_id'].required = False
         self.fields['judge_name'].required = False
