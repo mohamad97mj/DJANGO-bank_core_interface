@@ -222,7 +222,8 @@ class Transaction(models.Model):
     amount = models.IntegerField()
     operator_type = models.CharField(max_length=255, choices=OperatorType.choices, default=OperatorType.NORMAL_USER)
     operator_id = models.CharField(max_length=255)
-    date = models.CharField(max_length=255)
+    # date = models.CharField(max_length=255)
+    date = models.BigIntegerField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -241,4 +242,5 @@ class Transaction(models.Model):
         return OperatorType(self.operator_type).label
 
     def date_verbose(self):
-        return str(jdatetime.datetime.fromtimestamp(1602163718283 / 1000).strftime("%Y/%m/%d-%H:%M:%S"))
+        # return str(jdatetime.datetime.fromtimestamp(1602163718283 / 1000).strftime("%Y/%m/%d-%H:%M:%S"))
+        return str(jdatetime.datetime.fromtimestamp(self.date / 1000).strftime("%Y/%m/%d-%H:%M:%S"))

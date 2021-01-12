@@ -6,3 +6,4 @@
 mydjango/setting.py
 test.py
 mydjango.conf
+mydjango_uwsgi.ini
