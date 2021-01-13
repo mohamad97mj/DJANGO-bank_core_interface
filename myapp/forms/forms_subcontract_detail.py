@@ -9,7 +9,6 @@ class SubcontractDetailForm(ModelForm):
         'value_in_rial',
         'remittance_currency',
         'remittance_value',
-        'settlement_type',
         'judge_national_id',
         'judge_name',
         'judge_vote',

@@ -31,20 +31,13 @@
         {% if type == 'EXCHANGER' %}
             {% if status == 'WAITING_FOR_EXCHANGER_PAYMENT' %}
                 <div class="small-form margin-auto">
-                    <a class="btn another-mybutton btn-block"
-                       href="{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=pay"><span
-                            class="color-white">پرداخت</span></a>
-                </div>
+                    {#                    <a class="btn another-mybutton btn-block"#}
+                    {#                       href="{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=pay"><span#}
+                    {#                            class="color-white">پرداخت</span></a>#}
 
-            {% elif status == 'WAITING_FOR_EXCHANGER_CONFIRMATION' %}
-                <div class="small-form margin-auto">
+                    <button id="exc-pay-btn" class="btn another-mybutton btn-block" data-toggle="modal"
+                            data-target="#confirm-submit" type="submit"><span>پرداخت</span></button>
 
-                    <a class="btn another-mybutton btn-block"
-                       href="{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=confirm"
-                       type="submit"><span>تایید قرارداد</span></a>
-                    <a class="btn btn-block mybutton"
-                       href="{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=deny"
-                       type="submit"><span>عدم تایید قرارداد</span></a>
                 </div>
             {% endif %}
         {% endif %}
@@ -52,7 +45,104 @@
         <script>
         </script>
     </div>
+
+
+    <br/>
+    <br/>
+    <br>
+
+    <div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content"
+                 style="width: 350px; margin-left: auto; margin-right: auto; margin-top: 125px">
+                <div class="modal-header">
+                    آیا درستی اطلاعات وارد شده را تایید می کنید؟
+                </div>
+                <div class="modal-body ">
+                    <div style="text-align: right; padding-right: 25px">
+                        {% for field in subcontract_detail_form.visible_fields %}
+                            {#                                <input id="{{ field.auto_id }}_check" type="checkbox"/>#}
+                            <div style="margin-bottom: 10px">
+                                <span style="color: #9655D4;">{{ field.label }}:</span>
+                                <span style="color: black" id="{{ field.auto_id }}_value"></span>
+                                {#                                {% if field.label != 'توضیحات' %}#}
+                                {#                                    <hr style="margin: 10px"/>#}
+                                {#                                {% endif %}#}
+                            </div>
+                        {% endfor %}
+                        <strong style="color: #9655D4;">عمل مورد نظر:</strong>
+                        <strong style="color: black" id="requested-action"></strong>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">انصراف</button>
+                    <button id="confirm-btn" class="btn modal_success_btn">تایید</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
+
+        $('#exc-pay-btn').click(function () {
+            {% for field in subcontract_detail_form.visible_fields %}
+                var field_id = "{{ field.auto_id }}"
+                var field_value = $('#' + field_id).val()
+                var modal_field_id = "{{ field.auto_id }}" + '_value'
+                $('#' + modal_field_id).text(field_value)
+            {% endfor %}
+            $('#id_status_value').text($("#id_status option:selected").text())
+            $('#id_judge_vote_value').text($("#id_judge_vote option:selected").text())
+
+        });
+
+    </script>
+
+    <script>
+        var get = function (url) {
+            var link = document.createElement('a');
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+        }
+    </script>
+
+    <script>
+        function setElementTextById(id, text) {
+            $('#' + id).text(text);
+        }
+    </script>
+
+    <script>
+        function setRequestedAction(text) {
+            setElementTextById('requested-action', text)
+        }
+    </script>
+
+    {#  importer  ...............................................................................................................#}
+    <script>
+        $('#exc-pay-btn').click(function () {
+            {#changeConfirmBtnId('im-charge-modal-btn')#}
+            $('#confirm-btn').data('action', 'exc-pay');
+            setRequestedAction("پرداخت")
+        })
+    </script>
+
+    {#  modal .................................................................................................................. #}
+    {#  importer  ...............................................................................................................#}
+    <script>
+        $('#confirm-btn').click(function () {
+            var action = $('#confirm-btn').data('action');
+            alert(action)
+            switch (action) {
+                case 'exc-pay':
+                    get("{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=pay");
+                    break
+            }
+        })
     </script>
 
 {% endblock %}
