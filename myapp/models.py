@@ -198,7 +198,8 @@ class Contract(models.Model):
 class NormalContract(Contract):
     src_owner_bank_account_id = models.CharField(max_length=255)
 
-    remittance_currency = models.CharField(max_length=255, choices=RemittanceCurrencyType.choices, default=RemittanceCurrencyType.DOLLAR)
+    remittance_currency = models.CharField(max_length=255, choices=RemittanceCurrencyType.choices,
+                                           default=RemittanceCurrencyType.DOLLAR)
     settlement_type = models.CharField(max_length=255, choices=SettlementType.choices, default=SettlementType.SINGLE)
     judge_national_id = models.CharField(max_length=255)
     judge_name = models.CharField(max_length=255)
@@ -209,6 +210,9 @@ class NormalContract(Contract):
 
     def settlement_type_verbose(self):
         return SettlementType(self.settlement_type).label
+
+    def remittance_currency_type_verbose(self):
+        return RemittanceCurrencyType(self.remittance_currency).label
 
 
 class Subcontract(Contract):

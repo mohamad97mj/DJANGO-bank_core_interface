@@ -47,7 +47,7 @@ class OwnerDetailView(APIView):
                 'role': role,
                 'user': national_code,
                 'type': owner_type,
-                'owner': pk,
+                'owner': str(pk),
                 "contracts": contracts
             }
             return Response(context, template_name='myapp/account-detail.html')
