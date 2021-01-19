@@ -46,12 +46,6 @@ class SubcontractDetailForm(ModelForm):
 
         self.order_fields(self.field_order)
 
-    def __add_judge_vote_field(self):
-        self.fields['judge_national_id'] = forms.CharField(max_length=255,
-                                                           label="رای داور",
-                                                           disabled=True,
-                                                           initial=self.instance.judge_vote_verbose)
-
     def __add_remittance_currency_field(self):
         self.fields['remittance_currency'] = forms.CharField(max_length=255,
                                                              label='ارز حواله',

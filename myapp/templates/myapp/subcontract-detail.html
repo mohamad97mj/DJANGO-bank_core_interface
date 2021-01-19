@@ -136,7 +136,7 @@
     <script>
         $('#confirm-btn').click(function () {
             var action = $('#confirm-btn').data('action');
-            alert(action)
+            {#alert(action)#}
             switch (action) {
                 case 'exc-pay':
                     get("{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=pay");

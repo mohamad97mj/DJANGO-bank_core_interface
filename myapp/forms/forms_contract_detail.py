@@ -17,6 +17,7 @@ class ContractDetailForm(ModelForm):
         'expire_date',
         'status',
         'description',
+        'payment_id',
     ]
 
     def __init__(self, *args, **kwargs):
@@ -59,9 +60,17 @@ class ContractDetailForm(ModelForm):
                                                                    disabled=True,
                                                                    initial=self.instance.dst_owner_bank_account_id)
 
+    def __add_payment_id_field(self):
+        self.fields['payment_id'] = forms.CharField(max_length=255,
+                                                    label="شناسه پرداخت",
+                                                    disabled=True,
+                                                    initial=self.instance.payment_id)
+        self.order_fields(field_order=self.field_order)
+
     def perform_importer_point_of_view(self):
         self.__add_judge_information_fields()
         self.__add_dst_owner_fields()
+        self.__add_payment_id_field()
         self.order_fields(field_order=self.field_order)
 
     def perform_exchanger_point_of_view(self):

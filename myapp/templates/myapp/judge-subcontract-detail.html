@@ -144,7 +144,7 @@
     <script>
         $('#confirm-btn').click(function () {
             var action = $('#confirm-btn').data('action');
-            alert(action)
+            {#alert(action)#}
             switch (action) {
                 case 'jud-confirm':
                     get("{% url 'myapp:subcontract_detail' subcontract %}?role=judge&judge={{ judge }}&contract={{ contract }}&action=confirm");

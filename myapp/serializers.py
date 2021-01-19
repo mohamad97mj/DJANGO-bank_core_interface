@@ -65,7 +65,6 @@ class NormalContractSerializer(serializers.ModelSerializer):
             'settlement_type',
             'judge_name',
             'judge_national_id',
-            # 'judge_vote',
             'expire_date',
             'status',
             'description',
@@ -83,7 +82,6 @@ class SubcontractSerializer(serializers.ModelSerializer):
             'remittance_value',
             'status',
             'expire_date',
-            # 'judge_vote',
             'description',
         ]
 

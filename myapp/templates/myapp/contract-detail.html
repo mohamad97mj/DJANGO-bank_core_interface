@@ -36,7 +36,7 @@
                     <div class="small-form margin-auto">
                         <button id="im-charge-btn" class="btn another-mybutton btn-block" data-toggle="modal"
                                 data-target="#confirm-submit">
-                            <span class="color-white">پرداخت</span></button>
+                            <span class="color-white">اعلام پرداخت</span></button>
                     </div>
 
                 {% elif status == "WAITING_FOR_IMPORTER_CONFIRMATION" %}
@@ -212,7 +212,7 @@
             $('#im-charge-btn').click(function () {
                 {#changeConfirmBtnId('im-charge-modal-btn')#}
                 $('#confirm-btn').data('action', 'im-charge');
-                setRequestedAction("پرداخت")
+                setRequestedAction("اعلام پرداخت")
             })
             $('#im-confirm-btn').click(function () {
                 $('#confirm-btn').data('action', 'im-confirm');
@@ -254,7 +254,7 @@
         <script>
             $('#confirm-btn').click(function () {
                 var action = $('#confirm-btn').data('action');
-                alert(action)
+                {#alert(action)#}
                 switch (action) {
                     case 'im-charge':
                         get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=charge");
