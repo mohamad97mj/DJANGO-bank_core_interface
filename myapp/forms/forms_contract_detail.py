@@ -22,12 +22,17 @@ class ContractDetailForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.fields['id'] = forms.IntegerField(disabled=True, label="شناسه", initial=self.instance.id)
         self.fields['settlement_type'].widget.attrs['disabled'] = True
-        self.fields['value_in_rial'].widget.attrs['disabled'] = True
+        self.fields['value_in_rial'] = forms.CharField(max_length=255,
+                                                       label="مبلغ به ریال",
+                                                       disabled=True,
+                                                       initial=self.instance.value_in_rial_thousand_separated())
         self.fields['remittance_currency'].widget.attrs['disabled'] = True
-        self.fields['remittance_value'].widget.attrs['disabled'] = True
+        self.fields['remittance_value'] = forms.CharField(max_length=255,
+                                                          label="مبلغ حواله",
+                                                          disabled=True,
+                                                          initial=self.instance.remittance_value_thousand_separated())
         self.fields['judge_vote'].widget.attrs['disabled'] = True
         self.fields['status'].widget.attrs['disabled'] = True
         self.fields['description'].widget.attrs['disabled'] = True
@@ -86,9 +91,7 @@ class ContractDetailForm(ModelForm):
     class Meta:
         model = NormalContract
         fields = [
-            'value_in_rial',
             'remittance_currency',
-            'remittance_value',
             'settlement_type',
             'judge_vote',
             'status',
@@ -96,12 +99,9 @@ class ContractDetailForm(ModelForm):
         ]
 
         labels = {
-            'value_in_rial': 'مبلغ به ریال',
             'remittance_currency': 'ارز حواله',
-            'remittance_value': 'مبلغ حواله',
             'settlement_type': 'نوع تسویه',
             'judge_vote': 'رای داور',
-            'expire_date': 'تاریخ اعتبار',
             'status': 'وضعیت',
             'description': 'توضیحات',
         }

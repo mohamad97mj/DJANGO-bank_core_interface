@@ -6,6 +6,9 @@ class NewSubcontractForm(ModelForm):
                                   label="تاریخ اعتبار",
                                   widget=forms.TextInput(attrs={'placeholder': '1400/05/11'}))
 
+    value_in_rial = forms.CharField(required=False, label="مبلغ به ریال")
+    remittance_value = forms.CharField(required=False, label="مبلغ حواله")
+
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.parent = parent
@@ -14,8 +17,6 @@ class NewSubcontractForm(ModelForm):
         self.fields['id'].widget = forms.HiddenInput()
         self.fields['id'].initial = 0
         self.fields['dst_owner_bank_account_id'].required = False
-        self.fields['value_in_rial'].required = False
-        self.fields['remittance_value'].required = False
         self.fields['description'].required = False
 
     def save(self, commit=True):
@@ -44,13 +45,18 @@ class NewSubcontractForm(ModelForm):
     def clean_value_in_rial(self):
         value_in_rial = self.cleaned_data['value_in_rial']
         empty_field_validator(value_in_rial)
-        return value_in_rial
-        pass
+        int_value_in_rial = int(value_in_rial.replace(',', ''))
+        if int_value_in_rial <= 0:
+            raise forms.ValidationError("خطا: مبلغ قرار داد باید بیشتر از صفر باشد!")
+        return int_value_in_rial
 
     def clean_remittance_value(self):
         remittance_value = self.cleaned_data['remittance_value']
         empty_field_validator(remittance_value)
-        return remittance_value
+        int_remittance_value = int(remittance_value.replace(',', ''))
+        if int_remittance_value <= 0:
+            raise forms.ValidationError("خطا: مبلغ حواله باید بیشتر از صفر باشد!")
+        return int_remittance_value
 
     def clean_expire_date(self):
         expire_date = self.cleaned_data['expire_date']
@@ -78,7 +84,6 @@ class NewSubcontractForm(ModelForm):
 
         labels = {
             'expire_date': 'تاریخ اعتبار',
-            'value_in_rial': 'مبلغ به ریال',
             'remittance_value': 'مبلغ حواله',
             'description': 'توضیحات',
             'src_owner_bank_account_id': 'شماره حساب صراف',

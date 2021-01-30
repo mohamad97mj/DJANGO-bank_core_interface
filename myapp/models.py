@@ -12,7 +12,8 @@ class ContractStatus(models.TextChoices):
     NONE = 'NONE', _('ایجاد نشده')
     WAITING_FOR_EXCHANGER_ACCEPTANCE = 'WAITING_FOR_EXCHANGER_ACCEPTANCE', _('در انتظار پذیرش صراف')
     WAITING_FOR_EXPORTER_ACCEPTANCE = 'WAITING_FOR_EXPORTER_ACCEPTANCE', _('در انتظار پذیرش صادرکننده')
-    WAITING_FOR_IMPORTER_PAYMENT = 'WAITING_FOR_IMPORTER_PAYMENT', _('در انتظار پرداخت واردکننده') # this is for receiving
+    WAITING_FOR_IMPORTER_PAYMENT = 'WAITING_FOR_IMPORTER_PAYMENT', _(
+        'در انتظار پرداخت واردکننده')  # this is for receiving
     WAITING_FOR_EXCHANGER_PAYMENT = 'WAITING_FOR_EXCHANGER_PAYMENT', _('در انتظار پرداخت صراف')
     REJECTED_BY_EXCHANGER = 'REJECTED_BY_EXCHANGER', _('رد شده توسط صراف')
     REJECTED_BY_EXPORTER = 'REJECTED_BY_EXPORTER', _('رد شده توسط صادرکننده')
@@ -174,7 +175,6 @@ class ReporterProfile(models.Model):
 class Contract(models.Model):
     id = models.IntegerField(primary_key=True)
     dst_owner_bank_account_id = models.CharField(max_length=255)
-
     value_in_rial = models.IntegerField()
     remittance_value = models.IntegerField()
     judge_vote = models.CharField(max_length=255, choices=JudgeVote.choices, default=JudgeVote.NOT_CLAIMED)
@@ -191,13 +191,20 @@ class Contract(models.Model):
     def expire_date_verbose(self):
         return str(jdatetime.datetime.fromtimestamp(self.expire_date).strftime("%Y/%m/%d"))
 
+    def value_in_rial_thousand_separated(self):
+        return f'{self.value_in_rial:,}'
+
+    def remittance_value_thousand_separated(self):
+        print("hello")
+        print(f'{self.remittance_value:,}')
+        return f'{self.remittance_value:,}'
+
     class Meta:
         abstract = True
 
 
 class NormalContract(Contract):
     src_owner_bank_account_id = models.CharField(max_length=255)
-
     remittance_currency = models.CharField(max_length=255, choices=RemittanceCurrencyType.choices,
                                            default=RemittanceCurrencyType.DOLLAR)
     settlement_type = models.CharField(max_length=255, choices=SettlementType.choices, default=SettlementType.SINGLE)

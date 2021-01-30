@@ -40,6 +40,7 @@ REMITTANCE_CURRENCY_TYPE = [
 
 
 def empty_field_validator(field_value):
+    print("here3")
     if not field_value:
         raise forms.ValidationError(EMPTY_FIELD_ERROR_MESSAGE)
 

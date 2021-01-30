@@ -44,8 +44,8 @@
                                     </th>
 
                                     <td>{{ contract.1.dst_owner_bank_account_id }}</td>
-                                    <td>{{ contract.0.value_in_rial }}</td>
-                                    <td>{{ contract.0.remittance_value }}</td>
+                                    <td>{{ contract.0.value_in_rial_thousand_separated }}</td>
+                                    <td>{{ contract.0.remittance_value_thousand_separated }}</td>
                                     <td>{{ contract.1.judge_name }}</td>
                                     <td>{{ contract.0.judge_vote_verbose }}</td>
                                     <td>{{ contract.0.expire_date_verbose }}</td>
@@ -91,9 +91,9 @@
                                 {% else %}
                                     <td>{{ contract.src_owner_bank_account_id }}</td>
                                 {% endif %}
-                                <td>{{ contract.value_in_rial }}</td>
+                                <td>{{ contract.value_in_rial_thousand_separated }}</td>
                                 <td>{{ contract.remittance_currency_type_verbose }}</td>
-                                <td>{{ contract.remittance_value }}</td>
+                                <td>{{ contract.remittance_value_thousand_separated }}</td>
                                 <td>{{ contract.settlement_type_verbose }}</td>
                                 <td>{{ contract.judge_name }}</td>
                                 <td>{{ contract.judge_vote_verbose }}</td>

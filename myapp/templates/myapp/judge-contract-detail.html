@@ -62,8 +62,8 @@
                                     <a href="{% url 'myapp:subcontract_detail' subcontract.id %}?role=judge&judge={{ judge }}&contract={{ contract }}"><u>{{ subcontract.id }}</u></a>
                                 </th>
                                 <td>{{ subcontract.dst_owner_bank_account_id }}</td>
-                                <td>{{ subcontract.value_in_rial }}</td>
-                                <td>{{ subcontract.remittance_value }}</td>
+                                <td>{{ subcontract.value_in_rial_thousand_separated }}</td>
+                                <td>{{ subcontract.remittance_value_thousand_separated }}</td>
                                 <td>{{ subcontract.judge_vote_verbose }}</td>
                                 <td>{{ subcontract.expire_date_verbose }}</td>
                                 <td>{{ subcontract.status_verbose }}</td>
@@ -102,8 +102,8 @@
                                     <a href="{% url 'myapp:subcontract_detail' not_judged_subcontract.id %}?role=judge&judge={{ judge }}&contract={{ contract }}"><u>{{ not_judged_subcontract.id }}</u></a>
                                 </th>
                                 <td>{{ not_judged_subcontract.dst_owner_bank_account_id }}</td>
-                                <td>{{ not_judged_subcontract.value_in_rial }}</td>
-                                <td>{{ not_judged_subcontract.remittance_value }}</td>
+                                <td>{{ not_judged_subcontract.value_in_rial_thousand_separated }}</td>
+                                <td>{{ not_judged_subcontract.remittance_value_thousand_separated }}</td>
                                 <td>{{ not_judged_subcontract.judge_vote_verbose }}</td>
                                 <td>{{ not_judged_subcontract.expire_date_verbose }}</td>
                                 <td>{{ not_judged_subcontract.status_verbose }}</td>
@@ -142,8 +142,8 @@
                                     <a href="{% url 'myapp:subcontract_detail' judged_subcontract.id %}?role=judge&judge={{ judge }}&contract={{ contract }}"><u>{{ judged_subcontract.id }}</u></a>
                                 </th>
                                 <td>{{ judged_subcontract.dst_owner_bank_account_id }}</td>
-                                <td>{{ judged_subcontract.value_in_rial }}</td>
-                                <td>{{ judged_subcontract.remittance_value }}</td>
+                                <td>{{ judged_subcontract.value_in_rial_thousand_separated }}</td>
+                                <td>{{ judged_subcontract.remittance_value_thousand_separated }}</td>
                                 <td>{{ judged_subcontract.judge_vote_verbose }}</td>
                                 <td>{{ judged_subcontract.expire_date_verbose }}</td>
                                 <td>{{ judged_subcontract.status_verbose }}</td>

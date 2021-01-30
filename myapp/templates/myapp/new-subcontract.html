@@ -9,7 +9,7 @@
 {% block content %}
     <div class="block-content">
         <h4>اطلاعات قرارداد مربوطه جدید را وارد کنید</h4>
-        <form method="post"  id="new-subcontract-form" class="myform general-form"
+        <form method="post" id="new-subcontract-form" class="myform general-form"
               action="{% url 'myapp:new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ contract }}">
             {% csrf_token %}
 
@@ -96,6 +96,28 @@
                     alert('لطفا مقدار تمامی فیلد ها را تایید کنید!')
                 }
             });
+        </script>
+
+        <script>
+            $(document).ready(function () {
+                $('#id_value_in_rial').on('input', value_in_rial_thousands_separator);
+                $('#id_remittance_value').on('input', remittance_value_thousands_separator);
+
+            });
+
+            const value_in_rial_thousands_separator = () => {
+                let value = $('#id_value_in_rial').val()
+                let without_commas = value.replaceAll(',', "")
+                let with_comas = without_commas.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                $('#id_value_in_rial').val(with_comas)
+            }
+
+            const remittance_value_thousands_separator = () => {
+                let value = $('#id_remittance_value').val()
+                let without_commas = value.replaceAll(',', "")
+                let with_comas = without_commas.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                $('#id_remittance_value').val(with_comas)
+            }
         </script>
 
     </div>

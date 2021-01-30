@@ -22,8 +22,15 @@ class SubcontractDetailForm(ModelForm):
 
         self.parent = parent
         self.fields['id'] = forms.IntegerField(disabled=True, label="شناسه", initial=self.instance.id)
-        self.fields['value_in_rial'].widget.attrs['disabled'] = True
-        self.fields['remittance_value'].widget.attrs['disabled'] = True
+
+        self.fields['value_in_rial'] = forms.CharField(max_length=255,
+                                                       label="مبلغ به ریال",
+                                                       disabled=True,
+                                                       initial=self.instance.value_in_rial_thousand_separated())
+        self.fields['remittance_value'] = forms.CharField(max_length=255,
+                                                          label="مبلغ حواله",
+                                                          disabled=True,
+                                                          initial=self.instance.remittance_value_thousand_separated())
         self.fields['judge_vote'].widget.attrs['disabled'] = True
         self.fields['status'].widget.attrs['disabled'] = True
         self.fields['description'].widget.attrs['disabled'] = True
@@ -31,6 +38,7 @@ class SubcontractDetailForm(ModelForm):
                                                      label="تاریخ اعتبار",
                                                      disabled=True,
                                                      initial=self.instance.expire_date_verbose)
+
         self.order_fields(field_order=self.field_order)
 
     def __add_judge_information_fields(self):
@@ -84,16 +92,12 @@ class SubcontractDetailForm(ModelForm):
     class Meta:
         model = Subcontract
         fields = [
-            'value_in_rial',
-            'remittance_value',
             'judge_vote',
             'description',
             'status',
         ]
 
         labels = {
-            'value_in_rial': 'مبلغ به ریال',
-            'remittance_value': 'مبلغ حواله',
             'judge_vote': 'رای داور',
             'description': 'توضیحات',
             'status': 'وضعیت',

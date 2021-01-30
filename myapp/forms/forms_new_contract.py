@@ -6,6 +6,9 @@ class NewContractForm(ModelForm):
                                   label="تاریخ اعتبار",
                                   widget=forms.TextInput(attrs={'placeholder': '1400/05/11'}))
 
+    value_in_rial = forms.CharField(required=False, label="مبلغ به ریال")
+    remittance_value = forms.CharField(required=False, label="مبلغ حواله")
+
     field_order = [
         'dst_owner_bank_account_id',
         'value_in_rial',
@@ -27,9 +30,7 @@ class NewContractForm(ModelForm):
         self.fields['src_owner_bank_account_id'].widget = forms.HiddenInput()
         self.fields['src_owner_bank_account_id'].initial = src_owner
         self.fields['dst_owner_bank_account_id'].required = False
-        self.fields['value_in_rial'].required = False
-        # self.fields['remittance_currency'].required = False
-        self.fields['remittance_value'].required = False
+        self.fields['remittance_currency'].required = False
         self.fields['judge_national_id'].required = False
         self.fields['judge_name'].required = False
         self.fields['judge_name'].widget.attrs['disabled'] = True
@@ -45,6 +46,7 @@ class NewContractForm(ModelForm):
 
     def clean_dst_owner_bank_account_id(self):
 
+        print("here4")
         dst_owner_bank_account_id = self.cleaned_data['dst_owner_bank_account_id']
         empty_field_validator(dst_owner_bank_account_id)
 
@@ -61,9 +63,10 @@ class NewContractForm(ModelForm):
     def clean_value_in_rial(self):
         value_in_rial = self.cleaned_data['value_in_rial']
         empty_field_validator(value_in_rial)
-        if value_in_rial <= 0:
+        int_value_in_rial = int(value_in_rial.replace(',', ''))
+        if int_value_in_rial <= 0:
             raise forms.ValidationError("خطا: مبلغ قرار داد باید بیشتر از صفر باشد!")
-        return value_in_rial
+        return int_value_in_rial
 
     def clean_remittance_currency(self):
         remittance_currency = self.cleaned_data['remittance_currency']
@@ -73,7 +76,10 @@ class NewContractForm(ModelForm):
     def clean_remittance_value(self):
         remittance_value = self.cleaned_data['remittance_value']
         empty_field_validator(remittance_value)
-        return remittance_value
+        int_remittance_value = int(remittance_value.replace(',', ''))
+        if int_remittance_value <= 0:
+            raise forms.ValidationError("خطا: مبلغ حواله باید بیشتر از صفر باشد!")
+        return int_remittance_value
 
     def clean_judge_name(self):
         judge_name = self.cleaned_data['judge_name']
@@ -117,9 +123,7 @@ class NewContractForm(ModelForm):
         labels = {
             'src_owner_bank_account_id': "شماره حساب واردکننده",
             'dst_owner_bank_account_id': "شماره حساب صراف",
-            'value_in_rial': 'مبلغ به ریال',
             'remittance_currency': 'ارز حواله',
-            'remittance_value': 'مبلغ حواله',
             'settlement_type': 'نوع تسویه',
             'judge_national_id': 'شناسه ملی داور',
             'judge_name': 'نام داور',

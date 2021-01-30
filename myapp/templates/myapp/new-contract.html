@@ -7,6 +7,9 @@
 
 
 {% block content %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/1.8.2/autoNumeric.js"></script>
+
+
     <div class="block-content">
         <h4>اطلاعات قرارداد جدید را وارد کنید</h4>
         <form method="post" id="new-contract-form" class="myform general-form"
@@ -73,9 +76,6 @@
 
 
         <script>
-            $(document).ready(function () {
-                $('#id_judge_national_id').on('input', judge_name_check);
-            });
 
             function judge_name_check() {
                 const judge_national_id = $(this).val();
@@ -142,6 +142,28 @@
             });
         </script>
 
+        <script>
+            $(document).ready(function () {
+                $('#id_judge_national_id').on('input', judge_name_check);
+                $('#id_value_in_rial').on('input', value_in_rial_thousands_separator);
+                $('#id_remittance_value').on('input', remittance_value_thousands_separator);
+
+            });
+
+            const value_in_rial_thousands_separator = () => {
+                let value = $('#id_value_in_rial').val()
+                let without_commas = value.replaceAll(',', "")
+                let with_comas = without_commas.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                $('#id_value_in_rial').val(with_comas)
+            }
+
+            const remittance_value_thousands_separator = () => {
+                let value = $('#id_remittance_value').val()
+                let without_commas = value.replaceAll(',', "")
+                let with_comas = without_commas.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                $('#id_remittance_value').val(with_comas)
+            }
+        </script>
     </div>
 {% endblock %}
 

@@ -1,0 +1,33 @@
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="bootstrap.min.css"/>
+    <link rel="stylesheet" href="bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="jquery.Bootstrap-PersianDateTimePicker.css"/>
+
+    <script type="text/javascript" src="jquery-2.1.1.js"></script>
+    <script type="text/javascript" src="bootstrap.min.js"></script>
+</head>
+.
+.
+.
+<body>
+<button class="btn btn-default" data-MdDateTimePicker="true" data-TargetSelector="#input1" data-EnableTimePicker="true"
+        data-Placement="left" data-Trigger="click">انتخاب تاریخ
+</button>
+
+<script src="calendar.js" type="text/javascript"></script>
+<script src="jquery.Bootstrap-PersianDateTimePicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $('#textBoxInputId').MdPersianDateTimePicker({
+        Placement: 'bottom', // default is 'bottom'
+        Trigger: 'focus', // default is 'focus',
+        EnableTimePicker: true, // default is true,
+        TargetSelector: '', // default is empty,
+        GroupId: '', // default is empty,
+        ToDate: false, // default is false,
+        FromDate: false, // default is false,
+    });
+</script>
+
+</body>
+
