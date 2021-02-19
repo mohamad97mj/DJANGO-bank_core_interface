@@ -21,7 +21,7 @@ class ContractStatus(models.TextChoices):
     DOING_BY_EXPORTER = 'DOING_BY_EXPORTER', _('در حال انجام توسط صادرکننده')
     WAITING_FOR_IMPORTER_CONFIRMATION = 'WAITING_FOR_IMPORTER_CONFIRMATION', _('در انتظار تایید واردکننده')
     WAITING_FOR_EXCHANGER_CONFIRMATION = 'WAITING_FOR_EXCHANGER_CONFIRMATION', _('در انتظار تایید صراف')
-    WAITING_FOR_PARENT = 'WAITING_FOR_PARENT', _('در انتظار پایان معامله وارد کننده و صراف')
+    WAITING_FOR_PARENT = 'WAITING_FOR_PARENT', _('در انتظار پایان قرارداد وارد کننده و صراف')
     CONFIRMED_BY_EXCHANGER = 'CONFIRMED_BY_EXCHANGER', _('تایید شده توسط صراف')
     DENIED_BY_EXCHANGER = 'DENIED_BY_EXCHANGER', _('رد شده توسط صراف')
     CONFIRMED_BY_IMPORTER = 'CONFIRMED_BY_IMPORTER', _('تایید شده توسط واردکننده')
@@ -211,6 +211,7 @@ class NormalContract(Contract):
     judge_national_id = models.CharField(max_length=255)
     judge_name = models.CharField(max_length=255)
     payment_id = models.CharField(max_length=255)
+    available_value_in_rial = models.BigIntegerField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -261,5 +262,4 @@ class Transaction(models.Model):
         return OperatorType(self.operator_type).label
 
     def date_verbose(self):
-        # return str(jdatetime.datetime.fromtimestamp(1602163718283 / 1000).strftime("%Y/%m/%d-%H:%M:%S"))
         return str(jdatetime.datetime.fromtimestamp(self.date / 1000).strftime("%Y/%m/%d-%H:%M:%S"))

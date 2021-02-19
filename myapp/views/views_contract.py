@@ -53,7 +53,6 @@ class NewContractView(APIView):
 
         if format == 'html':
             new_contract_form = forms.NewContractForm(data=data)
-            print("here2")
             if new_contract_form.is_valid():
                 new_contract = new_contract_form.save(commit=False)
                 # new_contract.save()

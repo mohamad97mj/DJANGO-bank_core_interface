@@ -58,7 +58,7 @@ class SubcontractDetailForm(ModelForm):
         self.fields['remittance_currency'] = forms.CharField(max_length=255,
                                                              label='ارز حواله',
                                                              disabled=True,
-                                                             initial=self.parent.remittance_currency)
+                                                             initial=self.parent.remittance_currency_type_verbose)
         self.order_fields(self.field_order)
 
     def __add_src_owner_field(self):

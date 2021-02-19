@@ -40,7 +40,3 @@ class LoginView(APIView):
 
         context = {'login_form': login_form}
         return render(request, 'myapp/login.html', context)
-
-
-
-

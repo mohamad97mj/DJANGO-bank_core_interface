@@ -4,16 +4,14 @@ from .utils import *
 class NewSubcontractForm(ModelForm):
     expire_date = forms.CharField(required=False,
                                   label="تاریخ اعتبار",
-                                  widget=forms.TextInput(attrs={'placeholder': '1400/05/11'}))
+                                  widget=forms.TextInput(attrs={'placeholder': '1400/01/01'}))
 
     value_in_rial = forms.CharField(required=False, label="مبلغ به ریال")
     remittance_value = forms.CharField(required=False, label="مبلغ حواله")
 
-    def __init__(self, parent=None, *args, **kwargs):
+    def __init__(self, parent: NormalContract = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.parent = parent
-        # self.fields['parent'].widget = forms.HiddenInput()
-        # self.fields['parent'].required = False
         self.fields['id'].widget = forms.HiddenInput()
         self.fields['id'].initial = 0
         self.fields['dst_owner_bank_account_id'].required = False
@@ -48,6 +46,8 @@ class NewSubcontractForm(ModelForm):
         int_value_in_rial = int(value_in_rial.replace(',', ''))
         if int_value_in_rial <= 0:
             raise forms.ValidationError("خطا: مبلغ قرار داد باید بیشتر از صفر باشد!")
+        if int_value_in_rial > self.parent.available_value_in_rial:
+            raise forms.ValidationError("خطا: مبلغ وارد شده بیشتر از موجودی قرار داد صراف و واردکننده است!")
         return int_value_in_rial
 
     def clean_remittance_value(self):
@@ -64,7 +64,8 @@ class NewSubcontractForm(ModelForm):
         try:
             tmp = jdate2timestamp(expire_date)
             if tmp > self.parent.expire_date:
-                raise forms.ValidationError("خطا: تاریخ وارد شده باید قبل از تاریخ وارد شده برای معامله پدر باشد!")
+                raise forms.ValidationError(
+                    "خطا: تاریخ وارد شده باید قبل از تاریخ وارد شده برای فرارداد صراف و واردکننده باشد!")
             else:
                 return tmp
         except ValueError as err:
@@ -73,7 +74,6 @@ class NewSubcontractForm(ModelForm):
     class Meta:
         model = Subcontract
         fields = [
-            # 'parent',
             'id',
             'dst_owner_bank_account_id',
             'value_in_rial',

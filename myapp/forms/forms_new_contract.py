@@ -4,7 +4,7 @@ from .utils import *
 class NewContractForm(ModelForm):
     expire_date = forms.CharField(required=False,
                                   label="تاریخ اعتبار",
-                                  widget=forms.TextInput(attrs={'placeholder': '1400/05/11'}))
+                                  widget=forms.TextInput(attrs={'placeholder': '1400/02/01'}))
 
     value_in_rial = forms.CharField(required=False, label="مبلغ به ریال")
     remittance_value = forms.CharField(required=False, label="مبلغ حواله")
@@ -104,6 +104,10 @@ class NewContractForm(ModelForm):
             return jdate2timestamp(expire_date)
         except ValueError as err:
             raise forms.ValidationError("خطا: تاریخ وارد شده صحیح نمی باشد!")
+
+    def clean(self):
+        pass
+        return self.cleaned_data
 
     class Meta:
         model = NormalContract
