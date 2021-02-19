@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 
 
 class ReportForm(Form):
-    owner_type = forms.CharField(max_length=255, label='حساب مورد نظر',
+    owner_type = forms.CharField(max_length=255, label='حساب عملیاتی مورد نظر',
                                  widget=forms.Select(choices=REPORT_OWNER_TYPE),
                                  help_text="حسابی که قصد گزارش گیری از آن را دارید",
                                  required=False)
@@ -34,7 +34,7 @@ class ReportForm(Form):
         from_date = self.cleaned_data['from_date']
         empty_field_validator(from_date)
         try:
-            return int(datetime.datetime.strptime(from_date, "%Y/%m/%d").timestamp())
+            return int(jdate2timestamp(from_date))*1000
         except ValueError as err:
             raise forms.ValidationError("خطا: تاریخ وارد شده صحیح نمی باشد!")
 
@@ -42,6 +42,6 @@ class ReportForm(Form):
         to_date = self.cleaned_data['to_date']
         empty_field_validator(to_date)
         try:
-            return int(datetime.datetime.strptime(to_date, "%Y/%m/%d").timestamp())
+            return int(jdate2timestamp(to_date))*1000
         except ValueError as err:
             raise forms.ValidationError("خطا: تاریخ وارد شده صحیح نمی باشد!")

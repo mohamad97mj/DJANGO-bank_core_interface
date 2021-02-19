@@ -38,18 +38,18 @@
         </form>
 
         {% if show %}
-            <div style="margin-top: 50px; margin-bottom: 25px;">
+            <div class="mt-50 mb-25">
                 <h4>لیست تراکنش های واریزی به حساب</h4>
 
                 <div class="table-responsive">
-                    <table style="margin: auto;" class="center table table-striped user-contracts-list-table">
+                    <table class="margin-auto center table table-striped user-contracts-list-table">
                         <thead>
                         <tr>
                             {#                            <th scope="col">شناسه</th>#}
-                            <th scope="col">نوع تراکنش</th>
+{#                            <th scope="col">نوع تراکنش</th>#}
                             <th scope="col">شناسه قرارداد مربوطه</th>
+                            <th scope="col">حساب مبداء</th>
                             <th scope="col">شماره حساب مبداء</th>
-                            <th scope="col">نوع حساب مبداء</th>
                             {#                            <th scope="col">شماره حساب مقصد</th>#}
                             {#                            <th scope="col">نوع حساب مقصد</th>#}
                             <th scope="col">مقدار</th>
@@ -64,10 +64,10 @@
                                 {#                                <th scope="row">#}
                                 {#                                    <a href="{% url 'myapp:transaction_detail' in_external_transaction.id %}?role=reporter&reporter={{ reporter }}"><u>{{ in_external_transaction.id }}</u></a>#}
                                 {#                                </th>#}
-                                <td>{{ in_external_transaction.transaction_type_verbose }}</td>
+{#                                <td>{{ in_external_transaction.transaction_type_verbose }}</td>#}
                                 <td>{{ in_external_transaction.relevant_contract_id }}</td>
-                                <td>{{ in_external_transaction.src_owner_bank_account_id }}</td>
                                 <td>{{ in_external_transaction.src_owner_type_verbose }}</td>
+                                <td>{{ in_external_transaction.src_owner_bank_account_id }}</td>
                                 {#                                <td>{{ in_external_transaction.dst_owner_bank_account_id }}</td>#}
                                 {#                                <td>{{ in_external_transaction.dst_owner_type_verbose }}</td>#}
                                 <td>{{ in_external_transaction.amount }}</td>
@@ -83,20 +83,20 @@
                 </div>
             </div>
 
-            <div style="margin-top: 50px; margin-bottom: 25px;">
+            <div class="mt-50 mb-25">
                 <h4>لیست تراکنش های پرداختی از حساب</h4>
 
                 <div class="table-responsive">
-                    <table style="margin: auto;" class="center table table-striped user-contracts-list-table">
+                    <table class="margin-auto center table table-striped user-contracts-list-table">
                         <thead>
                         <tr>
                             {#                            <th scope="col">شناسه</th>#}
-                            <th scope="col">نوع تراکنش</th>
+{#                            <th scope="col">نوع تراکنش</th>#}
                             <th scope="col">شناسه قرارداد مربوطه</th>
                             {#                            <th scope="col">شماره حساب مبداء</th>#}
                             {#                            <th scope="col">نوع حساب مبداء</th>#}
+                            <th scope="col">حساب مقصد</th>
                             <th scope="col">شماره حساب مقصد</th>
-                            <th scope="col">نوع حساب مقصد</th>
                             <th scope="col">مقدار</th>
                             <th scope="col">نوع اپراتور</th>
                             <th scope="col">شناسه اپراتور</th>
@@ -109,12 +109,12 @@
                                 {#                                <th scope="row">#}
                                 {#                                    <a href="{% url 'myapp:transaction_detail' out_external_transaction.id %}?role=reporter&reporter={{ reporter }}"><u>{{ out_external_transaction.id }}</u></a>#}
                                 {#                                </th>#}
-                                <td>{{ out_external_transaction.transaction_type_verbose }}</td>
+{#                                <td>{{ out_external_transaction.transaction_type_verbose }}</td>#}
                                 <td>{{ out_external_transaction.relevant_contract_id }}</td>
                                 {#                                <td>{{ out_external_transaction.src_owner_bank_account_id }}</td>#}
                                 {#                                <td>{{ out_external_transaction.src_owner_type_verbose }}</td>#}
-                                <td>{{ out_external_transaction.dst_owner_bank_account_id }}</td>
                                 <td>{{ out_external_transaction.dst_owner_type_verbose }}</td>
+                                <td>{{ out_external_transaction.dst_owner_bank_account_id }}</td>
                                 <td>{{ out_external_transaction.amount }}</td>
                                 <td>{{ out_external_transaction.operator_type_verbose }}</td>
                                 <td>{{ out_external_transaction.operator_id }}</td>

@@ -27,15 +27,8 @@ TRANSACTION_TYPE = [
 ]
 
 REPORT_OWNER_TYPE = [
-    ('RETURN', 'RETURN'),
-    ('EXPORTER', 'EXPORTER'),
-]
-
-REMITTANCE_CURRENCY_TYPE = [
-    ('RIAL', 'ریال'),
-    ('DOLLAR', 'دلار'),
-    ('EURO', 'یورو'),
-    ('RUBLE', 'روبل'),
+    ('RETURN', 'بازگشت'),
+    ('EXPORTER', 'داوری'),
 ]
 
 

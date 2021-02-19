@@ -58,17 +58,17 @@ class OwnerType(models.TextChoices):
     IMPORTER = 'IMPORTER', _('واردکننده')
     EXCHANGER = 'EXCHANGER', _('صراف')
     EXPORTER = 'EXPORTER', _('صادرکننده')
-    RETURN = 'RETURN', _('RETURN')
-    CLAIM = 'CLAIM', _('CLAIM')
+    RETURN = 'RETURN', _('بازگشت')
+    CLAIM = 'CLAIM', _('داوری')
 
 
 class TransactionType(models.TextChoices):
     CHARGE = 'CHARGE', _('شاٰرژ اولیه')
     PAYMENT = 'PAYMENT', _('پرداخت')
     CLAIM = 'CLAIM', _('درخواست داوری')
-    RETURN_REMAINING = 'RETURN_REMAINING', _('از حساب صراف به حساب RETURN')
-    JUDGEMENT_NOT_DONE = 'JUDGEMENT_NOT_DONE', _('از حساب CLAIM به حساب RETURN')
-    JUDGEMENT_DONE = 'JUDGEMENT_DONE', _('از حساب CLAIM به حساب صادرکننده')
+    RETURN_REMAINING = 'RETURN_REMAINING', _('از حساب  صراف ها به حساب بازگشت')
+    JUDGEMENT_NOT_DONE = 'JUDGEMENT_NOT_DONE', _('از حساب داوری به حساب بازگشت')
+    JUDGEMENT_DONE = 'JUDGEMENT_DONE', _('از حساب داوری به حساب صادرکننده')
 
 
 def init_from_json(self, args, kwargs):
@@ -236,14 +236,13 @@ class Subcontract(Contract):
 class Transaction(models.Model):
     transaction_type = models.CharField(max_length=255, choices=TransactionType.choices, default='')
     relevant_contract_id = models.IntegerField()
-    src_owner_bank_account_id = models.CharField(max_length=255)
     src_owner_type = models.CharField(max_length=255, choices=OwnerType.choices, default='')
-    dst_owner_bank_account_id = models.CharField(max_length=255)
+    src_owner_bank_account_id = models.CharField(max_length=255)
     dst_owner_type = models.CharField(max_length=255, choices=OwnerType.choices, default='')
+    dst_owner_bank_account_id = models.CharField(max_length=255)
     amount = models.IntegerField()
     operator_type = models.CharField(max_length=255, choices=OperatorType.choices, default=OperatorType.NORMAL_USER)
     operator_id = models.CharField(max_length=255)
-    # date = models.CharField(max_length=255)
     date = models.BigIntegerField()
 
     def __init__(self, *args, **kwargs):

@@ -30,10 +30,10 @@ class ReportView(APIView):
                 from_date = report_form.cleaned_data.get('from_date')
                 to_date = report_form.cleaned_data.get('to_date')
 
-                in_external_transactions = get_operational_owner_in_external_transactions(owner_type)
-                # in_external_transactions = get_operational_owner_in_external_transactions_time_interval(owner_type, from_date, to_date)
-                out_external_transactions = get_operational_owner_out_external_transactions(owner_type)
-                # out_external_transactions = get_operational_owner_out_external_transactions_time_interval(owner_type, from_date, to_date)
+                # in_external_transactions = get_operational_owner_in_external_transactions(owner_type)
+                in_external_transactions = get_operational_owner_in_external_transactions_time_interval(owner_type, from_date, to_date)
+                # out_external_transactions = get_operational_owner_out_external_transactions(owner_type)
+                out_external_transactions = get_operational_owner_out_external_transactions_time_interval(owner_type, from_date, to_date)
 
                 context.update(
                     {
