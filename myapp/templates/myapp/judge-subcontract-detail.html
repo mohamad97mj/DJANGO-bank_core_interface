@@ -93,6 +93,9 @@
             {% for field in subcontract_detail_form.visible_fields %}
                 var field_id = "{{ field.auto_id }}"
                 var field_value = $('#' + field_id).val()
+                if (field_id == 'id_remittance_currency') {
+                    field_value = translate_currency(field_value)
+                }
                 var modal_field_id = "{{ field.auto_id }}" + '_value'
                 $('#' + modal_field_id).text(field_value)
             {% endfor %}
