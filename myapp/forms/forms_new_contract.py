@@ -105,10 +105,6 @@ class NewContractForm(ModelForm):
         except ValueError as err:
             raise forms.ValidationError("خطا: تاریخ وارد شده صحیح نمی باشد!")
 
-    def clean(self):
-        pass
-        return self.cleaned_data
-
     class Meta:
         model = NormalContract
         fields = [

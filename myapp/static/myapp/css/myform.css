@@ -90,3 +90,35 @@ center {
     margin: auto;
 }
 
+
+.line-height-15 {
+    line-height: 15px;
+}
+
+.my-modal {
+    width: 350px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 125px
+}
+
+.modal-field {
+    margin-bottom: 10px
+}
+
+.modal-field-label {
+    color: #9655D4;
+}
+
+.modal-field-value {
+    color: black
+}
+
+.my-modal-form {
+    text-align: right;
+    padding-right: 25px;
+}
+
+th, td {
+    text-align: center;
+}

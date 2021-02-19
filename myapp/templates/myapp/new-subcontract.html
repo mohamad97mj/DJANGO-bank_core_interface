@@ -19,13 +19,23 @@
 
             {% for field in new_subcontract_form.visible_fields %}
                 <div class="form-group">
-
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field|add_class:'form-control' }}
-                    <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
-                    {% for error in field.errors %}
-                        <span class="help- error-message">{{ error }}</span>
-                    {% endfor %}
+                    {% if field.name == 'expire_date' %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <input name="expire_date" type="text" class="form-control"
+                               id="id_expire_date"
+                               placeholder="انتخاب کنید"
+                               data-mddatetimepicker="true"
+                               data-placement="right" data-englishnumber="true"/>
+                    {% else %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field|add_class:'form-control' }}
+                        <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
+                    {% endif %}
+                    <span class="help- error-message" id="{{ field.auto_id }}_error_messages">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
                 </div>
             {% endfor %}
 
@@ -35,29 +45,31 @@
                     ثبت
                 </button>
             </div>
-
+            {% for error in new_subcontract_form.non_field_errors %}
+                <div class="alert alert-danger line-height-15">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
 
         </form>
 
         <div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content"
-                     style="width: 350px; margin-left: auto; margin-right: auto; margin-top: 125px">
-                    <div class="modal-header">
+                <div class="modal-content my-modal">
+                    <div class="modal-header text-center">
                         آیا درستی اطلاعات وارد شده را تایید می کنید؟
                     </div>
                     <div class="modal-body ">
-                        {% for field in new_subcontract_form.visible_fields %}
-                            <div style="text-align: right; padding-right: 25px; margin-bottom: 10px">
-                                <input id="{{ field.auto_id }}_check" type="checkbox"/>
-                                <span style="color: #9655D4;">{{ field.label }}:</span>
-                                <span style="color: black" id="{{ field.auto_id }}_value"></span>
-                                {#                                {% if field.label != 'توضیحات' %}#}
-                                {#                                    <hr style="margin: 10px"/>#}
-                                {#                                {% endif %}#}
-                            </div>
-                        {% endfor %}
+                        <div class="my-modal-form">
+                            {% for field in new_subcontract_form.visible_fields %}
+                                <div class="modal-field">
+                                    <input id="{{ field.auto_id }}_check" type="checkbox"/>
+                                    <span class="modal-field-label">{{ field.label }}:</span>
+                                    <span class="modal-field-value" id="{{ field.auto_id }}_value"></span>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
 
                     <div class="modal-footer">

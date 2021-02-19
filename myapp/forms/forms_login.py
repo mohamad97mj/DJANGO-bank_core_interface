@@ -22,18 +22,25 @@ class LoginForm(Form):
         cleaned_data = super().clean()
         username = cleaned_data.get("username")
         role = self.cleaned_data['role']
-        if role == 'user':
-            user = get_user(username)
-            if not user:
-                self.add_error("username", "خطا: کاربر با این مشخصات در سامانه ثبت نشده است!")
-        elif role == 'judge':
-            judge = get_judge(username)
-            if not judge:
-                self.add_error("username", "خطا: داور با این مشخصات در سامانه ثبت نشده است!")
-
         password = cleaned_data.get("password")
+        credential_provided = True
 
-        user = authenticate(username=username, password=password)
+        if not username:
+            credential_provided = False
+            self.add_error('username', 'خطا: لطفا نام کاربری را وارد کنید!')
+        if not password:
+            credential_provided = False
+            self.add_error('password', 'خطا: لطفا گذرواژه را وارد کنید!')
+        if credential_provided:
+            if role == 'user':
+                user = get_user(username)
+                if not user:
+                    self.add_error("username", "خطا: کاربر با این مشخصات در سامانه ثبت نشده است!")
+            elif role == 'judge':
+                judge = get_judge(username)
+                if not judge:
+                    self.add_error("username", "خطا: داور با این مشخصات در سامانه ثبت نشده است!")
 
-        if user is None:
-            self.add_error("password", "خطا: نام کاربری یا گذرواژه اشتباه است!")
+            user = authenticate(username=username, password=password)
+            if user is None:
+                self.add_error("password", "خطا: نام کاربری یا گذرواژه اشتباه است!")

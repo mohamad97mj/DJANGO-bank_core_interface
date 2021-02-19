@@ -23,7 +23,7 @@
                     {% csrf_token %}
 
                     <div class="table-responsive">
-                        <table style="margin: auto" class="center table table-striped">
+                        <table class="center table table-striped">
                             <thead>
                             <tr>
                                 <th scope="col">شناسه</th>
@@ -58,10 +58,10 @@
                 </form>
             {% else %}
                 <div class="table-responsive">
-                    <table style="margin: auto" class="center table table-striped">
+                    <table class="center table table-striped">
                         <thead>
                         <tr>
-                            <th scope="col">شناسه</th>
+                            <th class="" scope="col">شناسه</th>
                             {% if type == 'EXCHANGER' %}
                                 <th scope="col">شماره حساب واردکننده</th>
                             {% else %}

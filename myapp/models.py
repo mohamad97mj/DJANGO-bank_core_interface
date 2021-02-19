@@ -212,6 +212,7 @@ class NormalContract(Contract):
     judge_name = models.CharField(max_length=255)
     payment_id = models.CharField(max_length=255)
     available_value_in_rial = models.BigIntegerField()
+    is_parentable = models.BooleanField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

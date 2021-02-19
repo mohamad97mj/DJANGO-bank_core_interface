@@ -71,6 +71,12 @@ class NewSubcontractForm(ModelForm):
         except ValueError as err:
             raise forms.ValidationError("خطا: تاریخ وارد شده صحیح نمی باشد!")
 
+    def clean(self):
+        if not self.parent.is_parentable:
+            raise forms.ValidationError(
+                "خطا:قرار داد بین وارد کننده و صراف از نوع تک تسویه ای است و امکان عقد قرار داد دیگری وجود ندارد!")
+        super().clean()
+
     class Meta:
         model = Subcontract
         fields = [
