@@ -26,7 +26,7 @@ urlpatterns = [
     path('contracts/<int:pk>', views.ContractDetailView.as_view(), name='contract_detail'),
 
 
-    path('report', views.ReportView.as_view(), name='report'),
+    path('report', views.ContradictionReportView.as_view(), name='report'),
     path('ajax/get_judge_name', views.get_judge_name, name='get_judge_name'),
 
 ]

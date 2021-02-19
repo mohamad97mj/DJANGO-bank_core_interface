@@ -21,13 +21,21 @@
 
             {% for field in report_form.visible_fields %}
                 <div class="form-group">
-
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field|add_class:'form-control' }}
-                    <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
-                    {% for error in field.errors %}
-                        <span class="help- error-message">{{ error }}</span>
-                    {% endfor %}
+                    {% if field.name == 'from_date' or field.name == 'to_date' %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <input name="{{ field.name }}" type="text" class="form-control"
+                               id="id_{{ field.name }}"
+                               placeholder="انتخاب کنید"
+                               data-mddatetimepicker="true"
+                               data-placement="right" data-englishnumber="true"/>
+                    {% else %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field|add_class:'form-control' }}
+                        <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
+                        {% for error in field.errors %}
+                            <span class="help- error-message">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             {% endfor %}
             <div class="form-group text-center">
@@ -46,7 +54,7 @@
                         <thead>
                         <tr>
                             {#                            <th scope="col">شناسه</th>#}
-{#                            <th scope="col">نوع تراکنش</th>#}
+                            {#                            <th scope="col">نوع تراکنش</th>#}
                             <th scope="col">شناسه قرارداد مربوطه</th>
                             <th scope="col">حساب مبداء</th>
                             <th scope="col">شماره حساب مبداء</th>
@@ -64,7 +72,7 @@
                                 {#                                <th scope="row">#}
                                 {#                                    <a href="{% url 'myapp:transaction_detail' in_external_transaction.id %}?role=reporter&reporter={{ reporter }}"><u>{{ in_external_transaction.id }}</u></a>#}
                                 {#                                </th>#}
-{#                                <td>{{ in_external_transaction.transaction_type_verbose }}</td>#}
+                                {#                                <td>{{ in_external_transaction.transaction_type_verbose }}</td>#}
                                 <td>{{ in_external_transaction.relevant_contract_id }}</td>
                                 <td>{{ in_external_transaction.src_owner_type_verbose }}</td>
                                 <td>{{ in_external_transaction.src_owner_bank_account_id }}</td>
@@ -91,7 +99,7 @@
                         <thead>
                         <tr>
                             {#                            <th scope="col">شناسه</th>#}
-{#                            <th scope="col">نوع تراکنش</th>#}
+                            {#                            <th scope="col">نوع تراکنش</th>#}
                             <th scope="col">شناسه قرارداد مربوطه</th>
                             {#                            <th scope="col">شماره حساب مبداء</th>#}
                             {#                            <th scope="col">نوع حساب مبداء</th>#}
@@ -109,7 +117,7 @@
                                 {#                                <th scope="row">#}
                                 {#                                    <a href="{% url 'myapp:transaction_detail' out_external_transaction.id %}?role=reporter&reporter={{ reporter }}"><u>{{ out_external_transaction.id }}</u></a>#}
                                 {#                                </th>#}
-{#                                <td>{{ out_external_transaction.transaction_type_verbose }}</td>#}
+                                {#                                <td>{{ out_external_transaction.transaction_type_verbose }}</td>#}
                                 <td>{{ out_external_transaction.relevant_contract_id }}</td>
                                 {#                                <td>{{ out_external_transaction.src_owner_bank_account_id }}</td>#}
                                 {#                                <td>{{ out_external_transaction.src_owner_type_verbose }}</td>#}

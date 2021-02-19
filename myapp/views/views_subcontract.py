@@ -63,12 +63,12 @@ class NewSubcontractView(APIView):
 
                 return render(request, 'myapp/new-subcontract.html', context)
             # return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            serializer = NormalContractSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # else:
+        #     serializer = NormalContractSerializer(data=data)
+        #     if serializer.is_valid():
+        #         serializer.save()
+        #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SubcontractDetailView(APIView):
@@ -109,9 +109,9 @@ class SubcontractDetailView(APIView):
 
                     return render(request, 'myapp/subcontract-detail.html', context)
 
-                serializer = serializers.SubcontractSerializer(subcontract)
-                data = serializer.data
-                return Response(data)
+                # serializer = serializers.SubcontractSerializer(subcontract)
+                # data = serializer.data
+                # return Response(data)
             else:
                 if owner_type == OwnerType.EXCHANGER:  # not necessary
                     if action == ContractAction.PAY.value:
@@ -150,9 +150,9 @@ class SubcontractDetailView(APIView):
                     }
                     return render(request, 'myapp/judge-subcontract-detail.html', context)
 
-                serializer = serializers.SubcontractSerializer(subcontract)
-                data = serializer.data
-                return Response(data)
+                # serializer = serializers.SubcontractSerializer(subcontract)
+                # data = serializer.data
+                # return Response(data)
 
             else:
                 updated_subcontract = None
@@ -171,7 +171,7 @@ class SubcontractDetailView(APIView):
                 return redirect(
                     reverse('myapp:subcontract_detail', kwargs={'pk': updated_subcontract.id}) + query_param)
 
-            else:
-                serializer = SubcontractSerializer(updated_subcontract)
-                data = serializer.data
-                return Response(data)
+            # else:
+            #     serializer = SubcontractSerializer(updated_subcontract)
+            #     data = serializer.data
+            #     return Response(data)

@@ -73,12 +73,12 @@ class NewContractView(APIView):
 
                 return render(request, 'myapp/new-contract.html', context)
 
-        else:
-            serializer = NormalContractSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # else:
+        #     serializer = NormalContractSerializer(data=data)
+        #     if serializer.is_valid():
+        #         serializer.save()
+        #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ContractDetailView(APIView):
@@ -139,21 +139,21 @@ class ContractDetailView(APIView):
                     )
                     return render(request, 'myapp/contract-detail.html', context)
 
-                else:
-                    if owner_type == OwnerType.IMPORTER:
-                        contract = get_user_public_owner_out_normal_contract(national_code, bank_account_id, pk,
-                                                                             raise_error=True)
-
-                    elif owner_type == OwnerType.EXCHANGER:
-                        contract = get_user_public_owner_in_normal_contract(national_code, bank_account_id, pk,
-                                                                            raise_error=True)
-                    elif owner_type == OwnerType.EXPORTER:
-                        contract = get_user_public_owner_in_subcontract(national_code, bank_account_id, pk,
-                                                                        raise_error=True)
-
-                    serializer = NormalContractSerializer(contract)
-                    data = serializer.data
-                    return Response(data)
+                # else:
+                #     if owner_type == OwnerType.IMPORTER:
+                #         contract = get_user_public_owner_out_normal_contract(national_code, bank_account_id, pk,
+                #                                                              raise_error=True)
+                #
+                #     elif owner_type == OwnerType.EXCHANGER:
+                #         contract = get_user_public_owner_in_normal_contract(national_code, bank_account_id, pk,
+                #                                                             raise_error=True)
+                #     elif owner_type == OwnerType.EXPORTER:
+                #         contract = get_user_public_owner_in_subcontract(national_code, bank_account_id, pk,
+                #                                                         raise_error=True)
+                #
+                #     serializer = NormalContractSerializer(contract)
+                #     data = serializer.data
+                #     return Response(data)
 
             else:  # with action
 
@@ -217,10 +217,10 @@ class ContractDetailView(APIView):
                     return redirect(
                         reverse('myapp:contract_detail', kwargs={'pk': updated_contract.id}) + query_param)
 
-                else:
-                    serializer = NormalContractSerializer(updated_contract)
-                    data = serializer.data
-                    return Response(data)
+                # else:
+                #     serializer = NormalContractSerializer(updated_contract)
+                #     data = serializer.data
+                #     return Response(data)
 
         elif role == 'judge':
             national_id = request.query_params.get('judge')
@@ -257,10 +257,10 @@ class ContractDetailView(APIView):
                 })
                 return render(request, 'myapp/judge-contract-detail.html', context)
 
-            else:
-                serializer = NormalContractSerializer(contract)
-                data = serializer.data
-                return Response(data)
+            # else:
+            #     serializer = NormalContractSerializer(contract)
+            #     data = serializer.data
+            #     return Response(data)
 
 
 def get_judge_name(request):

@@ -52,7 +52,7 @@ class OwnerDetailView(APIView):
             }
             return Response(context, template_name='myapp/owner-detail.html')
 
-        serializer = NormalContractSerializer(contracts, many=True)
-        data = serializer.data
-
-        return Response(data)
+        # serializer = NormalContractSerializer(contracts, many=True)
+        # data = serializer.data
+        #
+        # return Response(data)

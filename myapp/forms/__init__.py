@@ -9,4 +9,5 @@ from .forms_new_subcontract import *
 from .forms_subcontract_detail import *
 from .forms_new_transaction import *
 from .forms_transaction_detail import *
-from .forms_report import *
+from .forms_contradiction_report import *
+from .forms_output_report import *
