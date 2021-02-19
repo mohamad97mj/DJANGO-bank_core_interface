@@ -13,7 +13,7 @@ class NewSubcontractView(APIView):
 
     def get(self, request, format=None):
         national_code = request.query_params.get('user')
-        bank_account_id = request.query_params.get('account')
+        bank_account_id = request.query_params.get('owner')
         owner_type = request.query_params.get('type')
         contract_id = request.query_params.get('contract')
         new_subcontract_form = forms.NewSubcontractForm()
@@ -31,7 +31,7 @@ class NewSubcontractView(APIView):
         data = request.data
         format = request.accepted_renderer.format
         national_code = request.query_params.get('user')
-        bank_account_id = request.query_params.get('account')
+        bank_account_id = request.query_params.get('owner')
         owner_type = request.query_params.get('type')
         contract_id = request.query_params.get('contract')
         parent = get_user_public_owner_in_normal_contract(national_code, bank_account_id, contract_id)
@@ -47,7 +47,7 @@ class NewSubcontractView(APIView):
                 query_param = '?' + \
                               'role=user' + '&' + \
                               'user=' + national_code + '&' + \
-                              'account=' + bank_account_id + "&" + \
+                              'owner=' + bank_account_id + "&" + \
                               'type=' + owner_type + "&" + \
                               'contract=' + str(contract_id)
                 return redirect(
@@ -86,7 +86,7 @@ class SubcontractDetailView(APIView):
         if role == 'user':
 
             national_code = request.query_params.get('user')
-            bank_account_id = request.query_params.get('account')
+            bank_account_id = request.query_params.get('owner')
             owner_type = request.query_params.get('type')
 
             subcontract = get_user_public_owner_in_normal_contract_subcontract(national_code, bank_account_id, contract_id, pk,
@@ -124,7 +124,7 @@ class SubcontractDetailView(APIView):
                     query_param = '?' + \
                                   'role=user' + '&' + \
                                   'user=' + national_code + '&' + \
-                                  'account=' + bank_account_id + '&' + \
+                                  'owner=' + bank_account_id + '&' + \
                                   'type=' + owner_type + '&' + \
                                   'contract=' + contract_id
                     return redirect(

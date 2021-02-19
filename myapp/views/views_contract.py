@@ -31,7 +31,7 @@ class NewContractView(APIView):
 
     def get(self, request, format=None):
         national_code = request.query_params.get('user')
-        bank_account_id = request.query_params.get('account')
+        bank_account_id = request.query_params.get('owner')
         owner_type = request.query_params.get('type')
         owner = get_user_public_owner(national_code, bank_account_id, raise_error=True)
         new_contract_form = forms.NewContractForm(src_owner=owner)
@@ -48,7 +48,7 @@ class NewContractView(APIView):
         data = request.data
         format = request.accepted_renderer.format
         national_code = request.query_params.get('user')
-        bank_account_id = request.query_params.get('account')
+        bank_account_id = request.query_params.get('owner')
         owner_type = request.query_params.get('type')
 
         if format == 'html':
@@ -60,7 +60,7 @@ class NewContractView(APIView):
                 query_param = '?' + \
                               'role=user' + '&' + \
                               'user=' + national_code + '&' + \
-                              'account=' + bank_account_id + '&' + \
+                              'owner=' + bank_account_id + '&' + \
                               'type=' + owner_type
                 return redirect(reverse('myapp:contract_detail', kwargs={'pk': created_contract.id}) + query_param)
             else:
@@ -92,7 +92,7 @@ class ContractDetailView(APIView):
 
         if role == 'user':
             national_code = request.query_params.get('user')
-            bank_account_id = request.query_params.get('account')
+            bank_account_id = request.query_params.get('owner')
             owner_type = request.query_params.get('type')
             action = request.query_params.get('action', 'none')
 
@@ -212,7 +212,7 @@ class ContractDetailView(APIView):
                     query_param = '?' + \
                                   'role=user' + '&' + \
                                   'user=' + national_code + '&' + \
-                                  'account=' + bank_account_id + '&' + \
+                                  'owner=' + bank_account_id + '&' + \
                                   'type=' + owner_type
                     return redirect(
                         reverse('myapp:contract_detail', kwargs={'pk': updated_contract.id}) + query_param)

@@ -14,11 +14,11 @@
     <div class="block-content">
         <h4>لیست حساب ها</h4>
         <h5>(جهت مشاهده جزپیات بیشتر روی شماره حساب کلیک کنید)</h5>
-        <form method="post" id="" class="myform user-accounts-list-table" action="">
+        <form method="post" id="" class="myform general-form" action="">
             {% csrf_token %}
 
             <div class="table-responsive">
-                <table style="margin: auto" class="center table table-striped">
+                <table class="margin-auto center table table-striped">
                     <thead>
                     <tr>
                         <th scope="col">شماره حساب</th>
@@ -26,12 +26,12 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for account in accounts %}
+                    {% for owner in owners %}
                         <tr>
                             <th scope="row">
-                                <a href="{% url 'myapp:owner_detail' account.bank_account_id %}?role=user&user={{ user }}&type={{ account.owner_type }}"><u>{{ account.bank_account_id }}</u></a>
+                                <a href="{% url 'myapp:owner_detail' owner.bank_account_id %}?role=user&user={{ user }}&type={{ owner.owner_type }}"><u>{{ owner.bank_account_id }}</u></a>
                             </th>
-                            <td>{{ account.owner_type_verbose }}</td>
+                            <td>{{ owner.owner_type_verbose }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

@@ -32,7 +32,7 @@
             {% if status == 'WAITING_FOR_EXCHANGER_PAYMENT' %}
                 <div class="small-form margin-auto">
                     {#                    <a class="btn another-mybutton btn-block"#}
-                    {#                       href="{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=pay"><span#}
+                    {#                       href="{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&contract={{ parent }}&action=pay"><span#}
                     {#                            class="color-white">پرداخت</span></a>#}
 
                     <button id="exc-pay-btn" class="btn another-mybutton btn-block" data-toggle="modal"
@@ -135,7 +135,7 @@
             {#alert(action)#}
             switch (action) {
                 case 'exc-pay':
-                    get("{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ parent }}&action=pay");
+                    get("{% url 'myapp:subcontract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&contract={{ parent }}&action=pay");
                     break
             }
         })

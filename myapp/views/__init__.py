@@ -8,7 +8,6 @@ from .views_judge import *
 from .views_owner import *
 from .views_contract import *
 from .views_subcontract import *
-from .views_transaction import *
 from .views_reporter import *
 
 

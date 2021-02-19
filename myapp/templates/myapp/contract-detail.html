@@ -58,12 +58,12 @@
                                 data-target="#confirm-submit" type="submit"><span>رد قرارداد</span></button>
                     </div>
                 {% elif status == "DOING_BY_EXCHANGER" or status == "WAITING_FOR_IMPORTER_CONFIRMATION" or status == "CONFIRMED_BY_IMPORTER" or status == "CLAIMED_BY_IMPORTER" %}
-                    <div style="margin-top: 50px; margin-bottom: 25px;">
+                    <div class="mt-50 mb-25">
                         <h4>لیست قرارداد های مربوطه</h4>
                         <h5>(جهت مشاهده جزپیات بیشتر روی شناسه قرارداد مربوطه کلیک کنید)</h5>
 
                         <div class="table-responsive">
-                            <table style="margin: auto;" class="center table table-striped user-contracts-list-table">
+                            <table class="margin-auto center table table-striped user-contracts-list-table">
                                 <thead>
                                 <tr>
                                     <th scope="col">شناسه</th>
@@ -79,7 +79,7 @@
                                 {% for subcontract in subcontracts %}
                                     <tr>
                                         <th scope="row">
-                                            <a href="{% url 'myapp:subcontract_detail' subcontract.id %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ contract }}"><u>{{ subcontract.id }}</u></a>
+                                            <a href="{% url 'myapp:subcontract_detail' subcontract.id %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&contract={{ contract }}"><u>{{ subcontract.id }}</u></a>
                                         </th>
                                         <td>{{ subcontract.dst_owner_bank_account_id }}</td>
                                         <td>{{ subcontract.value_in_rial_thousand_separated }}</td>
@@ -95,7 +95,7 @@
                     </div>
                     {% if status == "DOING_BY_EXCHANGER" %}
                         <div class="small-form margin-auto">
-                            <a href="{% url 'myapp:new_subcontract' %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&contract={{ contract }}"
+                            <a href="{% url 'myapp:new_subcontract' %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&contract={{ contract }}"
                                class="btn another-mybutton btn-block"> <span
                                     class="color-white">ثبت قرارداد مربوطه جدید</span>
                             </a>
@@ -144,7 +144,7 @@
                         آیا درستی اطلاعات وارد شده را تایید می کنید؟
                     </div>
                     <div class="modal-body ">
-                        <div style="text-align: right; padding-right: 25px">
+                        <div class="my-modal-form">
                             {% for field in contract_detail_form.visible_fields %}
                                 {#                                <input id="{{ field.auto_id }}_check" type="checkbox"/>#}
                                 <div class="modal-field">
@@ -253,31 +253,31 @@
                 {#alert(action)#}
                 switch (action) {
                     case 'im-charge':
-                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=charge");
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&action=charge");
                         break
                     case 'im-confirm':
-                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=confirm");
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&action=confirm");
                         break
                     case 'im-claim':
-                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=claim");
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&action=claim");
                         break
                     case 'exc-accept':
-                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=accept")
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&action=accept")
                         break
                     case 'exc-reject':
-                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=reject");
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&action=reject");
                         break
                     case 'exc-end':
-                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=end");
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&action=end");
                         break
                     case 'ex-accept':
-                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=accept");
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&action=accept");
                         break
                     case 'ex-reject':
-                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=reject");
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&action=reject");
                         break
                     case 'ex-end':
-                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}&action=end");
+                        get("{% url 'myapp:contract_detail' contract %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}&action=end");
                         break
                 }
             })

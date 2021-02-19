@@ -23,7 +23,7 @@
                     {% csrf_token %}
 
                     <div class="table-responsive">
-                        <table class="center table table-striped">
+                        <table class="margin-auto center table table-striped">
                             <thead>
                             <tr>
                                 <th scope="col">شناسه</th>
@@ -40,7 +40,7 @@
                             {% for contract in contracts %}
                                 <tr>
                                     <th scope="row">
-                                        <a href="{% url 'myapp:contract_detail' contract.0.id %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}"><u>{{ contract.0.id }}</u></a>
+                                        <a href="{% url 'myapp:contract_detail' contract.0.id %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}"><u>{{ contract.0.id }}</u></a>
                                     </th>
 
                                     <td>{{ contract.1.dst_owner_bank_account_id }}</td>
@@ -82,7 +82,7 @@
                         {% for contract in contracts %}
                             <tr>
                                 <th scope="row"><a
-                                        href="{% url 'myapp:contract_detail' contract.id %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}"><u>{{ contract.id }}</u></a>
+                                        href="{% url 'myapp:contract_detail' contract.id %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}"><u>{{ contract.id }}</u></a>
                                 </th>
 
                                 {% if owner == contract.src_owner_bank_account_id %}
@@ -107,9 +107,9 @@
             {% endif %}
 
             {% if  type == 'IMPORTER' %}
-                <div class="small-form margin-auto" style="margin-top: 25px">
+                <div class="small-form margin-auto">
                     <a class="btn another-mybutton btn-block"
-                       href="{% url 'myapp:new_contract' %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}"><span
+                       href="{% url 'myapp:new_contract' %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}"><span
                             class="color-white">ثبت قرارداد جدید</span></a>
                 </div>
             {% endif %}
@@ -119,73 +119,6 @@
         <br/>
         <br/>
         <br/>
-
-{#        <h4>لیست تراکنش ها</h4>#}
-{#        <h5>(جهت مشاهده جزپیات بیشتر روی شناسه تراکنش کلیک کنید)</h5>#}
-{##}
-{#        <form method="post" id="" class="myform user-transaction-list-form" action="">#}
-{#            {% csrf_token %}#}
-{##}
-{#            <div class="table-responsive">#}
-{#                <table style="margin: auto" class="center table table-striped">#}
-{#                    <thead>#}
-{#                    <tr>#}
-{#                        <th scope="col">شناسه</th>#}
-{#                        {% if type == 'EXCHANGER' %}#}
-{#                            <th scope="col">نوع حساب طرف دیگر تراکنش</th>#}
-{#                            <th scope="col">شماره حساب طرف دیگر تراکنش</th>#}
-{#                        {% else %}#}
-{#                            <th scope="col">شماره حساب صراف</th>#}
-{#                        {% endif %}#}
-{#                        <th scope="col">نوع تراکنش</th>#}
-{#                        <th scope="col">مبلغ به ریال</th>#}
-{#                        <th scope="col">نوع اپراتور</th>#}
-{#                        <th scope="col">کد ملی اپراتور</th>#}
-{#                    </tr>#}
-{#                    </thead>#}
-{#                    <tbody>#}
-{#                    {% for transaction in transactions %}#}
-{#                        <tr>#}
-{#                            <th scope="row"><a#}
-{#                                    href="{% url 'myapp:transaction_detail' transaction.id %}?role=user&user={{ user }}&account={{ owner }}"><u>{{ transaction.id }}</u></a>#}
-{#                            </th>#}
-{#                            {% if type == 'IMPORTER' %}#}
-{#                                <td>{{ transaction.dst_owner_bank_account_id }}</td>#}
-{#                            {% elif type == 'EXCHANGER' %}#}
-{#                                {% if transaction.dst_owner_bank_account_id == owner %}#}
-{#                                    <td>واردکننده</td>#}
-{#                                    <td>{{ transaction.src_owner_bank_account_id }}</td>#}
-{#                                {% else %}#}
-{#                                    <td>صادرکننده</td>#}
-{#                                    <td>{{ transaction.dst_owner_bank_account_id }}</td>#}
-{#                                {% endif %}#}
-{#                            {% else %}#}
-{#                                <td>{{ transaction.src_owner_bank_account_id }}</td>#}
-{#                            {% endif %}#}
-{##}
-{#                            {% if type == 'IMPORTER' %}#}
-{#                                <td>پرداختی</td>#}
-{#                            {% elif type == 'EXCHANGER' %}#}
-{#                                {% if owner == transaction.owner %}#}
-{#                                    <td>پرداختی</td>#}
-{#                                {% else %}#}
-{#                                    <td>واریزی</td>#}
-{#                                {% endif %}#}
-{#                            {% else %}#}
-{#                                <td>واریزی</td>#}
-{#                            {% endif %}#}
-{##}
-{#                            <td>{{ transaction.amount }}</td>#}
-{#                            <td>{{ transaction.operator_type_verbose }}</td>#}
-{#                            <td>{{ transaction.operator }}</td>#}
-{#                        </tr>#}
-{#                    {% endfor %}#}
-{#                    </tbody>#}
-{#                </table>#}
-{#            </div>#}
-{##}
-{#        </form>#}
-{##}
         <script>
         </script>
     </div>

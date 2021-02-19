@@ -34,5 +34,3 @@ class ExceptionHandlerMiddleware:
                 elif isinstance(exception, Http500):
                     response = HttpResponseServerError
                 return response(repr(exception))
-
-

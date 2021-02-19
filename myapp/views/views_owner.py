@@ -9,13 +9,13 @@ class OwnerListView(APIView):
         national_code = request.query_params.get('user')
 
         # user_profile = get_user(national_code)
-        accounts = get_user_public_owners(national_code)
+        owners = get_user_public_owners(national_code)
 
         if request.accepted_renderer.format == 'html':
-            context = {"user": national_code, "accounts": accounts}
-            return Response(context, template_name='myapp/accounts-list.html')
+            context = {"user": national_code, "owners": owners}
+            return Response(context, template_name='myapp/owners-list.html')
 
-        serializer = serializers.OwnerSerializer(accounts, many=True)
+        serializer = serializers.OwnerSerializer(owners, many=True)
         data = serializer.data
         return Response(data)
 
@@ -50,7 +50,7 @@ class OwnerDetailView(APIView):
                 'owner': str(pk),
                 "contracts": contracts
             }
-            return Response(context, template_name='myapp/account-detail.html')
+            return Response(context, template_name='myapp/owner-detail.html')
 
         serializer = NormalContractSerializer(contracts, many=True)
         data = serializer.data

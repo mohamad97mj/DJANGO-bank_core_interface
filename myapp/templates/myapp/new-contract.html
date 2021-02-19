@@ -12,7 +12,7 @@
     <div class="block-content">
         <h4>اطلاعات قرارداد جدید را وارد کنید</h4>
         <form method="post" id="new-contract-form" class="myform general-form"
-              action="{% url 'myapp:new_contract' %}?role=user&user={{ user }}&account={{ owner }}&type={{ type }}">
+              action="{% url 'myapp:new_contract' %}?role=user&user={{ user }}&owner={{ owner }}&type={{ type }}">
             {% csrf_token %}
 
             {% for hidden in new_contract_form.hidden_fields %}

@@ -39,12 +39,12 @@
             <button id="jud-deny-btn" class="btn btn-block mybutton" data-toggle="modal"
                     data-target="#confirm-submit" type="submit"><span>معامله انجام نشده است</span></button>
 
-{#            <a class="btn another-mybutton btn-block"#}
-{#               href="{% url 'myapp:subcontract_detail' subcontract %}?role=judge&judge={{ judge }}&contract={{ contract }}&action=confirm"#}
-{#               type="submit"><span>معامله انجام شده است</span></a>#}
-{#            <a class="btn btn-block mybutton"#}
-{#               href="{% url 'myapp:subcontract_detail' subcontract %}?role=judge&judge={{ judge }}&contract={{ contract }}&action=deny"#}
-{#               type="submit"><span>معامله انجام نشده است</span></a>#}
+            {#            <a class="btn another-mybutton btn-block"#}
+            {#               href="{% url 'myapp:subcontract_detail' subcontract %}?role=judge&judge={{ judge }}&contract={{ contract }}&action=confirm"#}
+            {#               type="submit"><span>معامله انجام شده است</span></a>#}
+            {#            <a class="btn btn-block mybutton"#}
+            {#               href="{% url 'myapp:subcontract_detail' subcontract %}?role=judge&judge={{ judge }}&contract={{ contract }}&action=deny"#}
+            {#               type="submit"><span>معامله انجام نشده است</span></a>#}
         {% endif %}
         </div>
 
@@ -65,13 +65,14 @@
                     آیا درستی اطلاعات وارد شده را تایید می کنید؟
                 </div>
                 <div class="modal-body ">
-                    <div style="text-align: right; padding-right: 25px">
+                    <div class="my-modal-form">
                         {% for field in subcontract_detail_form.visible_fields %}
-                            {#                                <input id="{{ field.auto_id }}_check" type="checkbox"/>#}
-                            <div class="modal-field">
-                                <span class="modal-field-label">{{ field.label }}:</span>
-                                <span class="modal-field-value" id="{{ field.auto_id }}_value"></span>
-                            </div>
+                            {% if to == 'view' or field.name != 'judge_vote' %}
+                                <div class="modal-field">
+                                    <span class="modal-field-label">{{ field.label }}:</span>
+                                    <span class="modal-field-value" id="{{ field.auto_id }}_value"></span>
+                                </div>
+                            {% endif %}
                         {% endfor %}
                         <strong class="modal-field-label">عملیات مورد نظر:</strong>
                         <strong class="modal-field-value" id="requested-action"></strong>
@@ -88,7 +89,7 @@
 
     <script>
 
-        $('#jud-confirm-btn', '#jud-deny-btn').click(function () {
+        $('#jud-confirm-btn, #jud-deny-btn').click(function () {
             {% for field in subcontract_detail_form.visible_fields %}
                 var field_id = "{{ field.auto_id }}"
                 var field_value = $('#' + field_id).val()

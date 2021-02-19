@@ -31,11 +31,6 @@
 }
 
 
-.user-accounts-list-table {
-    width: 250px;
-}
-
-
 .user-contracts-list-table {
     width: 90%;
 }
@@ -115,10 +110,22 @@ center {
 }
 
 .my-modal-form {
-    text-align: right;
     padding-right: 25px;
+    text-align: right;
 }
 
 th, td {
     text-align: center;
+}
+
+.mt-50 {
+    margin-top: 50px;
+}
+
+.mb-25 {
+    margin-bottom: 25px;
+}
+
+.mt-50 {
+    margin-top: 50px;
 }
