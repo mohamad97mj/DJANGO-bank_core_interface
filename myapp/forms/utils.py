@@ -28,7 +28,7 @@ TRANSACTION_TYPE = [
 
 REPORT_OWNER_TYPE = [
     ('RETURN', 'بازگشت'),
-    ('EXPORTER', 'داوری'),
+    ('EXPORTER', 'صادرکننده ها'),
 ]
 
 

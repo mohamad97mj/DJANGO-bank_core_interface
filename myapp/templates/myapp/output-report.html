@@ -12,7 +12,7 @@
     <div class="block-content">
         <h4>فرم گزارش گیری را کامل کنید</h4>
         <form method="post" id="login-form" class="myform general-form"
-              action="{% url 'myapp:report' %}?role=reporter&reporter={{ reporter }}">
+              action="{% url 'myapp:output-report' %}?role=reporter&reporter={{ reporter }}">
             {% csrf_token %}
 
             {% for hidden in report_form.hidden_fields %}

@@ -262,4 +262,4 @@ class Transaction(models.Model):
         return OperatorType(self.operator_type).label
 
     def date_verbose(self):
-        return str(jdatetime.datetime.fromtimestamp(self.date / 1000).strftime("%Y/%m/%d-%H:%M:%S"))
+        return str(jdatetime.datetime.fromtimestamp(self.date).strftime("%Y/%m/%d-%H:%M:%S"))

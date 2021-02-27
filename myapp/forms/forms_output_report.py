@@ -21,7 +21,7 @@ class OutputReportForm(Form):
         from_date = self.cleaned_data['from_date']
         empty_field_validator(from_date)
         try:
-            return int(jdate2timestamp(from_date)) * 1000
+            return int(jdate2timestamp(from_date))
         except ValueError as err:
             raise forms.ValidationError("خطا: تاریخ وارد شده صحیح نمی باشد!")
 
@@ -29,6 +29,6 @@ class OutputReportForm(Form):
         to_date = self.cleaned_data['to_date']
         empty_field_validator(to_date)
         try:
-            return int(jdate2timestamp(to_date)) * 1000
+            return int(jdate2timestamp(to_date))
         except ValueError as err:
             raise forms.ValidationError("خطا: تاریخ وارد شده صحیح نمی باشد!")

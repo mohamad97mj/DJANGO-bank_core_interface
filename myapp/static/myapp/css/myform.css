@@ -129,3 +129,8 @@ th, td {
 .mt-50 {
     margin-top: 50px;
 }
+
+.my-checkbox {
+    position: relative;
+    vertical-align: bottom;
+}

@@ -16,17 +16,15 @@
             {% endfor %}
 
             {% for field in subcontract_detail_form.visible_fields %}
-                {% if to == 'view' or field.name != 'judge_vote' %}
-                    <div class="form-group">
+                <div class="form-group">
 
-                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field|add_class:'form-control' }}
-                        <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
-                        {% for error in field.errors %}
-                            <span class="help- error-message">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field|add_class:'form-control' }}
+                    <span class="help- help-message" id="{{ field.auto_id }}_help_text">{{ field.help_text }}</span>
+                    {% for error in field.errors %}
+                        <span class="help- error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
             {% endfor %}
         </form>
 
