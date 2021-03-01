@@ -8,3 +8,4 @@ test.py
 mydjango.conf
 mydjango_uwsgi.ini
 /node_modules
+*.pyc
