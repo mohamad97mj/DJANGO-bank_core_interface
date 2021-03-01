@@ -96,7 +96,7 @@ class ContractDetailView(APIView):
             owner_type = request.query_params.get('type')
             action = request.query_params.get('action', '')
 
-            if action:
+            if not action:
 
                 if format == "html":
                     context = {}
