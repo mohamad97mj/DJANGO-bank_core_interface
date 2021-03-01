@@ -94,9 +94,9 @@ class ContractDetailView(APIView):
             national_code = request.query_params.get('user')
             bank_account_id = request.query_params.get('owner')
             owner_type = request.query_params.get('type')
-            action = request.query_params.get('action', 'none')
+            action = request.query_params.get('action', '')
 
-            if action == 'none':
+            if action:
 
                 if format == "html":
                     context = {}

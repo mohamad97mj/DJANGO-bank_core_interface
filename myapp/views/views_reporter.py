@@ -87,4 +87,28 @@ class OutputReportView(APIView):
             'reporter': reporter_id,
             'report_form': report_form
         }
+
         return render(request, 'myapp/output-report.html', context)
+
+    def post(self, request, format=None):
+        data = request.data
+        format = request.accepted_renderer.format
+        reporter_id = request.query_params.get('reporter')
+
+        if format == 'html':
+            report_form = forms.OutputReportForm(data=data)
+            context = {
+                'reporter': reporter_id,
+                'report_form': report_form,
+            }
+            if report_form.is_valid():
+                from_date = report_form.cleaned_data.get('from_date')
+                to_date = report_form.cleaned_data.get('to_date')
+                content = get_system_output(from_date, to_date)
+                response = HttpResponse()
+                response.write(content)
+                response['Content-Type'] = 'application/vnd.ms-excel'
+                response['Content-Disposition'] = 'attachment; filename={0}'.format("system_output.xlsx")
+                return response
+            else:
+                return render(request, 'myapp/output-report.html', context)

@@ -405,3 +405,15 @@ def get_operational_owner_out_external_transactions_time_interval(owner_type, fr
                                                                                                   from_date,
                                                                                                   to_date)
     return get_objects(url, Transaction, TransactionSerializer)
+
+
+def get_system_output(from_date, to_date):
+    url = '{}/api/operationalowners/systemoutput?from={}&to={}'.format("{}",
+                                                                       from_date,
+                                                                       to_date)
+    r = requests.get(url.format(CORE_URL))
+    if r.status_code == 200:
+        return r.content
+    else:
+        print("goodbye")
+        pass
